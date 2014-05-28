@@ -6,6 +6,7 @@ Track finance life to understand your money
 Aim
 ==============
 Provide platform to organize financial data by tracking spendings and income
+</br>
 Provide statistics and highly customizeable analysis based on data
 
 Dependencies
