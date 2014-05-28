@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="purchases.PurchaseSet" table="purchase_set">
+		<meta attribute="class-description">
+			This class contains information about single purchases. 
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native"/>
+		</id>
+		<property name="location" column="location" type="string"/>
+		<property name="date" column="date" type="date"/>
+		<set name="purchases" cascade="all">
+			<key column="purchase_set"/>
+			<one-to-many class="purchases.Purchase"/>
+		</set>
+
+	</class>
+</hibernate-mapping>
