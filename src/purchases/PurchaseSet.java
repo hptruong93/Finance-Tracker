@@ -45,7 +45,7 @@ public class PurchaseSet {
 		this.purchases = purchases;
 	}
 	
-	public Set<Purchase> getPurchases() {
+	protected Set<Purchase> getPurchases() {
 		return this.purchases;
 	}
 }

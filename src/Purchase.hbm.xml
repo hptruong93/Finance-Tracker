@@ -15,5 +15,10 @@
 		<property name="quantity" column="quantity" type="integer"/>
 		<property name="unit" column="unit" type="string"/>
 		<property name="cost" column="cost" type="float"/>
+
+		<many-to-one name="purchaseSet" class="purchases.PurchaseSet" lazy="false">
+            <column name="purchase_set" not-null="true" />
+        </many-to-one>
+
 	</class>
 </hibernate-mapping>

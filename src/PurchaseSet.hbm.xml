@@ -12,8 +12,9 @@
 		</id>
 		<property name="location" column="location" type="string"/>
 		<property name="date" column="date" type="date"/>
-		<set name="purchases" cascade="all">
-			<key column="purchase_set"/>
+
+		<set name="purchases" cascade="all-delete-orphan" inverse="true">
+			<key column="purchase_set" not-null="true"/>
 			<one-to-many class="purchases.Purchase"/>
 		</set>
 

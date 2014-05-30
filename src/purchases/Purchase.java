@@ -1,12 +1,14 @@
 package purchases;
 
 public class Purchase {
+
 	private int id;
 	private String description;
 	private String type;
 	private int quantity;
 	private String unit;
 	private float cost;
+	private PurchaseSet purchaseSet;
 	
 	public Purchase() {
 	}
@@ -19,6 +21,14 @@ public class Purchase {
 		this.cost = cost;
 	}
 
+	public void update(Purchase reference) {
+		this.description = reference.description;
+		this.type = reference.type;
+		this.quantity = reference.quantity;
+		this.unit = reference.unit;
+		this.cost = reference.cost;
+	}
+	
 	public int getId() {
 		return this.id;
 	}
@@ -65,5 +75,13 @@ public class Purchase {
 
 	public void setCost(float cost) {
 		this.cost = cost;
+	}
+	
+	public PurchaseSet getPurchaseSet() {
+		return this.purchaseSet;
+	}
+
+	public void setPurchaseSet(PurchaseSet purchaseSet) {
+		this.purchaseSet = purchaseSet;
 	}
 }

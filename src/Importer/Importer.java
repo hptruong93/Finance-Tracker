@@ -19,7 +19,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import Utilities.LogWriter;
+import utilities.LogWriter;
 
 public class Importer {
 
