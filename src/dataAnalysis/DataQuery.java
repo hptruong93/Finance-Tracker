@@ -11,14 +11,21 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 
 import purchases.Purchase;
 import queryAgent.QueryAgent;
+import utilities.Log;
 import utilities.Mapper;
 import utilities.Util;
 
-public class Analyzer {
+public class DataQuery {
+	
+	public static final String DESCRIPTION = "description";
+	public static final String QUANTITY = "quantity";
+	public static final String UNIT = "unit";
+	public static final String COST = "cost";
+	public static final String LOCATION = "purchaseSet.location";
+	public static final String DATE = "purchaseSet.date";
 	
 	private static final List<String> FIELD_LIST = new ArrayList<String>(Arrays.asList("description", "quantity", "unit", "cost", "purchaseSet.location", "purchaseSet.date"));
 	private static final Set<String> FULL_FIELD_NAME;
@@ -39,38 +46,14 @@ public class Analyzer {
 	
 	private List<Criterion> criteria;
 	private List<String> fields;
-	private Object result;
 
-	public Analyzer() {
+	public DataQuery() {
 		criteria = new ArrayList<Criterion>();
 		fields = new ArrayList<String>();
 		fields.addAll(FIELD_LIST);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
-		try {
-			Analyzer a = new Analyzer();
-			a.clearFields();
-//			a.addField("description", "cost");
-			a.setFunction("cost", "SUM");
-			a.addConstraint(Restrictions.eq("location", "provigo"));
-			
-			a.query();
-			List<Object> out = (List<Object>) a.result;
-			for (Object b : out) {
-				Object[] instead = (Object[]) b;
-				for (Object o : instead) {
-					System.out.println("Object is " + o);
-				}
-				System.out.println("end");
-			}
-		} finally {
-			QueryAgent.closeFactory();
-		}
-	}
-
-	public void query() {
+	public Object query() {
 		QueryAgent<Object> test = new QueryAgent<Object>() {
 			@Override
 			public Object queryActivity(Session session) {
@@ -95,11 +78,13 @@ public class Analyzer {
 					}
 				}.map(fields);
 				
-				Query q = session.createQuery("SELECT " + Util.join(appendedFields, ", ") + " FROM Purchase as p LEFT JOIN p.purchaseSet");
+				String toQuery = "SELECT " + Util.join(appendedFields, ", ") + " FROM Purchase as p LEFT JOIN p.purchaseSet";
+				Log.info(this, toQuery);
+				Query q = session.createQuery(toQuery);
 				return q.list();
 			}
 		};
-		result = test.query();
+		return test.query();
 	}
 
 	public void setDefaultField() {
@@ -127,12 +112,12 @@ public class Analyzer {
 		fields.clear();;
 	}
 	
-	public void setFunction(String field, String function) {
+	public void setFunction(String function, String field) {
 		fields.clear();
 		fields.add(function.toUpperCase() + "(p." + field + ")");
 	}
 
-	public void setFunction(String field, String function, String option) {
+	public void setFunction(String function, String field, String option) {
 		fields.clear();
 		fields.add(function.toUpperCase() + "(" + option.toUpperCase() + " p." + field + ")");
 	}
@@ -147,9 +132,5 @@ public class Analyzer {
 	
 	public void clearConstraints() {
 		criteria.clear();
-	}
-	
-	public Object getResult() {
-		return this.result;
 	}
 }

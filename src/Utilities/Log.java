@@ -1,4 +1,4 @@
-package Utilities;
+package utilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,13 +42,25 @@ public class Log {
 	 * @param e
 	 *            exception caught
 	 */
-	public static void writeLog(Throwable e) {
+	public static void exception(Throwable e) {
 		final Writer result = new StringWriter();
 		final PrintWriter printWriter = new PrintWriter(result);
 		e.printStackTrace(printWriter);
 		writeLog(result.toString());
 	}
 
+	public static void info(Class<?> className, String content) {
+		if (className != null) {
+			writeLog("[" + className.getName() + "] ---> " + content);
+		}
+	}
+	
+	public static void info(Object object, String content) {
+		if (object != null) {
+			writeLog("[" + object.getClass().getName() + "] -- [" + object + "] ---> " + content);
+		}
+	}
+	
 	/**
 	 * Write content to a log file using FileUtility
 	 * 
@@ -66,7 +78,7 @@ public class Log {
 		StringBuffer toWrite = new StringBuffer("");
 		toWrite.append(DEFAULT_TIME.format(new Date(now.getTimeInMillis()))).append(" - ");
 		toWrite.append(DEFAULT_DATE.format(new Date(now.getTimeInMillis())));
-		toWrite.append("\n").append(content).append("\n\n");
+		toWrite.append(": ").append(content);
 
 		if (MODE == FILE) {
 			FileUtility.writeToFile(toWrite, LOG_FILE, true);

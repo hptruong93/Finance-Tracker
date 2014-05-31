@@ -1,0 +1,23 @@
+{
+	"uncountable": {
+		"weight": {
+			"kg" : {},
+			"g" : {},
+			"lb" : {}
+		},
+		"length": {
+			"m" : {},
+			"cm" : {}
+		},
+		"volume": {
+			"L" : {},
+			"mL" : {}
+		}
+	},
+	"countable": {
+		"piece" : {},
+		"can" : {},
+		"box" : {},
+		"bag" : {}
+	}
+}

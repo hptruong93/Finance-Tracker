@@ -1,4 +1,4 @@
-package Utilities;
+package utilities;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,6 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import argo.jdom.JdomParser;
+import argo.jdom.JsonRootNode;
+import argo.saj.InvalidSyntaxException;
 
 /**
  * Provide file reading and writing utilities
@@ -84,6 +88,22 @@ public class FileUtility {
 			} catch (IOException ex) {
 				Logger.getLogger(FileUtility.class.getName()).log(Level.SEVERE, null, ex);
 			}
+		}
+	}
+	
+	/**
+	 * Read a JSON file and return a JSON object
+	 * 
+	 * @param file
+	 *            the file that will be read
+	 * @return the root node of the JSON object
+	 */
+	public static JsonRootNode readJSON(File file) {
+		StringBuffer strings = readFromFile(file);
+		try {
+			return new JdomParser().parse(strings.toString());
+		} catch (InvalidSyntaxException e) {
+			return null;
 		}
 	}
 }

@@ -12,9 +12,8 @@ import utilities.Log;
 
 public abstract class QueryAgent<T> {
 	
-	private static SessionFactory factory;
+	private static final SessionFactory factory;
 	
-
 	static {
 		try {
 			Configuration configuration = new Configuration();

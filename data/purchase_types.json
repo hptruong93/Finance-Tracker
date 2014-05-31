@@ -1,0 +1,14 @@
+{
+	"food": {
+		"Fruit" : {"fruit": {}},
+		"Milk" : {"milk":{}},
+		"Rice" : {"rice":{}},
+		"Vegetable" : {"vegetable":{}},
+		"Bread" : {"bread":{}},
+		"Meat" : {"beef":{}, "pork":{}, "chicken":{}, "fish":{}},
+		"Other food" : {"other food":{}}
+	},
+	"non-food": {
+		"non-food" : {}
+	}
+}

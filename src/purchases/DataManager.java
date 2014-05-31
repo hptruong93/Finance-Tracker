@@ -3,20 +3,14 @@ package purchases;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 
 import queryAgent.QueryAgent;
-import queryAgent.QueryBuilder;
 
 public class DataManager {
-	private static QueryBuilder queryBuilder = new QueryBuilder();
-
 	public static void main(String[] args) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
@@ -52,33 +46,6 @@ public class DataManager {
 			}
 		};
 		update.query();
-	}
-
-	/**
-	 * Retrieve a set of purchases from database given filtering condition
-	 * 
-	 * @param condition
-	 *            filtering condition (HQL syntax). Empty string "" indicates
-	 *            get all purchases
-	 * @param parameters
-	 *            parameters to fill in condition if necessary. null parameters
-	 *            will be ignored
-	 * @return a list of purchases from database that satisfy filtering
-	 *         condition
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Purchase> getPurchases(final String condition, final List<Object> parameters, final List<Criterion> criteria) {
-		QueryAgent<List<Purchase>> query = new QueryAgent<List<Purchase>>() {
-			@Override
-			public List<Purchase> queryActivity(Session session) {
-				String query = queryBuilder.build("Purchase", new String[]{}, condition);
-				Query q = queryBuilder.build(session, query, parameters, criteria, Purchase.class);
-				List<Purchase> output = (List<Purchase>) (List<?>) q.list();
-				return output;
-			}
-		};
-		
-		return query.query();
 	}
 
 	/**
@@ -168,31 +135,6 @@ public class DataManager {
 			}
 		};
 		update.query();
-	}
-
-	/**
-	 * Retrieve a set of purchaseSet from database given filtering condition
-	 * 
-	 * @param condition
-	 *            filtering condition (HQL syntax). Empty string "" indicates
-	 *            get all purchases
-	 * @param parameters
-	 *            parameters to fill in condition if necessary. null parameters
-	 *            will be ignored
-	 * @return a list of purchaseSet from database that satisfy filtering
-	 *         condition
-	 */
-	@SuppressWarnings("unchecked")
-	public List<PurchaseSet> getPurchaseSet(final String condition, final List<Object> parameters) {
-		QueryAgent<List<PurchaseSet>> query = new QueryAgent<List<PurchaseSet>>() {
-			@Override
-			public List<PurchaseSet> queryActivity(Session session) {
-				Query query = queryBuilder.build(session, "PurchaseSet", new String[] {}, condition, parameters);
-				List<PurchaseSet> output = (List<PurchaseSet>) (List<?>) query.list();
-				return output;
-			}
-		};
-		return query.query();
 	}
 
 	/**
