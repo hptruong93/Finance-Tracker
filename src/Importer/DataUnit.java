@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
-import utilities.LogWriter;
+import utilities.Log;
 
 class DataUnit {
 	
@@ -59,7 +59,7 @@ class DataUnit {
 		} catch (NumberFormatException ex) {
 			output.add(0d);
 			if (!NA_REP.contains(input)) {
-				LogWriter.writeLog("Error in parsing quantity " + input);	
+				Log.info(DataUnit.class, "Error in parsing quantity " + input);	
 			}
 		}
 

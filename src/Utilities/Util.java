@@ -99,7 +99,7 @@ public class Util {
 	 * @param paths array of paths
 	 * @return a path created by joining all the paths
 	 */
-	public static String joinPath(String[] paths) {
+	public static String joinPath(String... paths) {
 		if (paths.length == 0) {
 			return "";
 		} else {

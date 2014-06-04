@@ -17,7 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import utilities.LogWriter;
+import utilities.Log;
 
 public class ReaderExcel {
 
@@ -83,9 +83,9 @@ public class ReaderExcel {
 
 			file.close();
 		} catch (FileNotFoundException e) {
-			LogWriter.writeException(e);
+			Log.exception(e);
 		} catch (IOException e) {
-			LogWriter.writeException(e);
+			Log.exception(e);
 		}
 	}
 

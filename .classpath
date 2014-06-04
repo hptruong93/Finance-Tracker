@@ -54,5 +54,6 @@
 	<classpathentry kind="lib" path="lib/POI/poi-scratchpad-3.9-20121203.jar"/>
 	<classpathentry kind="lib" path="lib/argo-3.10.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -19,7 +19,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import utilities.LogWriter;
+import utilities.Log;
 
 public class Importer {
 
@@ -38,7 +38,7 @@ public class Importer {
 		this.purchases = new ArrayList<DataSet>();
 		this.purchases = readFile(filePath);
 		if (this.purchases == null) {
-			LogWriter.writeLog("Cannot load file");
+			Log.exception(new NullPointerException());
 			System.exit(0);
 		}
 
@@ -68,9 +68,9 @@ public class Importer {
 
 			file.close();
 		} catch (FileNotFoundException e) {
-			LogWriter.writeException(e);
+			Log.exception(e);
 		} catch (IOException e) {
-			LogWriter.writeException(e);
+			Log.exception(e);
 		}
 		return output;
 	}
@@ -100,7 +100,7 @@ public class Importer {
 		try {
 			rowIterator.next();
 		} catch (NoSuchElementException ex) {
-			LogWriter.writeException(ex);
+			Log.exception(ex);
 			return output;
 		}
 
