@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,6 +18,7 @@ import queryAgent.QueryAgent;
 import utilities.Log;
 import utilities.Mapper;
 import utilities.Util;
+import utilities.Verifier;
 
 public class DataQuery {
 	
@@ -27,6 +29,7 @@ public class DataQuery {
 	public static final String LOCATION = "purchaseSet.location";
 	public static final String DATE = "purchaseSet.date";
 	
+	private static final List<String> PURCHASE_SET_FIELDS = new ArrayList<String>(Arrays.asList("location", "date"));
 	private static final List<String> FIELD_LIST = new ArrayList<String>(Arrays.asList("description", "quantity", "unit", "cost", "purchaseSet.location", "purchaseSet.date"));
 	private static final Set<String> FULL_FIELD_NAME;
 	
@@ -92,12 +95,17 @@ public class DataQuery {
 		fields.addAll(FIELD_LIST);
 	}
 
-	public boolean addField(String name) {
-		if (FIELD_LIST.contains(name)) {
-			return fields.add(name);
-		} else {
-			return false;
+	public boolean addField(final String name) {
+		boolean okToAdd = validField(name);
+		
+		if (okToAdd) {
+			String toAdd = name;
+			if (PURCHASE_SET_FIELDS.contains(name)) {
+				toAdd = "purchaseSet." + toAdd;
+			}
+			return fields.add(toAdd);
 		}
+		return false;
 	}
 
 	public boolean addField(String... names) {
@@ -108,8 +116,57 @@ public class DataQuery {
 		return output;
 	}
 
+	public static boolean validField(final String name) {
+		return !(new Verifier<String>(){
+			@Override
+			public boolean verifyAction(String item) {
+				String[] parts = item.split("\\.");
+				return !parts[parts.length - 1].equals(name);
+			}
+		}.verify(FIELD_LIST));
+	}
+	
+	public void removeField(int index) {
+		fields.remove(index);
+	}
+	
+	public boolean removeField(String name) {
+		return fields.remove(name);
+	}
+	
 	public void clearFields() {
-		fields.clear();;
+		fields.clear();
+	}
+
+	public boolean setFunction(String fullFunction) {
+		if (StringUtils.countMatches(fullFunction, "(") != 1 ||
+				StringUtils.countMatches(fullFunction, ")") != 1) {
+			return false;
+		} else {
+			String[] splitVar = fullFunction.replace(")", "").split("(");
+			try {
+				String function = splitVar[0];
+				if (!Function.supportedFunction(function)) {
+					return false;
+				}
+				
+				String fieldName = null;
+				if (StringUtils.countMatches(splitVar[1], " ") == 1) {
+					String[] splitOption = splitVar[1].split(" ");
+					fieldName = splitOption[1];
+					String option = splitOption[0];
+					setFunction(function, fieldName, option);
+				} else if (validField(splitVar[1])) {
+					fieldName = splitVar[1];
+					setFunction(function, fieldName);
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public void setFunction(String function, String field) {
@@ -122,6 +179,28 @@ public class DataQuery {
 		fields.add(function.toUpperCase() + "(" + option.toUpperCase() + " p." + field + ")");
 	}
 
+	public static boolean validQueryField(String queryField) {
+		if (StringUtils.countMatches(queryField, "(") == 1 
+				&& StringUtils.countMatches(queryField, ")") == 1) {//Must be a function then
+			String[] splitted = queryField.replace(")", "").split("(");
+			try {
+				String field;
+				if (StringUtils.countMatches(splitted[1], " ") == 1) {//This query has option for the function as well
+					String[] splitOption = splitted[1].split(" ");
+					field = splitOption[1];
+				} else {
+					field = splitted[1];
+				}
+				
+				return Function.supportedFunction(splitted[0]) && validField(field);
+			} catch (Exception e) {
+				return false;
+			}
+		} else {//Just a plain field
+			return validField(queryField);
+		}
+	}
+	
 	public void addConstraint(Criterion newComer) {
 		this.criteria.add(newComer);
 	}
@@ -130,7 +209,7 @@ public class DataQuery {
 		criteria.remove(index);
 	}
 	
-	public void clearConstraints() {
+	public void removeAllConstraints() {
 		criteria.clear();
 	}
 }

@@ -32,7 +32,7 @@ public abstract class Mapper<D, R> {
 	 * @param items array of items in Domain class
 	 * @return array of items in Range class
 	 */
-	public List<R> map(D[] items) {
+	public List<R> map(D... items) {
 		return map(Arrays.asList(items));
 	}
 	

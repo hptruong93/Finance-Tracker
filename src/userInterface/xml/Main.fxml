@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="761.0" prefWidth="1075.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="1091.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.QueryController">
    <children>
       <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -47,25 +47,14 @@
                               <Label prefHeight="673.0" prefWidth="807.0" text="Test" />
                            </children>
                         </StackPane>
-                        <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
+                        <Button fx:id="bQuery" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
                         <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="90.0">
                            <children>
-                              <Button layoutX="16.0" layoutY="14.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="88.0" text="Add Field" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="14.0" />
-                              <Button layoutX="16.0" layoutY="279.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="88.0" text="Add Constraint" />
-                              <ComboBox layoutX="114.0" layoutY="219.0" prefHeight="22.0" prefWidth="102.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="188.0" />
-                              <ComboBox layoutX="16.0" layoutY="219.0" prefHeight="22.0" prefWidth="88.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="57.0" />
-                              <ComboBox layoutX="16.0" layoutY="219.0" prefHeight="22.0" prefWidth="88.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="219.0" />
-                              <ComboBox layoutX="16.0" layoutY="155.0" prefHeight="22.0" prefWidth="88.0" AnchorPane.leftAnchor="16.0" />
-                              <ComboBox layoutX="16.0" layoutY="122.0" prefHeight="22.0" prefWidth="88.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="122.0" />
-                              <ComboBox layoutX="16.0" layoutY="89.0" prefHeight="22.0" prefWidth="88.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="89.0" />
-                              <ComboBox layoutX="16.0" layoutY="188.0" prefHeight="22.0" prefWidth="88.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="188.0" />
-                              <ComboBox layoutX="114.0" layoutY="188.0" prefHeight="22.0" prefWidth="102.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="122.0" />
-                              <ComboBox layoutX="114.0" layoutY="122.0" prefHeight="22.0" prefWidth="102.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="89.0" />
-                              <ComboBox layoutX="114.0" layoutY="219.0" prefHeight="22.0" prefWidth="102.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="219.0" />
-                              <ComboBox layoutX="114.0" layoutY="155.0" prefHeight="22.0" prefWidth="102.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="155.0" />
-                              <ComboBox layoutX="114.0" layoutY="57.0" prefHeight="22.0" prefWidth="102.0" AnchorPane.leftAnchor="114.0" AnchorPane.topAnchor="57.0" />
-                              <CheckBox layoutX="117.0" layoutY="18.0" mnemonicParsing="false" text="Select All Fields" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="18.0" />
-                              <ListView layoutX="16.0" layoutY="328.0" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
+                              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="88.0" text="Add Constraint" />
+                              <CheckBox fx:id="cbSelectAll" layoutX="117.0" layoutY="14.0" mnemonicParsing="false" text="Select All Fields" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="14.0" />
+                              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="328.0" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
+                              <Button fx:id="bAddField" layoutX="16.0" layoutY="11.0" mnemonicParsing="false" onAction="#addField" prefHeight="24.0" prefWidth="88.0" text="Add Field" />
+                              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" prefHeight="240.0" prefWidth="200.0" AnchorPane.bottomAnchor="331.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -77,10 +66,9 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Button layoutX="34.0" layoutY="28.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="122.0" text="Import" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
-                        <Button layoutX="204.0" layoutY="50.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Select file" />
-                        <Label layoutX="325.0" layoutY="49.0" prefHeight="31.0" prefWidth="99.0" text="Label" />
-                        <TextField layoutX="113.0" layoutY="131.0" prefHeight="22.0" prefWidth="158.0" />
-                        <DatePicker layoutX="113.0" layoutY="169.0" />
+                        <Button layoutX="204.0" layoutY="50.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Select file" AnchorPane.leftAnchor="204.0" AnchorPane.topAnchor="50.0" />
+                        <Label layoutX="325.0" layoutY="49.0" prefHeight="31.0" prefWidth="99.0" text="Label" AnchorPane.leftAnchor="325.0" AnchorPane.topAnchor="49.0" />
+                        <TextField layoutX="113.0" layoutY="131.0" prefHeight="22.0" prefWidth="158.0" AnchorPane.leftAnchor="113.0" />
                         <Label layoutX="22.0" layoutY="135.0" prefHeight="14.0" prefWidth="76.0" text="Location" />
                         <Label layoutX="22.0" layoutY="173.0" prefHeight="14.0" prefWidth="76.0" text="Date" />
                         <TextField layoutX="462.0" layoutY="169.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
@@ -209,6 +197,8 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
+                        <TextField layoutX="113.0" layoutY="169.0" prefHeight="22.0" prefWidth="159.0" AnchorPane.leftAnchor="113.0" />
+                        <Label layoutX="204.0" layoutY="20.0" prefHeight="24.0" prefWidth="782.0" text="Status" AnchorPane.leftAnchor="204.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="20.0" />
                      </children>
                   </AnchorPane>
             </content>
