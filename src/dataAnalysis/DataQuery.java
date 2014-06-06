@@ -3,8 +3,10 @@ package dataAnalysis;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +14,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Junction;
 
 import purchases.Purchase;
 import queryAgent.QueryAgent;
@@ -22,36 +25,36 @@ import utilities.Verifier;
 
 public class DataQuery {
 	
-	public static final String DESCRIPTION = "description";
-	public static final String QUANTITY = "quantity";
-	public static final String UNIT = "unit";
-	public static final String COST = "cost";
-	public static final String LOCATION = "purchaseSet.location";
-	public static final String DATE = "purchaseSet.date";
+	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList( 
+			new ArrayList<String>(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL", "GREATER_THAN", "LESS_THAN", 
+					"LIKE", "ILIKE", "IS_EMPTY",	"IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL")));
+	
+	private static final Set<String> SUPPORTED_COUNT_OPTION = Collections.unmodifiableSet( 
+			new HashSet<String>(Arrays.asList("DISTINCT", "ALL")));
+	
+	public static final Set<String> SUPPORTED_FUNCTIONS = Collections.unmodifiableSet( 
+			new HashSet<String>(Arrays.asList("SUM", "AVG", "MIN", "MAX", "COUNT")));
 	
 	private static final List<String> PURCHASE_SET_FIELDS = new ArrayList<String>(Arrays.asList("location", "date"));
-	private static final List<String> FIELD_LIST = new ArrayList<String>(Arrays.asList("description", "quantity", "unit", "cost", "purchaseSet.location", "purchaseSet.date"));
+	public static final List<String> FIELD_LIST = 
+			Collections.unmodifiableList(new ArrayList<String>(Arrays.asList
+					("id", "description", "type", "quantity", "unit", "cost", "purchaseSet.location", "purchaseSet.date")));
 	private static final Set<String> FULL_FIELD_NAME;
 	
 	static {
-		HashSet<String> temp = new HashSet<String>();
-		temp.add("purchase.description");
-		temp.add("purchase.type");
-		temp.add("purchase.quantity");
-		temp.add("purchase.unit");
-		temp.add("purchase.cost");
-		temp.add("purchase.purchaseSet");
-		temp.add("purchase.purchaseSet.location");
-		temp.add("purchase.purchaseSet.date");
-		
+		HashSet<String> temp = new HashSet<String>(Mapper.appender("purchase.", "").map(FIELD_LIST));
 		FULL_FIELD_NAME = Collections.unmodifiableSet(temp);
 	}
 	
-	private List<Criterion> criteria;
+	private int restrictionCount;
+	private Map<Integer, Criterion> criteria;
+	private Map<Integer, Junction> junctions;
 	private List<String> fields;
 
 	public DataQuery() {
-		criteria = new ArrayList<Criterion>();
+		restrictionCount = -1;
+		criteria = new HashMap<Integer, Criterion>();
+		junctions = new HashMap<Integer, Junction>();
 		fields = new ArrayList<String>();
 		fields.addAll(FIELD_LIST);
 	}
@@ -66,8 +69,12 @@ public class DataQuery {
 					cr.createAlias(fullName, splitted[splitted.length - 1]);
 				}
 				
-				for (Criterion c : criteria) {
+				for (Criterion c : criteria.values()) {
 					cr.add(c);
+				}
+				
+				for (Junction j : junctions.values()) {
+					cr.add(j);
 				}
 				
 				List<String> appendedFields = new Mapper<String, String>() {
@@ -143,10 +150,10 @@ public class DataQuery {
 				StringUtils.countMatches(fullFunction, ")") != 1) {
 			return false;
 		} else {
-			String[] splitVar = fullFunction.replace(")", "").split("(");
+			String[] splitVar = fullFunction.replace(")", "").split("\\(");
 			try {
 				String function = splitVar[0];
-				if (!Function.supportedFunction(function)) {
+				if (!SUPPORTED_FUNCTIONS.contains(function)) {
 					return false;
 				}
 				
@@ -155,8 +162,16 @@ public class DataQuery {
 					String[] splitOption = splitVar[1].split(" ");
 					fieldName = splitOption[1];
 					String option = splitOption[0];
-					setFunction(function, fieldName, option);
+					System.out.println("HERE instead");
+					if (SUPPORTED_COUNT_OPTION.contains(option) && function.toUpperCase().equals("COUNT")) {
+						System.out.println("OK");
+						setFunction(function, fieldName, option);
+					} else {
+						return false;
+					}
+					
 				} else if (validField(splitVar[1])) {
+					System.out.println("HERE");
 					fieldName = splitVar[1];
 					setFunction(function, fieldName);
 				} else {
@@ -170,29 +185,33 @@ public class DataQuery {
 	}
 	
 	public void setFunction(String function, String field) {
-		fields.clear();
 		fields.add(function.toUpperCase() + "(p." + field + ")");
 	}
 
 	public void setFunction(String function, String field, String option) {
-		fields.clear();
 		fields.add(function.toUpperCase() + "(" + option.toUpperCase() + " p." + field + ")");
 	}
 
 	public static boolean validQueryField(String queryField) {
+		String field, option, function;
 		if (StringUtils.countMatches(queryField, "(") == 1 
 				&& StringUtils.countMatches(queryField, ")") == 1) {//Must be a function then
-			String[] splitted = queryField.replace(")", "").split("(");
+			String[] splitted = queryField.replace(")", "").split("\\(");
+			function = splitted[0];
 			try {
-				String field;
 				if (StringUtils.countMatches(splitted[1], " ") == 1) {//This query has option for the function as well
 					String[] splitOption = splitted[1].split(" ");
+					option = splitOption[0];
 					field = splitOption[1];
+					
+					if (!SUPPORTED_COUNT_OPTION.contains(option) || !function.toUpperCase().equals("COUNT")) {
+						return false;
+					}
 				} else {
 					field = splitted[1];
 				}
 				
-				return Function.supportedFunction(splitted[0]) && validField(field);
+				return SUPPORTED_FUNCTIONS.contains(function) && validField(field);
 			} catch (Exception e) {
 				return false;
 			}
@@ -201,15 +220,26 @@ public class DataQuery {
 		}
 	}
 	
-	public void addConstraint(Criterion newComer) {
-		this.criteria.add(newComer);
+	public int addCriterion(Criterion newComer) {
+		restrictionCount++;
+		this.criteria.put(restrictionCount, newComer);
+		return restrictionCount;
+	}
+
+	public int addJunction(Junction newComer) {
+		restrictionCount++;
+		this.junctions.put(restrictionCount, newComer);
+		return restrictionCount;
 	}
 
 	public void removeConstraint(int index) {
-		criteria.remove(index);
+		if (criteria.remove(index) == null) {
+			junctions.remove(index);
+		}
 	}
 	
 	public void removeAllConstraints() {
 		criteria.clear();
+		junctions.clear();
 	}
 }

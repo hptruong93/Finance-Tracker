@@ -4,19 +4,19 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="258.0" prefWidth="384.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="258.0" prefWidth="384.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.ConstraintAddController">
    <children>
-      <Label alignment="CENTER" layoutX="33.0" layoutY="237.0" prefHeight="14.0" prefWidth="534.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
-      <Button layoutX="47.0" layoutY="200.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="150.0" text="Add" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="30.0" />
-      <Button layoutX="322.0" layoutY="200.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="150.0" text="Add" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="30.0" />
-      <ComboBox layoutX="150.0" layoutY="77.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0" />
-      <ComboBox layoutX="126.0" layoutY="102.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" />
-      <TextField layoutX="126.0" layoutY="138.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" />
-      <Label layoutX="32.0" layoutY="34.0" prefHeight="14.0" prefWidth="81.0" text="Field" AnchorPane.leftAnchor="32.0" />
+      <Label alignment="CENTER" layoutX="33.0" layoutY="237.0" prefHeight="14.0" prefWidth="534.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+      <Button fx:id="bAdd" layoutX="47.0" layoutY="200.0" mnemonicParsing="false" onAction="#addPressed" prefHeight="31.0" prefWidth="150.0" text="Add" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="30.0" />
+      <Button fx:id="bCancel" layoutX="322.0" layoutY="200.0" mnemonicParsing="false" onAction="#cancelPressed" prefHeight="31.0" prefWidth="150.0" text="Cancel" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="30.0" />
+      <ComboBox fx:id="cbbField" layoutX="150.0" layoutY="77.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0" />
+      <ComboBox fx:id="cbbCondition" layoutX="126.0" layoutY="102.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" />
+      <TextField fx:id="tfValue" layoutX="126.0" layoutY="138.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" />
+      <Label layoutX="32.0" layoutY="34.0" prefHeight="14.0" prefWidth="81.0" text="Field 1" AnchorPane.leftAnchor="32.0" />
       <Label layoutX="30.0" layoutY="106.0" prefHeight="14.0" prefWidth="81.0" text="Condition" AnchorPane.leftAnchor="30.0" />
       <Label layoutX="30.0" layoutY="142.0" prefHeight="14.0" prefWidth="81.0" text="Value" AnchorPane.leftAnchor="30.0" />
-      <Label alignment="CENTER" layoutX="30.0" layoutY="190.0" prefHeight="14.0" prefWidth="325.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
-      <ComboBox layoutX="126.0" layoutY="66.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="66.0" />
-      <Label layoutX="30.0" layoutY="70.0" text="Field2" />
+      <Label fx:id="lStatus" alignment="CENTER" layoutX="30.0" layoutY="223.0" prefHeight="14.0" prefWidth="325.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
+      <ComboBox fx:id="cbbField2" layoutX="126.0" layoutY="66.0" prefHeight="22.0" prefWidth="228.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="66.0" />
+      <Label layoutX="30.0" layoutY="70.0" text="Field 2" />
    </children>
 </AnchorPane>

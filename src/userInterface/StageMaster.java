@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import queryAgent.QueryAgent;
 import userInterface.controller.AddFieldController;
+import userInterface.controller.CompositeConstraintController;
 import userInterface.controller.ConstraintAddController;
 import userInterface.controller.QueryController;
 
@@ -15,9 +16,11 @@ public class StageMaster extends Application {
 	private static Stage primaryStage;
 	private static Stage addField;
 	private static Stage addConstraint;
+	private static Stage compositeConstraint;
 	private static QueryController queryController;
 	private static AddFieldController addFieldController;
 	private static ConstraintAddController constraintAddController;
+	private static CompositeConstraintController compositeConstraintController;
 	
 	public static void main(String[] args) {
 		try {
@@ -31,35 +34,46 @@ public class StageMaster extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		StageMaster.primaryStage = primaryStage;
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/userInterface/xml/Main.fxml"));
-		Parent primaryScene = (Parent)loader.load();
-		Scene mainScene = new Scene(primaryScene);
+		Parent parent = (Parent)loader.load();
+		Scene scene = new Scene(parent);
 		StageMaster.queryController = loader.getController();
 		
-		primaryStage.setScene(mainScene);
+		primaryStage.setScene(scene);
 		primaryStage.setTitle("Finance Tracker");
 		primaryStage.show();
 		
 		/***********************************************************************************/
 		loader = new FXMLLoader(getClass().getResource("/userInterface/xml/FieldAdd.fxml"));
-		Parent addField = (Parent)loader.load();
+		parent = (Parent)loader.load();
 		StageMaster.addFieldController = loader.getController();
 		
-		Scene addFieldScene = new Scene(addField);
+		scene = new Scene(parent);
 		StageMaster.addField = new Stage();
 		StageMaster.addField.setTitle("Add Query Field");
-		StageMaster.addField.setScene(addFieldScene);
+		StageMaster.addField.setScene(scene);
 		StageMaster.addField.setResizable(false);
 		
 		/***********************************************************************************/
 		loader = new FXMLLoader(getClass().getResource("/userInterface/xml/ConstraintAdd.fxml"));
-		Parent addConstraint = (Parent)loader.load();
+		parent = (Parent)loader.load();
 		StageMaster.constraintAddController = loader.getController();
 		
-		Scene addConstraintScene = new Scene(addConstraint);
-		StageMaster.addField = new Stage();
-		StageMaster.addField.setTitle("Add Constraint");
-		StageMaster.addField.setScene(addConstraintScene);
-		StageMaster.addField.setResizable(false);
+		scene = new Scene(parent);
+		StageMaster.addConstraint = new Stage();
+		StageMaster.addConstraint.setTitle("Add Constraint");
+		StageMaster.addConstraint.setScene(scene);
+		StageMaster.addConstraint.setResizable(false);
+		
+		/***********************************************************************************/
+		loader = new FXMLLoader(getClass().getResource("/userInterface/xml/CompositeConstraint.fxml"));
+		parent = (Parent)loader.load();
+		StageMaster.compositeConstraintController = loader.getController();
+		
+		scene = new Scene(parent);
+		StageMaster.compositeConstraint = new Stage();
+		StageMaster.compositeConstraint.setTitle("Add Composite Constraint");
+		StageMaster.compositeConstraint.setScene(scene);
+		StageMaster.compositeConstraint.setResizable(false);
 	}
 	
 	public static Stage primaryStage() {
@@ -74,6 +88,10 @@ public class StageMaster extends Application {
 		return addConstraint;
 	}
 	
+	public static Stage compositeConstraint() {
+		return compositeConstraint;
+	}
+	
 	public static QueryController getQueryController() {
 		return queryController;
 	}
@@ -84,5 +102,9 @@ public class StageMaster extends Application {
 	
 	public static ConstraintAddController getConstraintAddController() {
 		return constraintAddController;
+	}
+	
+	public static CompositeConstraintController getCompositeConstraintController() {
+		return compositeConstraintController;
 	}
 }

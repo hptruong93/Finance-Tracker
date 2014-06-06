@@ -7,8 +7,8 @@
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="184.0" prefWidth="390.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.AddFieldController">
    <children>
-      <ComboBox fx:id="cbbFunction" layoutX="25.0" layoutY="50.0" prefWidth="150.0" AnchorPane.bottomAnchor="112.0" AnchorPane.leftAnchor="25.0" />
-      <ComboBox fx:id="cbbField" layoutX="215.0" layoutY="50.0" prefWidth="150.0" AnchorPane.bottomAnchor="112.0" AnchorPane.rightAnchor="25.0" />
+      <ComboBox fx:id="cbbFunction" layoutX="25.0" layoutY="50.0" onAction="#cbbFunctionChanged" prefWidth="150.0" AnchorPane.bottomAnchor="112.0" AnchorPane.leftAnchor="25.0" />
+      <ComboBox fx:id="cbbField" layoutX="215.0" layoutY="50.0" onAction="#cbbFieldChanged" prefWidth="150.0" AnchorPane.bottomAnchor="112.0" AnchorPane.rightAnchor="25.0" />
       <Label alignment="CENTER" layoutX="25.0" layoutY="20.0" prefHeight="14.0" prefWidth="150.0" text="Function">
          <font>
             <Font size="12.0" />

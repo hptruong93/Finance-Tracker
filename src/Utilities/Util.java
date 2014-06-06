@@ -3,6 +3,7 @@ package utilities;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +105,7 @@ public class Util {
 		String[] joiner = new String[]{"-", "/", "."};
 		String[] date = new String[] {"dd"};
 		String[] month = new String[] {"MM", "MMM", "MMMM"};
-		String[] year = new String[] {"YYYY"};
+		String[] year = new String[] {"yyyy"};
 		
 		ArrayList<String> possibleFormat = new ArrayList<String>();
 		for (String j : joiner) {
@@ -120,7 +121,9 @@ public class Util {
 		
 		for (String format : possibleFormat) {
 			try {
-				java.util.Date tempOut = new SimpleDateFormat(format, Locale.ENGLISH).parse(input);
+				DateFormat parser = new SimpleDateFormat(format, Locale.ENGLISH);
+				parser.setLenient(false);
+				java.util.Date tempOut = parser.parse(input);
 				return new java.sql.Date(tempOut.getTime());
 			} catch (Exception e) {
 			}

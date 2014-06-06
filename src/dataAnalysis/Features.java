@@ -11,7 +11,7 @@ public class Features {
 		try {
 			DataQuery a = new DataQuery();
 			a.clearFields();
-			a.addField(a.DESCRIPTION, a.DATE);
+			a.addField("description", "date");
 //			 a.setFunction("SUM", "cost");
 			// a.addConstraint(Restrictions.eq("location", "provigo"));
 

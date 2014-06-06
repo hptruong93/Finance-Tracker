@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="1091.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.QueryController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="798.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.QueryController">
    <children>
       <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -31,12 +31,11 @@
         <tabs>
           <Tab text="Analysis">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0">
                      <children>
                         <StackPane prefHeight="684.0" prefWidth="816.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="87.0">
                            <children>
-                              <ListView prefHeight="200.0" prefWidth="200.0" />
-                              <LineChart prefHeight="672.0" prefWidth="823.0">
+                              <LineChart fx:id="lcResult" prefHeight="672.0" prefWidth="823.0">
                                 <xAxis>
                                   <CategoryAxis side="BOTTOM" />
                                 </xAxis>
@@ -44,17 +43,24 @@
                                   <NumberAxis side="LEFT" />
                                 </yAxis>
                               </LineChart>
-                              <Label prefHeight="673.0" prefWidth="807.0" text="Test" />
+                              <TableView fx:id="tbResult" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
+                              <Label fx:id="lResult" prefHeight="673.0" prefWidth="807.0" text="Test" />
                            </children>
                         </StackPane>
                         <Button fx:id="bQuery" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
-                        <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="90.0">
+                        <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
                            <children>
-                              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="88.0" text="Add Constraint" />
-                              <CheckBox fx:id="cbSelectAll" layoutX="117.0" layoutY="14.0" mnemonicParsing="false" text="Select All Fields" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="14.0" />
-                              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="328.0" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
-                              <Button fx:id="bAddField" layoutX="16.0" layoutY="11.0" mnemonicParsing="false" onAction="#addField" prefHeight="24.0" prefWidth="88.0" text="Add Field" />
-                              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" prefHeight="240.0" prefWidth="200.0" AnchorPane.bottomAnchor="331.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
+                              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="93.0" text="Add Constraint" />
+                              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="328.0" onKeyReleased="#keyReleasedListViewConstraint" onMouseReleased="#mouseReleasedListViewConstraint" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
+                              <Button fx:id="bAddField" layoutX="16.0" layoutY="11.0" mnemonicParsing="false" onAction="#addField" prefHeight="24.0" prefWidth="93.0" text="Add Field" />
+                              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" onKeyReleased="#keyReleasedListViewField" onMouseReleased="#mouseReleasedListViewField" prefHeight="240.0" prefWidth="200.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
+                              <CheckBox fx:id="cbAddComposite" layoutX="117.0" layoutY="300.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="99.0" text="Add Composite" />
+                              <Button fx:id="bSelectAll" layoutX="125.0" layoutY="11.0" mnemonicParsing="false" onAction="#selectAllPressed" prefHeight="24.0" prefWidth="93.0" text="Select All" />
                            </children>
                         </AnchorPane>
                      </children>
