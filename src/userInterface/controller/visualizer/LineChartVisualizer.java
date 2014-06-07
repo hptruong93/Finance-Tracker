@@ -1,4 +1,4 @@
-package userInterface.controller;
+package userInterface.controller.visualizer;
 
 import javafx.scene.chart.LineChart;
 

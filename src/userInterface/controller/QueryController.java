@@ -18,6 +18,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import userInterface.StageMaster;
+import userInterface.controller.visualizer.LabelVisualizer;
+import userInterface.controller.visualizer.LineChartVisualizer;
+import userInterface.controller.visualizer.TableVisualizer;
 import dataAnalysis.DataQuery;
 
 public class QueryController implements Initializable {
@@ -28,7 +31,7 @@ public class QueryController implements Initializable {
 	@FXML protected Button bAddConstraint;
 	@FXML protected Button bSelectAll;
 	
-	@FXML protected ListView<String> lvFields;
+	@FXML public ListView<String> lvFields;
 	@FXML protected ListView<String> lvConstraints;
 	
 	@FXML protected CheckBox cbAddComposite;
@@ -65,10 +68,13 @@ public class QueryController implements Initializable {
 			dataQuery.setDefaultField();
 		}
 		
+		
 		lcResult.setVisible(false);
-		tbResult.setVisible(false);
-		lResult.toFront();
-		labelVisualizer.visualize(dataQuery.query());
+		tbResult.setVisible(true);
+		lResult.setVisible(false);
+		tbResult.toFront();
+		tableVisualizer.visualize(dataQuery.query());
+//		tableVisualizer.visualize(new ArrayList<String>(Arrays.asList("ASDASDASD")));
 	}
 	
 	/***********************************************************************************/
@@ -134,7 +140,9 @@ public class QueryController implements Initializable {
 	
 	private void deleteField() {
 		int selectedItem = lvFields.getSelectionModel().getSelectedIndex();
-		lvFields.getItems().remove(selectedItem);
+		if (selectedItem != -1) {
+			lvFields.getItems().remove(selectedItem);
+		}
 	}
 	
 	private void deleteConstraint() {

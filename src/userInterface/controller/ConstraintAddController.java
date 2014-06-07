@@ -19,8 +19,8 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 
 import userInterface.StageMaster;
-import utilities.Mapper;
-import utilities.Util;
+import utilities.DateUtility;
+import utilities.functional.Mapper;
 import dataAnalysis.DataQuery;
 
 public class ConstraintAddController implements Initializable {
@@ -121,7 +121,7 @@ public class ConstraintAddController implements Initializable {
 			try {			
 				if (toParse == Date.class) {
 					for (int i = 0; i < values.length; i++) {
-						parsedValue[i] = Util.parseDate(values[i]);
+						parsedValue[i] = DateUtility.parseDate(values[i]);
 					}
 				} else if (toParse == Integer.class) {
 					for (int i = 0; i < values.length; i++) {

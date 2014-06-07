@@ -19,7 +19,7 @@ import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 
 import userInterface.StageMaster;
-import utilities.Mapper;
+import utilities.functional.Mapper;
 
 public class CompositeConstraintController implements Initializable {
 

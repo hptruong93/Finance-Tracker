@@ -10,18 +10,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 
 import purchases.Purchase;
 import queryAgent.QueryAgent;
-import utilities.Log;
-import utilities.Mapper;
-import utilities.Util;
-import utilities.Verifier;
+import utilities.functional.Mapper;
+import utilities.functional.Verifier;
 
 public class DataQuery {
 	
@@ -59,16 +59,48 @@ public class DataQuery {
 		fields.addAll(FIELD_LIST);
 	}
 
+	public static void main(String[] args) {
+//		DataQuery query = new DataQuery();
+//		query.clearFields();
+//		query.addField("cost");
+//		query.addCriterion(Restrictions.eq("cost", new Float(5)));
+		
+		QueryAgent<Object> query = new QueryAgent<Object>() {
+
+			@Override
+			public Object queryActivity(Session session) {
+				Criteria a = session.createCriteria(Purchase.class, "p");
+				a.createAlias("p.purchaseSet", "ps");
+				
+				ProjectionList l = Projections.projectionList();
+				l.add(Projections.sum("cost"));
+//				l.add(Projections.property("ps.location"));
+				a.setProjection(l);
+				
+				return a.list();
+//				return session.createQuery("SELECT cost FROM Purchase").list();
+			}
+			
+		};
+		
+		Object data = query.query();
+		ArrayList<?> temp = (ArrayList<?>) data;
+
+		StringBuilder output = new StringBuilder();
+		
+		for (Object c : temp) {
+			String out = ReflectionToStringBuilder.toString(c);
+			output.append(out);
+		}
+		System.out.println(output);
+		QueryAgent.closeFactory();
+	}
+	
 	public Object query() {
 		QueryAgent<Object> test = new QueryAgent<Object>() {
 			@Override
 			public Object queryActivity(Session session) {
-				Criteria cr = session.createCriteria(Purchase.class, "purchase");
-				for (String fullName : FULL_FIELD_NAME) {
-					String[] splitted = fullName.split("\\.");
-					cr.createAlias(fullName, splitted[splitted.length - 1]);
-				}
-				
+				Criteria cr = session.createCriteria(Purchase.class, "p").createAlias("p.purchaseSet", "purchaseSet");
 				for (Criterion c : criteria.values()) {
 					cr.add(c);
 				}
@@ -77,21 +109,65 @@ public class DataQuery {
 					cr.add(j);
 				}
 				
-				List<String> appendedFields = new Mapper<String, String>() {
-					@Override
-					public String map(String input) {
-						if (input.contains("(")) {
-							return input;
-						} else {
-							return "p." + input;	
+				final ProjectionList p = Projections.projectionList();
+				for (String input : fields) {
+					HashMap<String, String> parsed = parseQueryField(input);
+					String field = parsed.get("field");
+					if (PURCHASE_SET_FIELDS.contains(field)) {
+						field = "purchaseSet." + field;
+					}
+					
+					String option = parsed.get("option");
+					String function = parsed.get("function");
+					
+					if (function == null) {
+						p.add(Projections.property(field));
+					} else {
+						switch (function) {
+						case "SUM":
+							p.add(Projections.sum(field));
+							break;
+						case "COUNT":
+							if (option == null) {
+								p.add(Projections.count(field));
+							} else if (option.equals("DISTINCT")) {
+								p.add(Projections.countDistinct(field));
+							}
+							break;
+						case "AVG":
+							p.add(Projections.avg(field));
+							break;
+						case "MIN":
+							p.add(Projections.min(field));
+							break;
+						case "MAX":
+							p.add(Projections.max(field));
+							break;
+						default:
+							throw new IllegalStateException("Invalid field?? Check insertion in the first place."); 
 						}
 					}
-				}.map(fields);
+				}						
 				
-				String toQuery = "SELECT " + Util.join(appendedFields, ", ") + " FROM Purchase as p LEFT JOIN p.purchaseSet";
-				Log.info(this, toQuery);
-				Query q = session.createQuery(toQuery);
-				return q.list();
+				cr.setProjection(p);
+				
+				return cr.list();
+				
+//				List<String> appendedFields = new Mapper<String, String>() {
+//					@Override
+//					public String map(String input) {
+//						if (input.contains("(")) {
+//							return input;
+//						} else {
+//							return "p." + input;	
+//						}
+//					}
+//				}.map(fields);
+				
+//				String toQuery = "SELECT " + Util.join(appendedFields, ", ") + " FROM Purchase as p LEFT JOIN p.purchaseSet";
+//				Log.info(this, toQuery);
+//				Query q = session.createQuery(toQuery);
+//				return q.list();
 			}
 		};
 		return test.query();
@@ -106,11 +182,7 @@ public class DataQuery {
 		boolean okToAdd = validField(name);
 		
 		if (okToAdd) {
-			String toAdd = name;
-			if (PURCHASE_SET_FIELDS.contains(name)) {
-				toAdd = "purchaseSet." + toAdd;
-			}
-			return fields.add(toAdd);
+			return fields.add(name);
 		}
 		return false;
 	}
@@ -146,78 +218,77 @@ public class DataQuery {
 	}
 
 	public boolean setFunction(String fullFunction) {
-		if (StringUtils.countMatches(fullFunction, "(") != 1 ||
-				StringUtils.countMatches(fullFunction, ")") != 1) {
+		HashMap<String, String> parsed = parseQueryField(fullFunction);
+		if (parsed.get("field") == null || parsed.get("function") == null) {
 			return false;
 		} else {
-			String[] splitVar = fullFunction.replace(")", "").split("\\(");
-			try {
-				String function = splitVar[0];
-				if (!SUPPORTED_FUNCTIONS.contains(function)) {
-					return false;
-				}
-				
-				String fieldName = null;
-				if (StringUtils.countMatches(splitVar[1], " ") == 1) {
-					String[] splitOption = splitVar[1].split(" ");
-					fieldName = splitOption[1];
-					String option = splitOption[0];
-					System.out.println("HERE instead");
-					if (SUPPORTED_COUNT_OPTION.contains(option) && function.toUpperCase().equals("COUNT")) {
-						System.out.println("OK");
-						setFunction(function, fieldName, option);
-					} else {
-						return false;
-					}
-					
-				} else if (validField(splitVar[1])) {
-					System.out.println("HERE");
-					fieldName = splitVar[1];
-					setFunction(function, fieldName);
-				} else {
-					return false;
-				}
-			} catch (Exception e) {
-				return false;
+			if (parsed.get("option") == null) {
+				setFunction(parsed.get("function"), parsed.get("field"));
+			} else {
+				setFunction(parsed.get("function"), parsed.get("field"), parsed.get("option"));
 			}
+			return true;
 		}
-		return true;
 	}
 	
 	public void setFunction(String function, String field) {
-		fields.add(function.toUpperCase() + "(p." + field + ")");
+		fields.add(function.toUpperCase() + "(" + field + ")");
 	}
 
 	public void setFunction(String function, String field, String option) {
-		fields.add(function.toUpperCase() + "(" + option.toUpperCase() + " p." + field + ")");
+		fields.add(function.toUpperCase() + "(" + option.toUpperCase() + field + ")");
 	}
 
 	public static boolean validQueryField(String queryField) {
-		String field, option, function;
-		if (StringUtils.countMatches(queryField, "(") == 1 
-				&& StringUtils.countMatches(queryField, ")") == 1) {//Must be a function then
-			String[] splitted = queryField.replace(")", "").split("\\(");
-			function = splitted[0];
+		HashMap<String, String> parsed = parseQueryField(queryField);
+		return parsed.get("field") != null;
+	}
+	
+	private static HashMap<String, String> parseQueryField(String queryField) {
+		HashMap<String, String> output = new HashMap<String, String>();
+		String field, function, option;
+		
+		int countOpen = StringUtils.countMatches(queryField, "(");
+		int countClose = StringUtils.countMatches(queryField, ")");
+		
+		if (countOpen != 1 || countClose != 1) {
+			if (validField(queryField)) {
+				output.put("field", queryField);
+			} else {
+				return output;
+			}
+		} else {
+			String[] splitVar = queryField.replace(")", "").split("\\(");
 			try {
-				if (StringUtils.countMatches(splitted[1], " ") == 1) {//This query has option for the function as well
-					String[] splitOption = splitted[1].split(" ");
-					option = splitOption[0];
-					field = splitOption[1];
-					
-					if (!SUPPORTED_COUNT_OPTION.contains(option) || !function.toUpperCase().equals("COUNT")) {
-						return false;
-					}
-				} else {
-					field = splitted[1];
+				function = splitVar[0];
+				if (!SUPPORTED_FUNCTIONS.contains(function)) {
+					return output;
 				}
 				
-				return SUPPORTED_FUNCTIONS.contains(function) && validField(field);
+				field = null;
+				if (StringUtils.countMatches(splitVar[1], " ") == 1) {
+					String[] splitOption = splitVar[1].split(" ");
+					field = splitOption[1];
+					option = splitOption[0];
+					if (SUPPORTED_COUNT_OPTION.contains(option) && function.toUpperCase().equals("COUNT")) {
+						output.put("function", function);
+						output.put("field", field);
+						output.put("option", option);
+					} else {
+						return output;
+					}
+				} else if (validField(splitVar[1])) {
+					field = splitVar[1];
+					output.put("function", function);
+					output.put("field", field);
+				} else {
+					return output;
+				}
 			} catch (Exception e) {
-				return false;
+				return output;
 			}
-		} else {//Just a plain field
-			return validField(queryField);
 		}
+		return output;
 	}
 	
 	public int addCriterion(Criterion newComer) {

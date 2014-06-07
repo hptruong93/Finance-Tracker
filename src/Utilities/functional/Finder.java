@@ -1,4 +1,4 @@
-package utilities;
+package utilities.functional;
 
 import java.util.Arrays;
 import java.util.List;

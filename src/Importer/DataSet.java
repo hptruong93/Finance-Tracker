@@ -53,7 +53,7 @@ public class DataSet {
 			}
 			
 			for (DataUnit current : items) {
-				current.setCost(totalCost * proportion(current.getDescription()));
+				current.setCost(totalCost * (current.getCost() / totalSubCost));
 			}
 		} else {
 			throw new IllegalStateException("Set is already finalized!");
@@ -62,7 +62,7 @@ public class DataSet {
 	
 	//Return cost proportion in fraction (in [0,1] interval) of the given item
 	//Return 0 if the item does not exist in the data set
-	public double proportion(String item) {
+	private double proportion(String item) {
 		for (DataUnit current : items) {
 			if (current.getDescription().contains(item)) {
 				return (current.getCost() / totalSubCost);
@@ -70,7 +70,7 @@ public class DataSet {
 		}
 		return 0;
 	}
-	
+
 	protected void addItem(DataUnit item) {
 		if (!concluded) {
 			this.items.add(item);

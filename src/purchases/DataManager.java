@@ -32,6 +32,26 @@ public class DataManager {
 	}
 
 	/**
+	 * Add a purchase into database. The purchase must already belongs to a purchaseSet. Otherwise
+	 * exception will be thrown.
+	 * @param purchase the purchase that will be added
+	 * @return id of the purchase in the database
+	 */
+	public int addPurchase(final Purchase purchase) {
+		if (purchase.getPurchaseSet() == null) {
+			throw new IllegalArgumentException("Purchase must be in purchaseSet to be added.");
+		}
+		
+		QueryAgent<Integer> save = new QueryAgent<Integer>() {
+			@Override
+			public Integer queryActivity(Session session) {
+				return (Integer) session.save(purchase);
+			}
+		};
+		return save.query();
+	}
+	
+	/**
 	 * Update a purchase instance
 	 * 
 	 * @param updated
@@ -114,7 +134,15 @@ public class DataManager {
 		QueryAgent<Integer> save = new QueryAgent<Integer>() {
 			@Override
 			public Integer queryActivity(Session session) {
-				return (Integer) session.save(set);
+				PurchaseSet temp = new PurchaseSet(set.getLocation(), set.getDate(), new HashSet<Purchase>());
+				Integer returning = (Integer) session.save(temp);
+				for (Purchase p : set.getPurchases()) {
+					p.setPurchaseSet(temp);
+					temp.getPurchases().add(p);
+					session.save(p);
+				}
+				
+				return returning;
 			}
 		};
 		return save.query();

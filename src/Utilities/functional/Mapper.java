@@ -1,7 +1,8 @@
-package utilities;
+package utilities.functional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,6 +25,19 @@ public abstract class Mapper<D, R> {
 			output.add(map(s));
 		}
 		
+		return output;
+	}
+	
+	/**
+	 * Map using Iterator of an iterable
+	 * @param items the iterator to retrieve a list of item in Domain class
+	 * @return a list of items in Range class
+	 */
+	public List<R> map(Iterator<D> items) {
+		ArrayList<R> output = new ArrayList<R>();
+		while (items.hasNext()) {
+			output.add(map(items.next()));
+		}
 		return output;
 	}
 	

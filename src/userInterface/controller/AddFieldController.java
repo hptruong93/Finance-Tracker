@@ -11,7 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import userInterface.StageMaster;
-import utilities.Mapper;
+import utilities.functional.Mapper;
 import dataAnalysis.DataQuery;
 
 public class AddFieldController implements Initializable {

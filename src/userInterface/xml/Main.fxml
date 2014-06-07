@@ -49,7 +49,7 @@
                                   <TableColumn prefWidth="75.0" text="C2" />
                                 </columns>
                               </TableView>
-                              <Label fx:id="lResult" prefHeight="673.0" prefWidth="807.0" text="Test" />
+                              <Label fx:id="lResult" alignment="CENTER" prefHeight="673.0" prefWidth="807.0" text="Test" />
                            </children>
                         </StackPane>
                         <Button fx:id="bQuery" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />

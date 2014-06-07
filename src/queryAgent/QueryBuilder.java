@@ -11,8 +11,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 
-import utilities.Mapper;
-import utilities.Util;
+import utilities.StringUtility;
+import utilities.functional.Mapper;
 
 /**
  * Helper function to build HQL queries
@@ -49,7 +49,7 @@ public class QueryBuilder {
 				return "(" + input + ")";
 			}
 		};
-		return Util.join(mapper.map(condition), " " + joiner + " ");
+		return StringUtility.join(mapper.map(condition), " " + joiner + " ");
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class QueryBuilder {
 	public String build(String tableName, Collection<String> fields, String condition) {
 		String query;
 		if (fields.size() > 0) {
-			query = "SELECT " + Util.join(fields, ", ") + " FROM " + tableName;
+			query = "SELECT " + StringUtility.join(fields, ", ") + " FROM " + tableName;
 		} else {
 			query = "FROM " + tableName;
 		}

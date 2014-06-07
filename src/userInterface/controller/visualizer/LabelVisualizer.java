@@ -1,10 +1,9 @@
-package userInterface.controller;
+package userInterface.controller.visualizer;
 
 import java.util.ArrayList;
 
 import javafx.scene.control.Label;
-
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import utilities.RecursivePrinter;
 
 public class LabelVisualizer implements IDataVisualizer {
 
@@ -17,13 +16,6 @@ public class LabelVisualizer implements IDataVisualizer {
 	@Override
 	public void visualize(Object data) {
 		ArrayList<?> temp = (ArrayList<?>) data;
-
-		StringBuilder output = new StringBuilder();
-		
-		for (Object c : temp) {
-			String out = ReflectionToStringBuilder.toString(c);
-			output.append(out);
-		}
-		tool.setText(output.toString());
+		tool.setText(new RecursivePrinter(true).print(temp));
 	}
 }

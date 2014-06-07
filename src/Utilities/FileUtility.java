@@ -106,4 +106,33 @@ public class FileUtility {
 			return null;
 		}
 	}
+
+	/**
+	 * IO combining two paths
+	 * @param path1 first path
+	 * @param path2 second path
+	 * @return a path created by joining first path and second path
+	 */
+	public static String joinPath(String path1, String path2) {
+		File file1 = new File(path1);
+		File file2 = new File(file1, path2);
+		return file2.getPath();
+	}
+
+	/**
+	 * IO combining paths
+	 * @param paths array of paths
+	 * @return a path created by joining all the paths
+	 */
+	public static String joinPath(String... paths) {
+		if (paths.length == 0) {
+			return "";
+		} else {
+			String output = paths[0];
+			for (int i = 1; i < paths.length; i++) {
+				output = joinPath(output, paths[i]);
+			}
+			return output;
+		}
+	}
 }

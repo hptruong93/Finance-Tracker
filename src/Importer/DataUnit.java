@@ -12,7 +12,7 @@ class DataUnit {
 	private static final HashSet<String> NA_REP = new HashSet<String>(Arrays.asList("N/A", "NA", "Not Applicable"));
 	private final Date date;
 	private final String description;
-	private final int type;
+	private final String type;
 	private final double quantity;
 	private final String unit;
 	private double cost;
@@ -20,15 +20,11 @@ class DataUnit {
 	protected DataUnit(Date date, String description, String type, String quantity, double cost) {
 		this.date = date;
 		this.description = description;
-		this.type = parseType(type);
+		this.type = type;
 		ArrayList<Object> parseQuantity = parseQuantity(quantity);
 		this.quantity = (Double) parseQuantity.get(0);
 		this.unit = (String) parseQuantity.get(1);
 		this.cost = cost;
-	}
-
-	private static int parseType(String type) {
-		return 1;
 	}
 
 	// Parse a string and split the quanity and unit out. Return quantity in
@@ -75,7 +71,7 @@ class DataUnit {
 		return description;
 	}
 
-	public int getType() {
+	public String getType() {
 		return type;
 	}
 

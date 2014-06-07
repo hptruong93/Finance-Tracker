@@ -5,7 +5,7 @@ public class Purchase {
 	private int id;
 	private String description;
 	private String type;
-	private int quantity;
+	private float quantity;
 	private String unit;
 	private float cost;
 	private PurchaseSet purchaseSet;
@@ -13,7 +13,7 @@ public class Purchase {
 	public Purchase() {
 	}
 	
-	public Purchase(String description, String type, int quantity, String unit, float cost) {
+	public Purchase(String description, String type, float quantity, String unit, float cost) {
 		this.description = description;
 		this.type = type;
 		this.quantity = quantity;
@@ -53,7 +53,7 @@ public class Purchase {
 		this.type = type;
 	}
 
-	public int getQuantity() {
+	public float getQuantity() {
 		return this.quantity;
 	}
 

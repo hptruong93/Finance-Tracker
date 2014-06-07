@@ -26,7 +26,15 @@ public class Log {
 	private static final SimpleDateFormat DEFAULT_TIME = new SimpleDateFormat("HH:mm:ss");
 	private static final SimpleDateFormat DEFAULT_DATE = new SimpleDateFormat("dd/MM/yyyy",
 			Locale.ENGLISH);
-	private static final File LOG_FILE = new File("ThePuckGame.log");
+	private static final File LOG_FILE;
+
+	static {
+		if (MODE == FILE) {
+			 LOG_FILE = new File("ThePuckGame.log")
+		} else {
+			LOG_FILE = null;
+		}
+	}
 
 	/**
 	 * Private constructor to prevent creation

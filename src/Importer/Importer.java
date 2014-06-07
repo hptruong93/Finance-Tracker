@@ -39,13 +39,8 @@ public class Importer {
 		this.purchases = readFile(filePath);
 		if (this.purchases == null) {
 			Log.exception(new NullPointerException());
-			System.exit(0);
+			System.exit(1);
 		}
-
-//		System.out.println(this.purchases.size());
-//		for (DataSet set : this.purchases) {
-//			 System.out.println("Having " + set.size());
-//		}
 	}
 
 	public Iterator<DataSet> getIterator() {
@@ -63,6 +58,7 @@ public class Importer {
 
 			// Process all sheets
 			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+//				System.out.println("Start on sheet number " + i);
 				output.addAll(readSheet(workbook.getSheetAt(i)));
 			}
 
@@ -111,7 +107,7 @@ public class Importer {
 		DataSet currentDataSet = null;
 
 		while (rowIterator.hasNext()) {
-			// System.out.println("We are at line " + rowCount);
+			//System.out.println("We are at line " + rowCount);
 			Row row = rowIterator.next();
 
 			if (mergedRegion.containsKey(rowCount)) {// Start merge
@@ -193,6 +189,7 @@ public class Importer {
 						return output;
 					}
 				}
+				
 				cellCount++;
 			}
 

@@ -10,14 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 import utilities.FileUtility;
-import utilities.Util;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonRootNode;
 import argo.jdom.JsonStringNode;
 
 public class Type {
-	private static final String CONFIG_FILE_PURCHASE = Util.joinPath("data", "purchase_types.json");
-	private static final String CONFIG_FILE_UNIT = Util.joinPath("data", "unit_types.json");
+	private static final String CONFIG_FILE_PURCHASE = FileUtility.joinPath("data", "purchase_types.json");
+	private static final String CONFIG_FILE_UNIT = FileUtility.joinPath("data", "unit_types.json");
 	public static final Type PURCHASE_TYPES_TREE;
 	public static final Type UNIT_TYPES_TREE;
 	public static final List<String> PURCHASE_TYPES;
