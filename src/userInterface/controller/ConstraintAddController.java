@@ -75,7 +75,6 @@ public class ConstraintAddController implements Initializable {
 		StageMaster.getQueryController().cbAddComposite.setDisable(false);
 		StageMaster.addConstraint().hide();
 		StageMaster.primaryStage().show();
-		StageMaster.primaryStage().toBack();
 	}
 
 	private static class ConstraintParser {
@@ -138,6 +137,10 @@ public class ConstraintAddController implements Initializable {
 				}
 			} catch (Exception e) {
 				parsedValue = null;
+			}
+			
+			if (DataQuery.PURCHASE_SET_FIELDS.contains(field)) {
+				field = "purchaseSet." + field;
 			}
 			
 			try {

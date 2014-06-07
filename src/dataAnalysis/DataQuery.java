@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -20,10 +19,11 @@ import org.hibernate.criterion.Projections;
 
 import purchases.Purchase;
 import queryAgent.QueryAgent;
-import utilities.functional.Mapper;
 import utilities.functional.Verifier;
 
 public class DataQuery {
+
+	public static final String PURCHASE_SET_TABLE = "purchaseSet";
 	
 	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList( 
 			new ArrayList<String>(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL", "GREATER_THAN", "LESS_THAN", 
@@ -35,18 +35,18 @@ public class DataQuery {
 	public static final Set<String> SUPPORTED_FUNCTIONS = Collections.unmodifiableSet( 
 			new HashSet<String>(Arrays.asList("SUM", "AVG", "MIN", "MAX", "COUNT")));
 	
-	private static final List<String> PURCHASE_SET_FIELDS = new ArrayList<String>(Arrays.asList("location", "date"));
+	public static final List<String> PURCHASE_SET_FIELDS = Collections.unmodifiableList(
+			new ArrayList<String>(Arrays.asList("location", "date")));
+	
 	public static final List<String> FIELD_LIST = 
 			Collections.unmodifiableList(new ArrayList<String>(Arrays.asList
-					("id", "description", "type", "quantity", "unit", "cost", "purchaseSet.location", "purchaseSet.date")));
-	private static final Set<String> FULL_FIELD_NAME;
+					("id", "description", "type", "quantity", "unit", "cost", 
+							PURCHASE_SET_TABLE + ".location", PURCHASE_SET_TABLE + ".date")));
 	
-	static {
-		HashSet<String> temp = new HashSet<String>(Mapper.appender("purchase.", "").map(FIELD_LIST));
-		FULL_FIELD_NAME = Collections.unmodifiableSet(temp);
-	}
+	private static final int DEFAULT_MAX_COUNT = 100;
 	
 	private int restrictionCount;
+	private int maxResult = DEFAULT_MAX_COUNT;
 	private Map<Integer, Criterion> criteria;
 	private Map<Integer, Junction> junctions;
 	private List<String> fields;
@@ -59,56 +59,19 @@ public class DataQuery {
 		fields.addAll(FIELD_LIST);
 	}
 
-	public static void main(String[] args) {
-//		DataQuery query = new DataQuery();
-//		query.clearFields();
-//		query.addField("cost");
-//		query.addCriterion(Restrictions.eq("cost", new Float(5)));
-		
-		QueryAgent<Object> query = new QueryAgent<Object>() {
-
-			@Override
-			public Object queryActivity(Session session) {
-				Criteria a = session.createCriteria(Purchase.class, "p");
-				a.createAlias("p.purchaseSet", "ps");
-				
-				ProjectionList l = Projections.projectionList();
-				l.add(Projections.sum("cost"));
-//				l.add(Projections.property("ps.location"));
-				a.setProjection(l);
-				
-				return a.list();
-//				return session.createQuery("SELECT cost FROM Purchase").list();
-			}
-			
-		};
-		
-		Object data = query.query();
-		ArrayList<?> temp = (ArrayList<?>) data;
-
-		StringBuilder output = new StringBuilder();
-		
-		for (Object c : temp) {
-			String out = ReflectionToStringBuilder.toString(c);
-			output.append(out);
-		}
-		System.out.println(output);
-		QueryAgent.closeFactory();
-	}
-	
 	public Object query() {
-		QueryAgent<Object> test = new QueryAgent<Object>() {
+		QueryAgent<Object> query = new QueryAgent<Object>() {
 			@Override
 			public Object queryActivity(Session session) {
 				Criteria cr = session.createCriteria(Purchase.class, "p").createAlias("p.purchaseSet", "purchaseSet");
 				for (Criterion c : criteria.values()) {
 					cr.add(c);
 				}
-				
+
 				for (Junction j : junctions.values()) {
 					cr.add(j);
 				}
-				
+
 				final ProjectionList p = Projections.projectionList();
 				for (String input : fields) {
 					HashMap<String, String> parsed = parseQueryField(input);
@@ -116,10 +79,10 @@ public class DataQuery {
 					if (PURCHASE_SET_FIELDS.contains(field)) {
 						field = "purchaseSet." + field;
 					}
-					
+
 					String option = parsed.get("option");
 					String function = parsed.get("function");
-					
+
 					if (function == null) {
 						p.add(Projections.property(field));
 					} else {
@@ -148,29 +111,14 @@ public class DataQuery {
 						}
 					}
 				}						
-				
+
 				cr.setProjection(p);
-				
+				cr.setMaxResults(maxResult);
 				return cr.list();
-				
-//				List<String> appendedFields = new Mapper<String, String>() {
-//					@Override
-//					public String map(String input) {
-//						if (input.contains("(")) {
-//							return input;
-//						} else {
-//							return "p." + input;	
-//						}
-//					}
-//				}.map(fields);
-				
-//				String toQuery = "SELECT " + Util.join(appendedFields, ", ") + " FROM Purchase as p LEFT JOIN p.purchaseSet";
-//				Log.info(this, toQuery);
-//				Query q = session.createQuery(toQuery);
-//				return q.list();
+
 			}
 		};
-		return test.query();
+		return query.query();
 	}
 
 	public void setDefaultField() {
@@ -312,5 +260,13 @@ public class DataQuery {
 	public void removeAllConstraints() {
 		criteria.clear();
 		junctions.clear();
+	}
+	
+	public int getMaxResult() {
+		return maxResult;
+	}
+	
+	public void setMaxResult(int maxResult) {
+		this.maxResult = maxResult;
 	}
 }

@@ -63,6 +63,9 @@
                               <Button fx:id="bSelectAll" layoutX="125.0" layoutY="11.0" mnemonicParsing="false" onAction="#selectAllPressed" prefHeight="24.0" prefWidth="93.0" text="Select All" />
                            </children>
                         </AnchorPane>
+                        <TextField fx:id="tfMaxResult" layoutX="147.0" layoutY="59.0" prefHeight="22.0" prefWidth="72.0" promptText="100" AnchorPane.leftAnchor="147.0" AnchorPane.topAnchor="59.0" />
+                        <Label layoutX="147.0" layoutY="40.0" text="Maximum result" />
+                        <Label fx:id="lStatus" alignment="CENTER" layoutX="260.0" layoutY="40.0" prefHeight="14.0" prefWidth="740.0" />
                      </children>
                   </AnchorPane>
             </content>

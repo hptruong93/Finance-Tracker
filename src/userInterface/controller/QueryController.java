@@ -13,6 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -34,8 +35,11 @@ public class QueryController implements Initializable {
 	@FXML public ListView<String> lvFields;
 	@FXML protected ListView<String> lvConstraints;
 	
+	@FXML protected TextField tfMaxResult;
+	@FXML protected Label lStatus;
+	
 	@FXML protected CheckBox cbAddComposite;
-	@FXML protected TableView tbResult;
+	@FXML protected TableView<String> tbResult;
 	@FXML protected Label lResult;
 	@FXML protected LineChart lcResult;
 	
@@ -57,6 +61,19 @@ public class QueryController implements Initializable {
 
 	@FXML
 	private void query(ActionEvent e) {
+		int maxResult = -1;
+		try {
+			maxResult = Integer.parseInt(tfMaxResult.getText());
+			if (maxResult < 1) {
+				lStatus.setText("Invalid number of max result. Must be greater than 0...");
+				tfMaxResult.requestFocus();	
+			}
+		} catch (NumberFormatException ex) {
+			lStatus.setText("Invalid number of max result...");
+			tfMaxResult.requestFocus();
+		}
+		
+		dataQuery.setMaxResult(maxResult);
 		dataQuery.clearFields();
 		if (!lvFields.getItems().isEmpty()) {
 			for (String queryField : lvFields.getItems()) {
@@ -74,7 +91,6 @@ public class QueryController implements Initializable {
 		lResult.setVisible(false);
 		tbResult.toFront();
 		tableVisualizer.visualize(dataQuery.query());
-//		tableVisualizer.visualize(new ArrayList<String>(Arrays.asList("ASDASDASD")));
 	}
 	
 	/***********************************************************************************/

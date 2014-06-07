@@ -30,7 +30,7 @@ public class Log {
 
 	static {
 		if (MODE == FILE) {
-			 LOG_FILE = new File("ThePuckGame.log")
+			 LOG_FILE = new File("Finance Tracker.log");
 		} else {
 			LOG_FILE = null;
 		}
