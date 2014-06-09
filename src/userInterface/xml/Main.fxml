@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="798.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.QueryController">
+<fx:root type="javafx.scene.layout.AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="798.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.PrimaryController">
    <children>
       <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -31,188 +31,15 @@
         <tabs>
           <Tab text="Analysis">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0">
-                     <children>
-                        <StackPane prefHeight="684.0" prefWidth="816.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="87.0">
-                           <children>
-                              <LineChart fx:id="lcResult" prefHeight="672.0" prefWidth="823.0">
-                                <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis side="LEFT" />
-                                </yAxis>
-                              </LineChart>
-                              <TableView fx:id="tbResult" prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn prefWidth="75.0" text="C1" />
-                                  <TableColumn prefWidth="75.0" text="C2" />
-                                </columns>
-                              </TableView>
-                              <Label fx:id="lResult" alignment="CENTER" prefHeight="673.0" prefWidth="807.0" text="Test" />
-                           </children>
-                        </StackPane>
-                        <Button fx:id="bQuery" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
-                        <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
-                           <children>
-                              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="93.0" text="Add Constraint" />
-                              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="328.0" onKeyReleased="#keyReleasedListViewConstraint" onMouseReleased="#mouseReleasedListViewConstraint" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
-                              <Button fx:id="bAddField" layoutX="16.0" layoutY="11.0" mnemonicParsing="false" onAction="#addField" prefHeight="24.0" prefWidth="93.0" text="Add Field" />
-                              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" onKeyReleased="#keyReleasedListViewField" onMouseReleased="#mouseReleasedListViewField" prefHeight="240.0" prefWidth="200.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
-                              <CheckBox fx:id="cbAddComposite" layoutX="117.0" layoutY="300.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="99.0" text="Add Composite" />
-                              <Button fx:id="bSelectAll" layoutX="125.0" layoutY="11.0" mnemonicParsing="false" onAction="#selectAllPressed" prefHeight="24.0" prefWidth="93.0" text="Select All" />
-                           </children>
-                        </AnchorPane>
-                        <TextField fx:id="tfMaxResult" layoutX="147.0" layoutY="59.0" prefHeight="22.0" prefWidth="72.0" promptText="100" AnchorPane.leftAnchor="147.0" AnchorPane.topAnchor="59.0" />
-                        <Label layoutX="147.0" layoutY="40.0" text="Maximum result" />
-                        <Label fx:id="lStatus" alignment="CENTER" layoutX="260.0" layoutY="40.0" prefHeight="14.0" prefWidth="740.0" />
-                     </children>
-                  </AnchorPane>
+              <fx:include fx:id="query" source="Query.fxml"/>
             </content>
           </Tab>
           <Tab text="Import">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Button layoutX="34.0" layoutY="28.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="122.0" text="Import" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
-                        <Button layoutX="204.0" layoutY="50.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Select file" AnchorPane.leftAnchor="204.0" AnchorPane.topAnchor="50.0" />
-                        <Label layoutX="325.0" layoutY="49.0" prefHeight="31.0" prefWidth="99.0" text="Label" AnchorPane.leftAnchor="325.0" AnchorPane.topAnchor="49.0" />
-                        <TextField layoutX="113.0" layoutY="131.0" prefHeight="22.0" prefWidth="158.0" AnchorPane.leftAnchor="113.0" />
-                        <Label layoutX="22.0" layoutY="135.0" prefHeight="14.0" prefWidth="76.0" text="Location" />
-                        <Label layoutX="22.0" layoutY="173.0" prefHeight="14.0" prefWidth="76.0" text="Date" />
-                        <TextField layoutX="462.0" layoutY="169.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="795.0" layoutY="169.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <ComboBox layoutX="659.0" layoutY="169.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="883.0" layoutY="169.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <TextField layoutX="874.0" layoutY="169.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <Label layoutX="325.0" layoutY="173.0" text="Item 1">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="204.0" text="Item 2">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="235.0" text="Item 3">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="266.0" text="Item 4">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="296.0" text="Item 5">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <TextField layoutX="462.0" layoutY="199.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="230.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="261.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="291.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="322.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <Label layoutX="325.0" layoutY="327.0" text="Item 6">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="452.0" text="Item 10">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="421.0" text="Item 9">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="391.0" text="Item 8">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="325.0" layoutY="360.0" text="Item 7">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Label>
-                        <TextField layoutX="462.0" layoutY="447.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="416.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="386.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="462.0" layoutY="355.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
-                        <TextField layoutX="874.0" layoutY="200.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="976.0" layoutY="200.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <ComboBox layoutX="659.0" layoutY="200.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="795.0" layoutY="200.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <TextField layoutX="795.0" layoutY="262.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <ComboBox layoutX="659.0" layoutY="262.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="976.0" layoutY="262.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <TextField layoutX="874.0" layoutY="262.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="874.0" layoutY="231.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="976.0" layoutY="231.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <ComboBox layoutX="659.0" layoutY="231.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="795.0" layoutY="231.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <TextField layoutX="795.0" layoutY="356.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <ComboBox layoutX="659.0" layoutY="356.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="976.0" layoutY="356.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <TextField layoutX="874.0" layoutY="356.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="874.0" layoutY="387.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="976.0" layoutY="387.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <ComboBox layoutX="659.0" layoutY="387.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="795.0" layoutY="387.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <TextField layoutX="795.0" layoutY="323.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <ComboBox layoutX="659.0" layoutY="323.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="976.0" layoutY="323.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <TextField layoutX="874.0" layoutY="323.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="874.0" layoutY="292.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="976.0" layoutY="292.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <ComboBox layoutX="659.0" layoutY="292.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="795.0" layoutY="292.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <TextField layoutX="795.0" layoutY="448.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <ComboBox layoutX="659.0" layoutY="448.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="976.0" layoutY="448.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <TextField layoutX="874.0" layoutY="448.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="874.0" layoutY="417.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
-                        <TextField layoutX="976.0" layoutY="417.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
-                        <ComboBox layoutX="659.0" layoutY="417.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
-                        <TextField layoutX="795.0" layoutY="417.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
-                        <Button layoutX="317.0" layoutY="131.0" mnemonicParsing="false" text="Add new item" AnchorPane.leftAnchor="317.0" />
-                        <Label alignment="CENTER" layoutX="462.0" layoutY="135.0" prefHeight="14.0" prefWidth="180.0" text="Description" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <Label alignment="CENTER" layoutX="659.0" layoutY="135.0" prefHeight="14.0" prefWidth="120.0" text="Type" AnchorPane.rightAnchor="296.0">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <Label alignment="CENTER" layoutX="793.0" layoutY="135.0" prefHeight="14.0" prefWidth="59.0" text="Quantity" AnchorPane.rightAnchor="223.0">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <Label alignment="CENTER" layoutX="874.0" layoutY="135.0" prefHeight="14.0" prefWidth="82.0" text="Unit" AnchorPane.rightAnchor="119.0">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <Label alignment="CENTER" layoutX="976.0" layoutY="135.0" prefHeight="14.0" prefWidth="70.0" text="Cost" AnchorPane.rightAnchor="29.0">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField layoutX="113.0" layoutY="169.0" prefHeight="22.0" prefWidth="159.0" AnchorPane.leftAnchor="113.0" />
-                        <Label layoutX="204.0" layoutY="20.0" prefHeight="24.0" prefWidth="782.0" text="Status" AnchorPane.leftAnchor="204.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="20.0" />
-                     </children>
-                  </AnchorPane>
+              <fx:include fx:id="importPage" source="Import.fxml"/>
             </content>
           </Tab>
         </tabs>
       </TabPane>
    </children>
-</AnchorPane>
+</fx:root>

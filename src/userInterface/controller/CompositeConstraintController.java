@@ -13,13 +13,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Restrictions;
-
+import queryAgent.RestrictionFragment;
 import userInterface.StageMaster;
-import utilities.functional.Mapper;
 
 public class CompositeConstraintController implements Initializable {
 
@@ -30,18 +25,17 @@ public class CompositeConstraintController implements Initializable {
 	@FXML protected ComboBox<String> cbbJoiner;
 	@FXML protected Label lStatus;
 	@FXML protected CheckBox cbNot;
-	private List<Criterion> criteria;
+	private List<RestrictionFragment> criteria;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		cbbJoiner.getItems().addAll("AND", "OR");
-		criteria = new ArrayList<Criterion>();
+		criteria = new ArrayList<RestrictionFragment>();
 	}
 
 	@FXML
 	private void bAddPressed(ActionEvent e) {
 		lStatus.setText("");
-		Junction junction = null;
 		String joining = cbbJoiner.getValue();
 		if (cbNot.isSelected()) {
 			if (joining.equals("AND")) {
@@ -53,29 +47,31 @@ public class CompositeConstraintController implements Initializable {
 				return;
 			}
 			
-			criteria = (new Mapper<Criterion, Criterion>() {
-				@Override
-				public Criterion map(Criterion input) {
-					return Restrictions.not(input);
-				}
-			}).map(criteria);
+			for (RestrictionFragment rf : criteria) {
+				rf.not();
+			}
 		}
 		
+		String joiner;
 		if (joining.equals("AND")) {
-			junction = Restrictions.conjunction();
+			joiner = "AND";
 		} else if (joining.equals("OR")) {
-			junction = Restrictions.disjunction();
+			joiner = "OR";
 		} else {
 			lStatus.setText("Invalid joiner...");
 			return;
 		}
 		
-		for (Criterion cr : criteria) {
-			junction.add(cr);
+		RestrictionFragment resultConstraint;
+		if (!criteria.isEmpty()) {
+			resultConstraint = criteria.get(0);
+			for (int i = 0; i < criteria.size(); i++) {
+				resultConstraint.join(criteria.get(i), joiner);
+			}
+			DataController.getInstance().queryManager.addConstraint(resultConstraint);
+			StageMaster.getQueryController().lvConstraints.getItems().add(resultConstraint.toString());
 		}
 		
-		MainController.getInstance().dataQuery.addJunction(junction);
-		StageMaster.getQueryController().lvConstraints.getItems().add(junction.toString());
 		clearData();
 		StageMaster.getQueryController().cbAddComposite.setDisable(false);
 		StageMaster.compositeConstraint().hide();
@@ -96,13 +92,14 @@ public class CompositeConstraintController implements Initializable {
 		StageMaster.addConstraint().show();
 		StageMaster.addConstraint().toFront();
 	}
-	
-	protected void addConstraint(Criterion c) {
-		criteria.add(c);
-		lvConstraints.getItems().add(c.toString());
+	 
+	protected void addConstraint(RestrictionFragment rf) {
+		this.criteria.add(rf);
+		lvConstraints.getItems().add(rf.toString());
 	}
 	
 	private void clearData() {
+		StageMaster.getConstraintAddController().cbbOption.setDisable(false);
 		lStatus.setText("");
 		lvConstraints.getItems().clear();
 		criteria.clear();

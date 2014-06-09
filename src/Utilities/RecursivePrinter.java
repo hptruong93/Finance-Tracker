@@ -1,14 +1,21 @@
 package utilities;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Map;
 
 public class RecursivePrinter {
 	
-	private boolean ignoreType; 
+	private boolean ignoreType;
+	private DateFormat dateFormat;
+	private static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+	public static final RecursivePrinter DEFAULT_PRINTER = new RecursivePrinter(true);
 	
 	public RecursivePrinter(boolean ignoreType) {
 		this.ignoreType = ignoreType;
+		dateFormat = DEFAULT_DATE_FORMAT;
 	}
 	
 	public String print(Object o) {
@@ -51,8 +58,14 @@ public class RecursivePrinter {
 				builder.append(", ");
 			}
 			builder.append("] ");
+		} else if (o instanceof Date) {
+			builder.append(dateFormat.format((Date)o));
 		} else {
 			builder.append(o.toString());
 		}
+	}
+	
+	public void setDateFormat(DateFormat dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 }

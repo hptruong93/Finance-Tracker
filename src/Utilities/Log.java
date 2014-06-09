@@ -76,10 +76,12 @@ public class Log {
 	 *            content that will be written
 	 */
 	public static void writeLog(String content) {
-		try {
-			LOG_FILE.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (MODE == FILE) {
+			try {
+				LOG_FILE.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		Calendar now = Calendar.getInstance();

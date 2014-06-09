@@ -1,6 +1,6 @@
 package userInterface.controller.visualizer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.control.Label;
 import utilities.RecursivePrinter;
@@ -15,7 +15,7 @@ public class LabelVisualizer implements IDataVisualizer {
 	
 	@Override
 	public void visualize(Object data) {
-		ArrayList<?> temp = (ArrayList<?>) data;
+		List<?> temp = (List<?>) data;
 		tool.setText(new RecursivePrinter(true).print(temp));
 	}
 }

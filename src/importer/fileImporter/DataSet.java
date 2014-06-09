@@ -1,4 +1,4 @@
-package Importer;
+package importer.fileImporter;
 
 import java.util.HashSet;
 import java.util.Iterator;

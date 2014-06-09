@@ -35,7 +35,7 @@ public class Type {
 		UNIT_TYPES = Collections.unmodifiableList(UNIT_TYPES_TREE.getBottomTypes());
 	}
 	
-	public Type(String name, Set<Type> subtypes) {
+	private Type(String name, Set<Type> subtypes) {
 		this.name = name;
 		this.subtypes = subtypes;
 	}

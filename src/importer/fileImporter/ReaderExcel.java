@@ -1,4 +1,4 @@
-package Importer;
+package importer.fileImporter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

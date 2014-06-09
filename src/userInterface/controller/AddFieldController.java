@@ -10,9 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import queryAgent.QueryBuilder;
 import userInterface.StageMaster;
 import utilities.functional.Mapper;
-import dataAnalysis.DataQuery;
 
 public class AddFieldController implements Initializable {
 	@FXML protected Button bAdd;
@@ -33,18 +33,18 @@ public class AddFieldController implements Initializable {
 				String[] split = input.split("\\.");
 				return split[split.length - 1];
 			}
-		}).map(DataQuery.FIELD_LIST));
+		}).map(QueryBuilder.FIELD_LIST));
 		cbbField.getSelectionModel().select(0);
 		
 		cbbFunction.getItems().add("");
-		cbbFunction.getItems().addAll(DataQuery.SUPPORTED_FUNCTIONS);
+		cbbFunction.getItems().addAll(QueryBuilder.SUPPORTED_FUNCTIONS);
 		cbbFunction.getSelectionModel().select(0);
 	}
 	
 	@FXML
 	public void addPressed(ActionEvent e) {
 		String toAdd = StageMaster.getAddFieldController().tfField.getText();
-		if (DataQuery.validQueryField(toAdd)) {
+		if (QueryBuilder.validSelect(toAdd)) {
 			StageMaster.getQueryController().lvFields.getItems().add(toAdd);
 			lStatus.setText("");
 		} else {

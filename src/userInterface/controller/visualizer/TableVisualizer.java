@@ -1,6 +1,5 @@
 package userInterface.controller.visualizer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -30,12 +29,12 @@ public class TableVisualizer implements IDataVisualizer {
 	public void visualize(Object data) {
 		tool.getColumns().clear();
 		tool.getItems().clear();
-		final ArrayList<?> rowList = (ArrayList<?>) data;
+		final List<?> rowList = (List<?>) data;
 		int column = 1;
 
 		//If query has no result
-		if (rowList.size() == 0) {
-			column = 0;
+		if (rowList == null || rowList.size() == 0) {
+			return;
 		}
 
 		//First row always exists unless there is no result, which is caught above

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0" type="javafx.scene.layout.AnchorPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.ImportController">
+   <children>
+      <Button fx:id="bImport" layoutX="34.0" layoutY="28.0" mnemonicParsing="false" onAction="#importPressed" prefHeight="38.0" prefWidth="122.0" text="Import" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
+      <Button fx:id="bSelectFile" layoutX="204.0" layoutY="50.0" mnemonicParsing="false" onAction="#selectFile" prefHeight="31.0" prefWidth="85.0" text="Select file" AnchorPane.leftAnchor="204.0" AnchorPane.topAnchor="50.0" />
+      <Label fx:id="lFile" alignment="CENTER" layoutX="325.0" layoutY="49.0" prefHeight="31.0" prefWidth="926.0" AnchorPane.leftAnchor="325.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="49.0" />
+      <TextField fx:id="tfLocation" layoutX="113.0" layoutY="131.0" prefHeight="22.0" prefWidth="158.0" AnchorPane.leftAnchor="113.0" />
+      <Label layoutX="22.0" layoutY="135.0" prefHeight="14.0" prefWidth="76.0" text="Location" />
+      <Label layoutX="22.0" layoutY="173.0" prefHeight="14.0" prefWidth="76.0" text="Date" />
+      <TextField fx:id="tfDesc0" layoutX="462.0" layoutY="169.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfQuantity0" layoutX="795.0" layoutY="169.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <ComboBox fx:id="cbbType0" layoutX="659.0" layoutY="169.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfCost0" layoutX="883.0" layoutY="169.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <TextField fx:id="tfUnit0" layoutX="874.0" layoutY="169.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <Label layoutX="325.0" layoutY="173.0" text="Item 1">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="204.0" text="Item 2">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="235.0" text="Item 3">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="266.0" text="Item 4">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="296.0" text="Item 5">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tfDesc1" layoutX="462.0" layoutY="199.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc2" layoutX="462.0" layoutY="230.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc3" layoutX="462.0" layoutY="261.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc4" layoutX="462.0" layoutY="291.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc5" layoutX="462.0" layoutY="322.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <Label layoutX="325.0" layoutY="327.0" text="Item 6">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="452.0" text="Item 10">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="421.0" text="Item 9">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="391.0" text="Item 8">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="325.0" layoutY="360.0" text="Item 7">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tfDesc9" layoutX="462.0" layoutY="447.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc8" layoutX="462.0" layoutY="416.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc7" layoutX="462.0" layoutY="386.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfDesc6" layoutX="462.0" layoutY="355.0" prefHeight="24.0" prefWidth="180.0" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0" />
+      <TextField fx:id="tfUnit1" layoutX="874.0" layoutY="200.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfCost1" layoutX="976.0" layoutY="200.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <ComboBox fx:id="cbbType1" layoutX="659.0" layoutY="200.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfQuantity1" layoutX="795.0" layoutY="200.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <TextField fx:id="tfQuantity3" layoutX="795.0" layoutY="262.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <ComboBox fx:id="cbbType3" layoutX="659.0" layoutY="262.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfCost3" layoutX="976.0" layoutY="262.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <TextField fx:id="tfUnit3" layoutX="874.0" layoutY="262.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfUnit2" layoutX="874.0" layoutY="231.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfCost2" layoutX="976.0" layoutY="231.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <ComboBox fx:id="cbbType2" layoutX="659.0" layoutY="231.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfQuantity2" layoutX="795.0" layoutY="231.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <TextField fx:id="tfQuantity6" layoutX="795.0" layoutY="356.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <ComboBox fx:id="cbbType6" layoutX="659.0" layoutY="356.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfCost6" layoutX="976.0" layoutY="356.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <TextField fx:id="tfUnit6" layoutX="874.0" layoutY="356.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfUnit7" layoutX="874.0" layoutY="387.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfCost7" layoutX="976.0" layoutY="387.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <ComboBox fx:id="cbbType7" layoutX="659.0" layoutY="387.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfQuantity7" layoutX="795.0" layoutY="387.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <TextField fx:id="tfQuantity5" layoutX="795.0" layoutY="323.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <ComboBox fx:id="cbbType5" layoutX="659.0" layoutY="323.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfCost5" layoutX="976.0" layoutY="323.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <TextField fx:id="tfUnit5" layoutX="874.0" layoutY="323.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfUnit4" layoutX="874.0" layoutY="292.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfCost4" layoutX="976.0" layoutY="292.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <ComboBox fx:id="cbbType4" layoutX="659.0" layoutY="292.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfQuantity4" layoutX="795.0" layoutY="292.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <TextField fx:id="tfQuantity9" layoutX="795.0" layoutY="448.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <ComboBox fx:id="cbbType9" layoutX="659.0" layoutY="448.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfCost9" layoutX="976.0" layoutY="448.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <TextField fx:id="tfUnit9" layoutX="874.0" layoutY="448.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfUnit8" layoutX="874.0" layoutY="417.0" prefHeight="22.0" prefWidth="82.0" AnchorPane.rightAnchor="119.0" />
+      <TextField fx:id="tfCost8" layoutX="976.0" layoutY="417.0" prefHeight="22.0" prefWidth="72.0" AnchorPane.rightAnchor="27.0" />
+      <ComboBox fx:id="cbbType8" layoutX="659.0" layoutY="417.0" prefHeight="22.0" prefWidth="119.0" AnchorPane.rightAnchor="297.0" />
+      <TextField fx:id="tfQuantity8" layoutX="795.0" layoutY="417.0" prefHeight="22.0" prefWidth="58.0" AnchorPane.rightAnchor="222.0" />
+      <Button fx:id="bAdd" layoutX="317.0" layoutY="131.0" mnemonicParsing="false" onAction="#add" text="Add new item" AnchorPane.leftAnchor="317.0" />
+      <Label alignment="CENTER" layoutX="462.0" layoutY="135.0" prefHeight="14.0" prefWidth="180.0" text="Description" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="433.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="659.0" layoutY="135.0" prefHeight="14.0" prefWidth="120.0" text="Type" AnchorPane.rightAnchor="296.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="793.0" layoutY="135.0" prefHeight="14.0" prefWidth="59.0" text="Quantity" AnchorPane.rightAnchor="223.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="874.0" layoutY="135.0" prefHeight="14.0" prefWidth="82.0" text="Unit" AnchorPane.rightAnchor="119.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="976.0" layoutY="135.0" prefHeight="14.0" prefWidth="70.0" text="Cost" AnchorPane.rightAnchor="29.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tfDate" layoutX="113.0" layoutY="169.0" prefHeight="22.0" prefWidth="159.0" AnchorPane.leftAnchor="113.0" />
+      <Label fx:id="lStatus" layoutX="204.0" layoutY="20.0" prefHeight="24.0" prefWidth="782.0" AnchorPane.leftAnchor="204.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="20.0" />
+   </children>
+</fx:root>

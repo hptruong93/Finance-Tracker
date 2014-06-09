@@ -61,7 +61,7 @@ public class StringUtility {
 	public static String joinDash(String input) {
 		String[] temp = input.split("-");
 		for (int i = 1; i < temp.length; i++) {
-			temp[i] = upperCase(temp[i]);
+			temp[i] = upperCaseFirstChar(temp[i]);
 		}
 		return join(temp, "");
 	}
@@ -71,7 +71,7 @@ public class StringUtility {
 	 * @param input a string
 	 * @return the same string with first character capitalized
 	 */
-	public static String upperCase(String input) {
+	public static String upperCaseFirstChar(String input) {
 		String[] temp = input.split(" ");
 		for (int i = 0; i < temp.length; i++) {
 			temp[i] = Character.toUpperCase(temp[i].charAt(0)) + temp[i].substring(1);
@@ -79,6 +79,20 @@ public class StringUtility {
 		return join(temp, " ");
 	}
 
+	/**
+	 * Remove last characters of a string
+	 * @param input the string that will have last characters removed
+	 * @param amount the amount of characters that will be removed
+	 * @return the string with amount of last characters removed 
+	 */
+	public static String removeLast(String input, int amount) {
+		if (input.length() >= amount) {
+			return input.substring(0, input.length() - amount);
+		} else {
+			return input;
+		}
+	}
+	
 	/**
 	 * Private constructor so that no instance is created
 	 */

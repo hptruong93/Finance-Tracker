@@ -18,15 +18,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import queryAgent.QueryManager;
 import userInterface.StageMaster;
 import userInterface.controller.visualizer.LabelVisualizer;
 import userInterface.controller.visualizer.LineChartVisualizer;
 import userInterface.controller.visualizer.TableVisualizer;
-import dataAnalysis.DataQuery;
 
 public class QueryController implements Initializable {
 
-	private DataQuery dataQuery;
+	private QueryManager dataQuery;
+	
 	@FXML protected Button bQuery;
 	@FXML protected Button bAddField;
 	@FXML protected Button bAddConstraint;
@@ -48,11 +49,12 @@ public class QueryController implements Initializable {
 	private LineChartVisualizer lineChartVisualizer;
 	
 	protected ArrayList<Integer> constraintID; 
-	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		dataQuery = MainController.getInstance().dataQuery;
+		tbResult.getColumns().clear();
+		
+		dataQuery = DataController.getInstance().queryManager;
 		labelVisualizer = new LabelVisualizer(lResult);
 		lineChartVisualizer = new LineChartVisualizer(lcResult);
 		tableVisualizer = new TableVisualizer(tbResult);
@@ -69,7 +71,7 @@ public class QueryController implements Initializable {
 				tfMaxResult.requestFocus();	
 			}
 		} catch (NumberFormatException ex) {
-			lStatus.setText("Invalid number of max result...");
+			lStatus.setText("Invalid number of max result... " + maxResult + " is not a number.");
 			tfMaxResult.requestFocus();
 		}
 		
@@ -77,9 +79,7 @@ public class QueryController implements Initializable {
 		dataQuery.clearFields();
 		if (!lvFields.getItems().isEmpty()) {
 			for (String queryField : lvFields.getItems()) {
-				if (!dataQuery.setFunction(queryField)) {
-					dataQuery.addField(queryField);
-				}
+				dataQuery.addField(queryField);
 			}
 		} else {
 			dataQuery.setDefaultField();
@@ -115,6 +115,7 @@ public class QueryController implements Initializable {
 		cbAddComposite.setDisable(true);
 		
 		if (cbAddComposite.isSelected()) {
+			StageMaster.getConstraintAddController().cbbOption.setDisable(true);
 			StageMaster.compositeConstraint().show();
 			StageMaster.compositeConstraint().toFront();
 		} else {
@@ -156,7 +157,7 @@ public class QueryController implements Initializable {
 	
 	private void deleteField() {
 		int selectedItem = lvFields.getSelectionModel().getSelectedIndex();
-		if (selectedItem != -1) {
+		if (selectedItem != -1 && selectedItem < lvFields.getItems().size()) {
 			lvFields.getItems().remove(selectedItem);
 		}
 	}

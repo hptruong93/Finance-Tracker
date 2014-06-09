@@ -1,9 +1,6 @@
 package purchases;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -11,26 +8,6 @@ import org.hibernate.Session;
 import queryAgent.QueryAgent;
 
 public class DataManager {
-	public static void main(String[] args) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(0);
-		cal.set(2014, 5, 22, 00, 00, 00);
-		Date date = cal.getTime();
-
-		DataManager manager = new DataManager();
-		 Purchase a = new Purchase("salmon", "fish", 747, "g", 9.22f);
-//		 Purchase b = new Purchase("beef", "food", 463, "g", 9.28f);
-		 Set<Purchase> set = new HashSet<Purchase>();
-		 set.add(a);
-//		 set.add(b);
-		 PurchaseSet toAdd = new PurchaseSet("metro", date, set);
-		 manager.addPurchaseSet(toAdd);
-		try {
-		} finally {
-			QueryAgent.closeFactory();
-		}
-	}
-
 	/**
 	 * Add a purchase into database. The purchase must already belongs to a purchaseSet. Otherwise
 	 * exception will be thrown.

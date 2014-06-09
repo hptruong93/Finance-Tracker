@@ -9,6 +9,7 @@ import queryAgent.QueryAgent;
 import userInterface.controller.AddFieldController;
 import userInterface.controller.CompositeConstraintController;
 import userInterface.controller.ConstraintAddController;
+import userInterface.controller.PrimaryController;
 import userInterface.controller.QueryController;
 
 public class StageMaster extends Application {
@@ -17,7 +18,7 @@ public class StageMaster extends Application {
 	private static Stage addField;
 	private static Stage addConstraint;
 	private static Stage compositeConstraint;
-	private static QueryController queryController;
+	private static PrimaryController primaryController;
 	private static AddFieldController addFieldController;
 	private static ConstraintAddController constraintAddController;
 	private static CompositeConstraintController compositeConstraintController;
@@ -36,7 +37,7 @@ public class StageMaster extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/userInterface/xml/Main.fxml"));
 		Parent parent = (Parent)loader.load();
 		Scene scene = new Scene(parent);
-		StageMaster.queryController = loader.getController();
+		StageMaster.primaryController = loader.getController();
 		
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Finance Tracker");
@@ -93,8 +94,12 @@ public class StageMaster extends Application {
 	}
 	
 	public static QueryController getQueryController() {
-		return queryController;
+		return primaryController.getQueryController();
 	}
+	
+//	public static ImportController getImportController() {
+//		return primaryController.getImportController();
+//	}
 	
 	public static AddFieldController getAddFieldController() {
 		return addFieldController;

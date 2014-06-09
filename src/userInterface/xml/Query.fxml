@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0" type="javafx.scene.layout.AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="userInterface.controller.QueryController">
+     <children>
+        <StackPane prefHeight="684.0" prefWidth="816.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="87.0">
+           <children>
+              <LineChart fx:id="lcResult" prefHeight="672.0" prefWidth="823.0">
+                <xAxis>
+                  <CategoryAxis side="BOTTOM" />
+                </xAxis>
+                <yAxis>
+                  <NumberAxis side="LEFT" />
+                </yAxis>
+              </LineChart>
+              <TableView fx:id="tbResult" prefHeight="200.0" prefWidth="200.0">
+                <columns>
+                  <TableColumn prefWidth="75.0" text="C1" />
+                  <TableColumn prefWidth="75.0" text="C2" />
+                </columns>
+              </TableView>
+              <Label fx:id="lResult" alignment="CENTER" prefHeight="673.0" prefWidth="807.0" text="Test" />
+           </children>
+        </StackPane>
+        <Button fx:id="bQuery" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
+        <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
+           <children>
+              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="93.0" text="Add Constraint" />
+              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="328.0" onKeyReleased="#keyReleasedListViewConstraint" onMouseReleased="#mouseReleasedListViewConstraint" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
+              <Button fx:id="bAddField" layoutX="16.0" layoutY="11.0" mnemonicParsing="false" onAction="#addField" prefHeight="24.0" prefWidth="93.0" text="Add Field" />
+              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" onKeyReleased="#keyReleasedListViewField" onMouseReleased="#mouseReleasedListViewField" prefHeight="240.0" prefWidth="200.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
+              <CheckBox fx:id="cbAddComposite" layoutX="117.0" layoutY="300.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="99.0" text="Add Composite" />
+              <Button fx:id="bSelectAll" layoutX="125.0" layoutY="11.0" mnemonicParsing="false" onAction="#selectAllPressed" prefHeight="24.0" prefWidth="93.0" text="Select All" />
+           </children>
+        </AnchorPane>
+        <TextField fx:id="tfMaxResult" layoutX="147.0" layoutY="59.0" prefHeight="22.0" prefWidth="72.0" text="100" AnchorPane.leftAnchor="147.0" AnchorPane.topAnchor="59.0" />
+        <Label layoutX="147.0" layoutY="40.0" text="Maximum result" />
+        <Label fx:id="lStatus" alignment="CENTER" layoutX="260.0" layoutY="40.0" prefHeight="14.0" prefWidth="740.0" />
+     </children>
+</fx:root>
