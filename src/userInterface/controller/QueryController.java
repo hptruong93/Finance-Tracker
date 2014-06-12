@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
@@ -19,6 +20,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import queryAgent.QueryManager;
+import queryAgent.dataAnalysis.Feature;
+import queryAgent.dataAnalysis.MonthAverage;
+import queryAgent.dataAnalysis.YearAverage;
 import userInterface.StageMaster;
 import userInterface.controller.visualizer.LabelVisualizer;
 import userInterface.controller.visualizer.LineChartVisualizer;
@@ -28,6 +32,7 @@ public class QueryController implements Initializable {
 
 	private QueryManager dataQuery;
 	
+	@FXML protected ComboBox<String> cbbFeature;
 	@FXML protected Button bQuery;
 	@FXML protected Button bAddField;
 	@FXML protected Button bAddConstraint;
@@ -48,7 +53,8 @@ public class QueryController implements Initializable {
 	private TableVisualizer tableVisualizer;
 	private LineChartVisualizer lineChartVisualizer;
 	
-	protected ArrayList<Integer> constraintID; 
+	protected ArrayList<Integer> constraintID;
+	private ArrayList<Feature> features;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -59,6 +65,15 @@ public class QueryController implements Initializable {
 		lineChartVisualizer = new LineChartVisualizer(lcResult);
 		tableVisualizer = new TableVisualizer(tbResult);
 		constraintID = new ArrayList<Integer>();
+		
+		cbbFeature.getItems().add("");
+		cbbFeature.getItems().add("Month Average");
+		cbbFeature.getItems().add("Year Average");
+		
+		features = new ArrayList<Feature>();
+		features.add(null);
+		features.add(new MonthAverage());
+		features.add(new YearAverage());
 	}
 
 	@FXML
@@ -153,6 +168,22 @@ public class QueryController implements Initializable {
 			deleteConstraint();
 		}
 	}
+	/***********************************************************************************/
+	@FXML
+	private void changeFeature(ActionEvent e) {
+		lvFields.getItems().clear();
+		lvConstraints.getItems().clear();
+		
+		int selected = cbbFeature.getSelectionModel().getSelectedIndex();
+		if (selected != 0) {
+			Feature selectedFeature = features.get(selected);
+			selectedFeature.apply(DataController.getInstance().queryManager);
+			
+			lvFields.getItems().addAll(DataController.getInstance().queryManager.getFields());
+			lvConstraints.getItems().addAll(DataController.getInstance().queryManager.getConstraints());
+		}
+	}
+	
 	/***********************************************************************************/
 	
 	private void deleteField() {

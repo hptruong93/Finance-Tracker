@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0" type="javafx.scene.layout.AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="userInterface.controller.QueryController">
+<fx:root minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.QueryController">
      <children>
         <StackPane prefHeight="684.0" prefWidth="816.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="87.0">
            <children>
@@ -27,7 +27,7 @@
               <Label fx:id="lResult" alignment="CENTER" prefHeight="673.0" prefWidth="807.0" text="Test" />
            </children>
         </StackPane>
-        <Button fx:id="bQuery" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
+        <Button fx:id="bQuery" layoutX="14.0" layoutY="44.0" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="44.0" />
         <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
            <children>
               <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="93.0" text="Add Constraint" />
@@ -38,8 +38,11 @@
               <Button fx:id="bSelectAll" layoutX="125.0" layoutY="11.0" mnemonicParsing="false" onAction="#selectAllPressed" prefHeight="24.0" prefWidth="93.0" text="Select All" />
            </children>
         </AnchorPane>
-        <TextField fx:id="tfMaxResult" layoutX="147.0" layoutY="59.0" prefHeight="22.0" prefWidth="72.0" text="100" AnchorPane.leftAnchor="147.0" AnchorPane.topAnchor="59.0" />
-        <Label layoutX="147.0" layoutY="40.0" text="Maximum result" />
-        <Label fx:id="lStatus" alignment="CENTER" layoutX="260.0" layoutY="40.0" prefHeight="14.0" prefWidth="740.0" />
+        <TextField fx:id="tfMaxResult" layoutX="1187.0" layoutY="52.0" prefHeight="22.0" prefWidth="72.0" text="100" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="52.0" />
+        <Label layoutX="1181.0" layoutY="26.0" text="Maximum result" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="26.0" />
+        <Label fx:id="lStatus" alignment="CENTER" layoutX="260.0" layoutY="56.0" prefHeight="14.0" prefWidth="902.0" AnchorPane.leftAnchor="260.0" AnchorPane.topAnchor="56.0" />
+      <Button layoutX="145.0" layoutY="44.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="72.0" text="Dekete" AnchorPane.leftAnchor="145.0" AnchorPane.topAnchor="44.0" />
+      <ComboBox fx:id="cbbFeature" layoutX="68.0" layoutY="15.0" onAction="#changeFeature" prefWidth="150.0" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="15.0" />
+      <Label layoutX="14.0" layoutY="19.0" text="Features" />
      </children>
 </fx:root>

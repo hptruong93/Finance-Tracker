@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import utilities.DateUtility;
+import utilities.StringUtility;
 
 public class HQLTranslator {
 	private HashMap<String, String> translator;
@@ -15,43 +16,47 @@ public class HQLTranslator {
 	
 	static {
 		TYPES = new HashMap<String, Class<?>>();
+		
+		//Properties
 		TYPES.put("id", Integer.class);
-		TYPES.put("purchaseSet.location", String.class);
-		TYPES.put("purchaseSet.date", Date.class);
+		TYPES.put("location", String.class);
+		TYPES.put("date", Date.class);
 		TYPES.put("description", String.class);
 		TYPES.put("type", String.class);
 		TYPES.put("quantity", Integer.class);
 		TYPES.put("unit", String.class);
 		TYPES.put("cost", Float.class);
 		TYPES.put("purchase_set_id", Integer.class);
+		
+		//Functions. Void class indicates that this functions returns the same type of the field
+		TYPES.put("DATE", Integer.class);
+		TYPES.put("MONTH", Integer.class);
+		TYPES.put("YEAR", Integer.class);
+		TYPES.put("SUM", Void.class);
+		TYPES.put("AVG", Void.class);
+		TYPES.put("MIN", Void.class);
+		TYPES.put("MAX", Void.class);
+		TYPES.put("COUNT", Integer.class);
 	}
 	
-	private HQLTranslator() {
+	protected HQLTranslator() {
 		translator = new HashMap<String, String>();
 		for (String field : QueryBuilder.FIELD_LIST) {
 			String[] split = field.split("\\.");
-			translator.put(split[split.length - 1], field);
+			translator.put(split[split.length - 1], "p." + field);
 		}
 	}
 	
-	private static class HQLTranslatorHolder {
-		private static final HQLTranslator instance = new HQLTranslator();
-	}
-	
-	public static HQLTranslator getInstance() {
-		return HQLTranslatorHolder.instance;
-	}
-	
 	private String simpleFieldTranslate(String field) {
-		return translator.get(field);
+		return translator.get(StringUtility.getComponent(field, "\\.", -1));
 	}
 	
 	public String fieldTranslate(String field) {
 		Map<String, String> parsed = parseQueryField(field);
 		String parsedField = parsed.get("field");
 		String option = parsed.get("option");
-		String function = parsed.get("fuction");
-		field = simpleFieldTranslate(parsed.get("field"));	
+		String function = parsed.get("function");
+		field = simpleFieldTranslate(parsedField);	
 		
 		if (function == null) {
 			return simpleFieldTranslate(parsedField);
@@ -64,7 +69,20 @@ public class HQLTranslator {
 	
 	public Object valueTranslate(String field, String value) {
 		Object output = null;
-		Class<?> toParse = TYPES.get(field);
+		Map<String, String> parsed = parseQueryField(field);
+		String function = parsed.get("function");
+		field = StringUtility.getComponent(parsed.get("field"), "\\.", -1);
+		
+		Class<?> toParse;
+		if (function == null) {
+			 toParse = TYPES.get(field);
+		} else {
+			toParse = TYPES.get(function);
+			if (toParse == Void.class) {
+				toParse = TYPES.get(field);
+			}
+		}
+		
 		try {
 			if (toParse == Date.class) {
 				output = DateUtility.parseDate(value);

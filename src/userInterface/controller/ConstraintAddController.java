@@ -24,7 +24,7 @@ public class ConstraintAddController implements Initializable {
 	@FXML
 	protected ComboBox<String> cbbField;
 	@FXML
-	protected ComboBox<String> cbbField2;
+	protected ComboBox<String> cbbFunction;
 	@FXML
 	protected ComboBox<String> cbbCondition;
 	@FXML
@@ -50,14 +50,22 @@ public class ConstraintAddController implements Initializable {
 			}
 		}).map(QueryBuilder.FIELD_LIST));
 
-		cbbField2.getItems().addAll(cbbField.getItems());
+		cbbFunction.getItems().add("");
+		cbbFunction.getItems().addAll(QueryBuilder.SUPPORTED_FUNCTIONS);
+		cbbFunction.getSelectionModel().select(0);
+		
 		cbbOption.getItems().addAll("", "GROUP BY", "HAVING", "ORDER BY ASC", "ORDER BY DESC");
+		cbbOption.getSelectionModel().select(0);
 	}
 
 	public void addPressed(ActionEvent e) {
 		String field = cbbField.getValue();
 		String condition = cbbCondition.getValue();
 		String value = tfValue.getText();
+		String function = cbbFunction.getValue();
+		if (function != null && function.length() != 0) {
+			field = function + "(" + field + ")";
+		}
 
 		RestrictionFragment identified;
 		try {
@@ -79,7 +87,7 @@ public class ConstraintAddController implements Initializable {
 					id = DataController.getInstance().queryManager.addGroupBy(queryBuilder.buildGroupBy(value));
 				} else if (cbbOption.getValue().contains("ORDER BY")) {
 					String option = cbbOption.getValue().substring("ORDER BY ".length());
-					id = DataController.getInstance().queryManager.setOrderBy(queryBuilder.buildOrderBy(value, option));
+					id = DataController.getInstance().queryManager.addOrderBy(queryBuilder.buildOrderBy(value, option));
 				} else {
 					id = DataController.getInstance().queryManager.addConstraint(identified);
 				}

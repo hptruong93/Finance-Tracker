@@ -27,7 +27,6 @@ public class ImportController implements Initializable {
 	
 	@FXML private Button bImport;
 	@FXML private Button bSelectFile;
-	@FXML private Button bAdd;
 	
 	@FXML private TextField tfLocation;
 	@FXML private TextField tfDate;
@@ -156,11 +155,6 @@ public class ImportController implements Initializable {
 	
 	@FXML
 	private void selectFile(ActionEvent e) {
-		
-	}
-	
-	@FXML
-	private void add(ActionEvent e) {
 		
 	}
 }

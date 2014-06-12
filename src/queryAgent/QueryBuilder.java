@@ -39,9 +39,13 @@ public class QueryBuilder {
 	private int varID;
 
 	public QueryBuilder() {
-		translator = HQLTranslator.getInstance();
+		translator = TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR);
 	}
 
+	public QueryBuilder(HQLTranslator translator) {
+		this.translator = translator;
+	}
+	
 	public static boolean validSelect(String selectField) {
 		Map<String, String> parsed = parseQueryField(selectField);
 		String field = parsed.get("field");
@@ -57,7 +61,7 @@ public class QueryBuilder {
 					String[] split = input.split("\\.");
 					return split[split.length - 1];
 				}
-			}.map(FIELD_LIST).contains(field))) {
+			}.map(FIELD_LIST).contains(StringUtility.getComponent(field, "\\.", -1)))) {
 				return false;
 			}
 
@@ -78,9 +82,9 @@ public class QueryBuilder {
 
 	public String buildOrderBy(String input, String option) {
 		if (option.equals("ASC")) {
-			return "p." + translator.fieldTranslate(input) + " ASC";
+			return translator.fieldTranslate(input) + " ASC";
 		} else if (option.equals("DESC")) {
-			return "p." + translator.fieldTranslate(input) + " DESC";
+			return translator.fieldTranslate(input) + " DESC";
 		} else {
 			return null;
 		}
@@ -122,7 +126,7 @@ public class QueryBuilder {
 			String currentCondition = conditions[i];
 			varID++;
 			valueMapping.put(varID, realValues.get(i));
-			combining.add("p." + finalField + " " + currentCondition + " :var" + varID);
+			combining.add(finalField + " " + currentCondition + " :var" + varID);
 		}
 
 		String finalQuery = joinCondition(combining, "AND");

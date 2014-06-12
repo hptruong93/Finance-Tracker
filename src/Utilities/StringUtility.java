@@ -80,6 +80,21 @@ public class StringUtility {
 	}
 
 	/**
+	 * Get the component of the string after split using the splitter (regex splitter)
+	 * @param input input string
+	 * @param splitter regex splitter
+	 * @param index index of the component that will be selected. Negative number indicates a wrap around
+	 * @return the component indicated by index after the string has been split using splitter
+	 */
+	public static String getComponent(String input, String splitter, int index) {
+		String[] split = input.split(splitter);
+		if (index < 0) {
+			index += split.length;
+		}
+		return split[index];
+	}
+	
+	/**
 	 * Remove last characters of a string
 	 * @param input the string that will have last characters removed
 	 * @param amount the amount of characters that will be removed

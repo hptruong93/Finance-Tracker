@@ -55,6 +55,21 @@ public class DateUtility {
 		return null;
 	}
 
+	public static int getTodayDate() {
+		Calendar temp = Calendar.getInstance();
+		return temp.get(Calendar.DAY_OF_MONTH);
+	}
+	
+	public static int getThisMonth() {
+		Calendar temp = Calendar.getInstance();
+		return temp.get(Calendar.MONTH) + 1;
+	}
+	
+	public static int getThisYear() {
+		Calendar temp = Calendar.getInstance();
+		return temp.get(Calendar.YEAR);
+	}
+	
 	public static Calendar getPureCalendar(Calendar calendar) {
 		calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
 		calendar.clear(Calendar.MINUTE);

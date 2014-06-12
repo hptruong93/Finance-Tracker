@@ -9,7 +9,6 @@ import org.hibernate.Session;
 
 import utilities.Log;
 import utilities.StringUtility;
-import utilities.functional.Mapper;
 
 public class QueryManager extends QueryAgent<Object> {
 
@@ -27,7 +26,7 @@ public class QueryManager extends QueryAgent<Object> {
 	protected List<String> groupBy;
 	protected List<RestrictionFragment> criteria;
 	protected List<RestrictionFragment> having;
-	protected String orderBy;
+	protected List<String> orderBy;
 
 	public QueryManager() {
 		mode = DEFAULT_MODE;
@@ -39,13 +38,14 @@ public class QueryManager extends QueryAgent<Object> {
 		groupBy = new ArrayList<String>();
 		criteria = new ArrayList<RestrictionFragment>();
 		having = new ArrayList<RestrictionFragment>();
+		orderBy = new ArrayList<String>();
 		constraintStack = new ArrayList<String>();
 	}
 
 	@Override
 	public Object queryActivity(Session session) {
 		String hq = "SELECT ";
-		String queryFields = StringUtility.join(Mapper.appender("p.", "").map(fields), ", ");
+		String queryFields = StringUtility.join(fields, ", ");
 		String whereClause = "";
 		for (RestrictionFragment rf : criteria) {
 			whereClause += rf.getRestriction() + " AND ";
@@ -75,8 +75,9 @@ public class QueryManager extends QueryAgent<Object> {
 		if (havingClause.length() != 0) {
 			hq += " HAVING " + havingClause;
 		}
-		if (orderBy.length() != 0) {
-			hq += " ORDER BY " + orderBy;
+		if (orderBy.size() != 0) {
+			String ordered = StringUtility.join(orderBy, ", ");
+			hq += " ORDER BY " + ordered;
 		}
 
 		Log.info(this, hq);
@@ -109,7 +110,7 @@ public class QueryManager extends QueryAgent<Object> {
 		boolean okToAdd = QueryBuilder.validSelect(name);
 		
 		if (okToAdd) {
-			return fields.add(HQLTranslator.getInstance().fieldTranslate(name));
+			return fields.add(TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR).fieldTranslate(name));
 		}
 		return false;
 	}
@@ -137,28 +138,28 @@ public class QueryManager extends QueryAgent<Object> {
 	public int addConstraint(RestrictionFragment condition) {
 		this.criteria.add(condition);
 		restrictionCount++;
-		constraintStack.add("c" + restrictionCount);
+		constraintStack.add("c" + (criteria.size() - 1));
 		return constraintStack.size() - 1;
 	}
 	
 	public int addGroupBy(String groupBy) {
 		this.groupBy.add(groupBy);
 		restrictionCount++;
-		constraintStack.add("g" + restrictionCount);
+		constraintStack.add("g" + (this.groupBy.size() - 1));
 		return constraintStack.size() - 1;
 	}
 	
 	public int addHaving(RestrictionFragment having) {
 		this.having.add(having);
 		restrictionCount++;
-		constraintStack.add("h" + restrictionCount);
+		constraintStack.add("h" + (this.having.size() - 1));
 		return constraintStack.size() - 1;
 	}
 	
-	public int setOrderBy(String input) {
+	public int addOrderBy(String input) {
 		restrictionCount++;
-		constraintStack.add("o" + restrictionCount);
-		this.orderBy = input;
+		orderBy.add(input);
+		constraintStack.add("o" + (orderBy.size() - 1));
 		return constraintStack.size() - 1;
 	}
 	
@@ -172,12 +173,36 @@ public class QueryManager extends QueryAgent<Object> {
 			} else if (constraintStack.get(index).charAt(0) == 'h') {
 				having.remove(count);
 			} else if (constraintStack.get(index).charAt(0) == 'o') {
-				orderBy = "";
+				orderBy.remove(count);
 			}
 		} catch (Exception e) {
 			return false;
 		}
 		return true;
+	}
+	
+	public List<String> getFields() {
+		return fields;
+	}
+	
+	public List<String> getConstraints() {
+		List<String> output = new ArrayList<String>();
+		
+		for (String stack : constraintStack) {
+			int count = Integer.parseInt(stack.substring(1));
+			
+			if (stack.charAt(0) == 'c') {
+				output.add(criteria.get(count).toString());
+			} else if (stack.charAt(0) == 'g') {
+				output.add(groupBy.get(count));
+			} else if (stack.charAt(0) == 'h') {
+				output.add(having.get(count).toString());
+			} else if (stack.charAt(0) == 'o') {
+				output.add(orderBy.get(count));
+			}
+		}
+		
+		return output;
 	}
 	
 	public void removeAllConstraints() {
