@@ -8,9 +8,12 @@ import javafx.stage.Stage;
 import queryAgent.QueryAgent;
 import userInterface.controller.AddFieldController;
 import userInterface.controller.CompositeConstraintController;
+import userInterface.controller.CompositeTableController;
 import userInterface.controller.ConstraintAddController;
+import userInterface.controller.ImportController;
 import userInterface.controller.PrimaryController;
 import userInterface.controller.QueryController;
+import userInterface.controller.TableBuilderController;
 
 public class StageMaster extends Application {
 
@@ -18,10 +21,15 @@ public class StageMaster extends Application {
 	private static Stage addField;
 	private static Stage addConstraint;
 	private static Stage compositeConstraint;
+	private static Stage tableBuilder;
+	private static Stage compositeTable;
+	
 	private static PrimaryController primaryController;
 	private static AddFieldController addFieldController;
 	private static ConstraintAddController constraintAddController;
 	private static CompositeConstraintController compositeConstraintController;
+	private static TableBuilderController tableBuilderController;
+	private static CompositeTableController compositeTableController;
 	
 	public static void main(String[] args) {
 		try {
@@ -75,6 +83,26 @@ public class StageMaster extends Application {
 		StageMaster.compositeConstraint.setTitle("Add Composite Constraint");
 		StageMaster.compositeConstraint.setScene(scene);
 		StageMaster.compositeConstraint.setResizable(false);
+		/***********************************************************************************/
+		loader = new FXMLLoader(getClass().getResource("/userInterface/xml/TableBuilder.fxml"));
+		parent = (Parent)loader.load();
+		StageMaster.tableBuilderController = loader.getController();
+		
+		scene = new Scene(parent);
+		StageMaster.tableBuilder = new Stage();
+		StageMaster.tableBuilder.setTitle("Build table");
+		StageMaster.tableBuilder.setScene(scene);
+		StageMaster.tableBuilder.setResizable(false);
+		/***********************************************************************************/
+		loader = new FXMLLoader(getClass().getResource("/userInterface/xml/CompositeTable.fxml"));
+		parent = (Parent)loader.load();
+		StageMaster.compositeTableController = loader.getController();
+		
+		scene = new Scene(parent);
+		StageMaster.compositeTable = new Stage();
+		StageMaster.compositeTable.setTitle("Build composite table");
+		StageMaster.compositeTable.setScene(scene);
+		StageMaster.compositeTable.setResizable(false);
 	}
 	
 	public static Stage primaryStage() {
@@ -93,13 +121,25 @@ public class StageMaster extends Application {
 		return compositeConstraint;
 	}
 	
+	public static Stage tableBuilder() {
+		return tableBuilder;
+	}
+	
+	public static Stage compositeTable() {
+		return compositeTable;
+	}
+	
+	public static PrimaryController getPrimaryController() {
+		return primaryController;
+	}
+	
 	public static QueryController getQueryController() {
 		return primaryController.getQueryController();
 	}
 	
-//	public static ImportController getImportController() {
-//		return primaryController.getImportController();
-//	}
+	public static ImportController getImportController() {
+		return primaryController.getImportController();
+	}
 	
 	public static AddFieldController getAddFieldController() {
 		return addFieldController;
@@ -111,5 +151,13 @@ public class StageMaster extends Application {
 	
 	public static CompositeConstraintController getCompositeConstraintController() {
 		return compositeConstraintController;
+	}
+	
+	public static TableBuilderController getTableBuilderController() {
+		return tableBuilderController;
+	}
+	
+	public static CompositeTableController getCompositeTableController() {
+		return compositeTableController;
 	}
 }

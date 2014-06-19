@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import queryAgent.QueryBuilder;
 import queryAgent.RestrictionFragment;
 import userInterface.StageMaster;
@@ -38,7 +40,7 @@ public class ConstraintAddController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		queryBuilder = new QueryBuilder();
+		queryBuilder = DataController.getInstance().queryBuilder;
 
 		cbbCondition.getItems().addAll(QueryBuilder.SUPPORTED_CONDITION);
 		cbbField.getItems().add("");
@@ -58,6 +60,7 @@ public class ConstraintAddController implements Initializable {
 		cbbOption.getSelectionModel().select(0);
 	}
 
+	@FXML
 	public void addPressed(ActionEvent e) {
 		String field = cbbField.getValue();
 		String condition = cbbCondition.getValue();
@@ -95,10 +98,10 @@ public class ConstraintAddController implements Initializable {
 				StageMaster.getQueryController().constraintID.add(id);
 
 				if (cbbOption.getValue().equals("GROUP BY")) {
-					StageMaster.getQueryController().lvConstraints.getItems().add("GROUP BY " + value);
+					StageMaster.getQueryController().lvConstraints.getItems().add("GROUP BY " + queryBuilder.simplify(value));
 				} else if (cbbOption.getValue().contains("ORDER BY")) { 
 					String order = cbbOption.getValue();
-					StageMaster.getQueryController().lvConstraints.getItems().add(order + " " + value);
+					StageMaster.getQueryController().lvConstraints.getItems().add(order + " " + queryBuilder.simplify(value));
 				} else if (cbbOption.getValue().equals("HAVING")) {
 					StageMaster.getQueryController().lvConstraints.getItems().add("HAVING " + identified);
 				} else {
@@ -112,10 +115,18 @@ public class ConstraintAddController implements Initializable {
 		}
 	}
 
+	@FXML
 	public void cancelPressed(ActionEvent e) {
 		lStatus.setText("");
 		StageMaster.getQueryController().cbAddComposite.setDisable(false);
 		StageMaster.addConstraint().hide();
 		StageMaster.primaryStage().show();
+	}
+	
+	@FXML
+	private void windowKeyReleased(KeyEvent e) {
+		if (e.getCode() == KeyCode.ESCAPE) {
+			cancelPressed(null);
+		}
 	}
 }

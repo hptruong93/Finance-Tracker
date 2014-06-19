@@ -63,9 +63,9 @@ public class Type {
 	 * @param rootTree the current PurchaseType that we are interested in
 	 * @return the PurchaseType found, or null if not found
 	 */
-	private Type findType(String name) {
+	public Type findType(String name) {
 		Type output = null;
-		if (name.equals(name)) {
+		if (name.equals(this.name)) {
 			output = this;
 		} else {
 			for (Type t : subtypes) {
@@ -112,7 +112,7 @@ public class Type {
 		return output;
 	}
 	
-	private List<String> getBottomTypes() {
+	public List<String> getBottomTypes() {
 		ArrayList<String> output = new ArrayList<String>();
 		
 		if (this.subtypes.isEmpty()) {

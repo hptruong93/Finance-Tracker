@@ -23,6 +23,7 @@ public class QueryManager extends QueryAgent<Object> {
 	protected List<String> fields;
 	
 	private ArrayList<String> constraintStack;
+	protected List<TableFragment> from;
 	protected List<String> groupBy;
 	protected List<RestrictionFragment> criteria;
 	protected List<RestrictionFragment> having;
@@ -33,20 +34,29 @@ public class QueryManager extends QueryAgent<Object> {
 		restrictionCount = -1;
 		lastQueryCount = -1;
 		fields = new ArrayList<String>();
-		fields.addAll(QueryBuilder.FIELD_LIST);
 		
+		from = new ArrayList<TableFragment>();
 		groupBy = new ArrayList<String>();
 		criteria = new ArrayList<RestrictionFragment>();
 		having = new ArrayList<RestrictionFragment>();
 		orderBy = new ArrayList<String>();
 		constraintStack = new ArrayList<String>();
+		
+		setDefaultField();
+		setDefaultFrom();
 	}
 
 	@Override
 	public Object queryActivity(Session session) {
-		String hq = "SELECT ";
+		String sql = "SELECT ";
 		String queryFields = StringUtility.join(fields, ", ");
-		String whereClause = "";
+		String whereClause = "", fromClause = "";
+		
+		for (TableFragment tf : from) {
+			fromClause += tf.toString() + ", ";
+		}
+		fromClause = StringUtility.removeLast(fromClause, ", ".length());
+		
 		for (RestrictionFragment rf : criteria) {
 			whereClause += rf.getRestriction() + " AND ";
 		}
@@ -60,29 +70,30 @@ public class QueryManager extends QueryAgent<Object> {
 		
 		String havingClause = "";
 		for (RestrictionFragment havingField : having) {
-			havingClause += havingField + ", ";
+			havingClause += havingField.getRestriction() + ", ";
 		}
 		havingClause = StringUtility.removeLast(havingClause, ", ".length());
 		
-		hq += queryFields;
-		hq += " FROM Purchase as p LEFT JOIN p.purchaseSet";
+		sql += queryFields;
+		sql += " FROM " + fromClause;
+		
 		if (whereClause.length() != 0) {
-			hq += " WHERE " + whereClause;
+			sql += " WHERE " + whereClause;
 		}
 		if (groupByClause.length() != 0) {
-			hq += " GROUP BY " + groupByClause;
+			sql += " GROUP BY " + groupByClause;
 		}
 		if (havingClause.length() != 0) {
-			hq += " HAVING " + havingClause;
+			sql += " HAVING " + havingClause;
 		}
 		if (orderBy.size() != 0) {
 			String ordered = StringUtility.join(orderBy, ", ");
-			hq += " ORDER BY " + ordered;
+			sql += " ORDER BY " + ordered;
 		}
 
-		Log.info(this, hq);
+		Log.info(this, sql);
 		
-		Query query = session.createQuery(hq);
+		Query query = session.createSQLQuery(sql);
 		for (RestrictionFragment rf : criteria) {
 			for (Entry<Integer, Object> entry : rf.getVariables().entrySet()) {
 				query.setParameter("var" + entry.getKey(), entry.getValue());
@@ -98,21 +109,33 @@ public class QueryManager extends QueryAgent<Object> {
 		List<?> result = query.list();
 		lastQueryCount = result.size();
 		return result;
-//		return new ArrayList<Integer>(Arrays.asList(1, 2));
 	}
 
+	public void addFrom(TableFragment newComer) {
+		this.from.add(newComer);
+	}
+	
+	public void setFrom(TableFragment newComer) {
+		this.from.clear();
+		this.from.add(newComer);
+	}
+	
+	public void setDefaultFrom() {
+		from.clear();
+		from.add(new TableFragment(QueryBuilder.DEFAULT_DATA_TABLE, null));
+	}
+	
 	public void setDefaultField() {
 		fields.clear();
 		fields.addAll(QueryBuilder.FIELD_LIST);
 	}
 
+	public boolean addExplicitField(final String name) {
+		return fields.add(name);
+	}
+	
 	public boolean addField(final String name) {
-		boolean okToAdd = QueryBuilder.validSelect(name);
-		
-		if (okToAdd) {
-			return fields.add(TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR).fieldTranslate(name));
-		}
-		return false;
+		return fields.add(name);
 	}
 
 	public boolean addField(String... names) {
@@ -181,11 +204,17 @@ public class QueryManager extends QueryAgent<Object> {
 		return true;
 	}
 	
-	public List<String> getFields() {
-		return fields;
+	public void removeAllConstraints() {
+		groupBy.clear();
+		criteria.clear();
+		having.clear();
+		restrictionCount = -1;
+		constraintStack.clear();
 	}
+
+	/***************************Getters and setters**********************************/
 	
-	public List<String> getConstraints() {
+	public List<String> getConstraintStrings() {
 		List<String> output = new ArrayList<String>();
 		
 		for (String stack : constraintStack) {
@@ -194,23 +223,15 @@ public class QueryManager extends QueryAgent<Object> {
 			if (stack.charAt(0) == 'c') {
 				output.add(criteria.get(count).toString());
 			} else if (stack.charAt(0) == 'g') {
-				output.add(groupBy.get(count));
+				output.add("GROUP BY " + groupBy.get(count));
 			} else if (stack.charAt(0) == 'h') {
-				output.add(having.get(count).toString());
+				output.add("HAVING " + having.get(count).toString());
 			} else if (stack.charAt(0) == 'o') {
-				output.add(orderBy.get(count));
+				output.add("ORDER BY " + orderBy.get(count));
 			}
 		}
 		
 		return output;
-	}
-	
-	public void removeAllConstraints() {
-		groupBy.clear();
-		criteria.clear();
-		having.clear();
-		restrictionCount = -1;
-		constraintStack.clear();
 	}
 	
 	public int getMaxResult() {
@@ -220,4 +241,30 @@ public class QueryManager extends QueryAgent<Object> {
 	public void setMaxResult(int maxResult) {
 		this.maxResult = maxResult;
 	}
+
+	public List<String> getFields() {
+		return fields;
+	}
+	
+	public List<TableFragment> getFrom() {
+		return this.from;
+	}
+
+	public List<String> getGroupBy() {
+		return this.groupBy;
+	}
+
+	public List<RestrictionFragment> getCriteria() {
+		return this.criteria;
+	}
+
+	public List<RestrictionFragment> getHaving() {
+		return this.having;
+	}
+
+	public List<String> getOrderBy() {
+		return this.orderBy;
+	}
+	
+	
 }

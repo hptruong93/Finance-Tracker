@@ -8,10 +8,9 @@ import java.util.regex.Pattern;
 
 public class RestrictionFragment {
 	
-	private static final Pattern VAR_PATTERN = Pattern.compile(":var[0-9]*");
+	private static final Pattern VAR_PATTERN = Pattern.compile(":var([0-9])++");
 	private String restriction;
 	private Map<Integer, Object> variables;
-	
 	
 	public RestrictionFragment(String restriction, Map<Integer, Object> variables) {
 		this.restriction = restriction;
@@ -50,18 +49,18 @@ public class RestrictionFragment {
 	
 	@Override
 	public String toString() {
-		String output = restriction.replaceAll("p\\.", "");
-		Matcher m = VAR_PATTERN.matcher(output + "");
+		String output = restriction.replaceAll("p\\.", "").replaceAll(QueryBuilder.PURCHASE_SET_TABLE + "\\.", "");
+		Matcher matcher = VAR_PATTERN.matcher(output + "");
 		
 		ArrayList<Integer> varPlaces = new ArrayList<Integer>();
 		
-		while (m.find()) {
-			String number = output.substring(m.start() + ":var".length(), m.end());
+		while (matcher.find()) {
+			String number = output.substring(matcher.start() + ":var".length(), matcher.end());
 			varPlaces.add(Integer.parseInt(number));
 		}
 		
 		for (Integer i : varPlaces) {
-			output = output.replaceAll(":var" + i, variables.get(i).toString());
+			output = output.replaceFirst(":var" + i, variables.get(i).toString());
 		}
 		
 		return output;

@@ -13,6 +13,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import queryAgent.RestrictionFragment;
 import userInterface.StageMaster;
 
@@ -86,6 +88,13 @@ public class CompositeConstraintController implements Initializable {
 		StageMaster.primaryStage().show();
 	}
 
+	@FXML
+	private void windowKeyReleased(KeyEvent e) {
+		if (e.getCode() == KeyCode.ESCAPE) {
+			bCancelPressed(null);
+		}
+	}
+	
 	@FXML
 	private void bAddConstraintPressed(ActionEvent e) {
 		StageMaster.primaryStage().hide();

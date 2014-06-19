@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#windowKeyReleased" prefHeight="293.0" prefWidth="357.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.TableBuilderController">
+   <children>
+      <Button fx:id="bOK" layoutX="28.0" layoutY="181.0" mnemonicParsing="false" onAction="#bOKPressed" prefHeight="92.0" prefWidth="147.0" text="Add" />
+      <Button fx:id="bCancel" layoutX="189.0" layoutY="231.0" mnemonicParsing="false" onAction="#bCancelPressed" prefHeight="42.0" prefWidth="147.0" text="Cancel" AnchorPane.rightAnchor="28.0" />
+      <TextField fx:id="tfResult1" editable="false" layoutX="28.0" layoutY="149.0" prefHeight="22.0" prefWidth="301.0" />
+      <TextField fx:id="tfTable1" layoutX="76.0" layoutY="66.0" onKeyReleased="#table1Changed" prefHeight="22.0" prefWidth="254.0" />
+      <TextField fx:id="tfAlias1" layoutX="76.0" layoutY="105.0" onKeyReleased="#table1Changed" prefHeight="22.0" prefWidth="254.0" />
+      <Label layoutX="28.0" layoutY="70.0" text="Table" />
+      <Label layoutX="29.0" layoutY="34.0" text="Select" />
+      <TextField fx:id="tfSelect1" layoutX="76.0" layoutY="30.0" onKeyReleased="#table1Changed" prefHeight="22.0" prefWidth="254.0" />
+      <Label layoutX="32.0" layoutY="109.0" text="Alias" />
+      <Button fx:id="bCkear" layoutX="189.0" layoutY="181.0" mnemonicParsing="false" onAction="#bClearPressed" prefHeight="42.0" prefWidth="147.0" text="Clear" AnchorPane.rightAnchor="28.0" />
+   </children>
+</AnchorPane>

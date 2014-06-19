@@ -1,16 +1,20 @@
 package userInterface.controller;
 
 import purchases.DataManager;
+import queryAgent.QueryBuilder;
 import queryAgent.QueryManager;
+import queryAgent.TranslatorFactory;
 
 public class DataController {
 	protected QueryManager queryManager;
 	protected DataManager dataManager;
-
+	protected QueryBuilder queryBuilder;
+	
 	// Private constructor prevents instantiation from other classes
 	private DataController() {
 		queryManager = new QueryManager();
 		dataManager = new DataManager();
+		queryBuilder = new QueryBuilder(TranslatorFactory.getTranslator(TranslatorFactory.FEATURED_TRANSLATOR));
 	}
 
 	/**

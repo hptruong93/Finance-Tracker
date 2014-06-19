@@ -1,16 +1,19 @@
 package queryAgent;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import utilities.DateUtility;
 import utilities.StringUtility;
+import utilities.functional.Filter;
 
-public class HQLTranslator {
-	private HashMap<String, String> translator;
+public class SQLTranslator {
+	private HashMap<String, String> varMapper;
 	
 	private static final HashMap<String, Class<?>> TYPES;
 	
@@ -39,16 +42,24 @@ public class HQLTranslator {
 		TYPES.put("COUNT", Integer.class);
 	}
 	
-	protected HQLTranslator() {
-		translator = new HashMap<String, String>();
+	protected SQLTranslator() {
+		varMapper = new HashMap<String, String>();
 		for (String field : QueryBuilder.FIELD_LIST) {
 			String[] split = field.split("\\.");
-			translator.put(split[split.length - 1], "p." + field);
+			varMapper.put(split[split.length - 1], field);
 		}
 	}
 	
+	protected String simplify(String field) {
+		return field.replace("p\\.", "").replace(QueryBuilder.PURCHASE_SET_TABLE + "\\.", "");
+	}
+	
 	private String simpleFieldTranslate(String field) {
-		return translator.get(StringUtility.getComponent(field, "\\.", -1));
+		return varMapper.get(StringUtility.getComponent(field, "\\.", -1));
+	}
+	
+	private String deTranslate(String field) {
+		return StringUtility.getComponent(field, "\\.", -1);
 	}
 	
 	public String fieldTranslate(String field) {
@@ -56,10 +67,10 @@ public class HQLTranslator {
 		String parsedField = parsed.get("field");
 		String option = parsed.get("option");
 		String function = parsed.get("function");
-		field = simpleFieldTranslate(parsedField);	
+		field = simpleFieldTranslate(parsedField);
 		
 		if (function == null) {
-			return simpleFieldTranslate(parsedField);
+			return field;
 		} else if (option != null) {
 			return function + "(" + option + " " + field + ")";
 		} else {
@@ -67,7 +78,37 @@ public class HQLTranslator {
 		}
 	}
 	
-	public Object valueTranslate(String field, String value) {
+	public String fieldDetranslate(String field) {
+		Map<String, String> parsed = parseQueryField(field);
+		String parsedField = parsed.get("field");
+		String option = parsed.get("option");
+		String function = parsed.get("function");
+		field = deTranslate(parsedField);
+		
+		if (function == null) {
+			return field;
+		} else if (option != null) {
+			return function + "(" + option + " " + field + ")";
+		} else {
+			return function + "(" + field + ")";
+		}
+	}
+	
+	public TableFragment tableTranslate(List<String> fields, String table, String alias) {
+		if (fields == null) {
+			fields = new ArrayList<String>();
+		} else {
+			fields = new Filter<String>() {
+				@Override
+				public boolean filter(String item) {
+					return !item.replaceAll(" ", "").isEmpty();
+				}
+			}.filter(fields);
+		}
+		return new TableFragment(fields, table, alias);
+	}
+	
+	public Object[] valueTranslate(String field, String value) {
 		Object output = null;
 		Map<String, String> parsed = parseQueryField(field);
 		String function = parsed.get("function");
@@ -96,36 +137,90 @@ public class HQLTranslator {
 		} catch (Exception e) {
 			output = null;
 		}
-		return output;
+		
+		if (output != null) {
+			return new Object[]{output};
+		} else {
+			return null;
+		}
 	}
 	
-	public String[] conditionTranslate(String condition) {
+	/**
+	 * Translate a condition string into HQL equivalent representation
+	 * @param condition condition in String, @see SUPPORTED_CONDITION in QueryBuilder
+	 * @param values values that have been parsed by valueTranslate method
+	 * @return map with two keys: array of strings "condition" for the HQL conditions parsed
+	 *  and "joiner" to join these conditions
+	 */
+	public Map<String, Object> conditionTranslate(String condition, List<Object> values) {
+		Map<String, Object> out = new HashMap<String, Object>();
+		out.put("joiner", "AND");
+		
 		switch (condition) {
 		case "BETWEEN":
-			return new String[] {"<", ">"};
+			out.put("condition", new String[] {"<", ">"});
+			break;
 		case "EQUAL":
-			return new String[] {"="};
+			String[] output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = "=";
+			}
+			out.put("condition", output);
+			out.put("joiner", "OR");
+			break;
 		case "NOT_EQUAL":
-			return new String[] {"<>"};
+			output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = "<>";
+			}
+			out.put("condition", output);
+			break;
 		case "GREATER_THAN":
-			return new String[] {">"};
+			output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = ">";
+			}
+			out.put("condition", output);
+			break;
 		case "LESS_THAN":
-			return new String[] {"<"};
+			output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = "<";
+			}
+			out.put("condition", output);
+			break;
 		case "LIKE":
-			return new String[] {"LIKE"};
+			output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = "LIKE";
+			}
+			out.put("condition", output);
+			out.put("joiner", "OR");
+			break;
 		case "ILIKE":
-			return new String[] {"ILIKE"};
+			output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = "ILIKE";
+			}
+			out.put("condition", output);
+			out.put("joiner", "OR");
+			break;
 		case "IS_EMPTY":
-			return new String[] {"IS EMPTY"};
+			out.put("condition", new String[] {"IS EMPTY"});
+			break;
 		case "IS_NOT_EMPTY":
-			return new String[] {"IS NOT EMPTY"};
+			out.put("condition", new String[] {"IS NOT EMPTY"});
+			break;
 		case "IS_NOT_NULL":
-			return new String[] {"IS NOT NULL"};
+			out.put("condition", new String[] {"IS NOT NULL"});
+			break;
 		case "IS_NULL":
-			return new String[] {"IS NULL"};
+			out.put("condition", new String[] {"IS NULL"});
+			break;
 		default:
 			return null;
 		}
+		return out;
 	}
 	
 	protected static Map<String, String> parseQueryField(String queryField) {

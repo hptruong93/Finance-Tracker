@@ -4,7 +4,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="268.0" prefWidth="528.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.CompositeConstraintController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#windowKeyReleased" prefHeight="268.0" prefWidth="528.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.CompositeConstraintController">
    <children>
       <ListView fx:id="lvConstraints" layoutX="30.0" layoutY="41.0" prefHeight="212.0" prefWidth="342.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
       <ComboBox fx:id="cbbJoiner" layoutX="365.0" layoutY="41.0" prefWidth="150.0" />

@@ -2,6 +2,7 @@ package userInterface.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -20,16 +21,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import queryAgent.QueryManager;
+import queryAgent.TableFragment;
+import queryAgent.TranslatorFactory;
 import queryAgent.dataAnalysis.Feature;
-import queryAgent.dataAnalysis.MonthAverage;
-import queryAgent.dataAnalysis.YearAverage;
 import userInterface.StageMaster;
+import userInterface.controller.visualizer.IDataVisualizer;
 import userInterface.controller.visualizer.LabelVisualizer;
 import userInterface.controller.visualizer.LineChartVisualizer;
 import userInterface.controller.visualizer.TableVisualizer;
+import utilities.functional.Mapper;
 
 public class QueryController implements Initializable {
 
+	private static final int MAX_QUERY_HISTORY = 10;
 	private QueryManager dataQuery;
 	
 	@FXML protected ComboBox<String> cbbFeature;
@@ -38,10 +42,14 @@ public class QueryController implements Initializable {
 	@FXML protected Button bAddConstraint;
 	@FXML protected Button bSelectAll;
 	
+	@FXML protected Button bPrevious;
+	@FXML protected Button bNext;
+	
 	@FXML public ListView<String> lvFields;
 	@FXML protected ListView<String> lvConstraints;
 	
 	@FXML protected TextField tfMaxResult;
+	@FXML protected TextField tfFrom;
 	@FXML protected Label lStatus;
 	
 	@FXML protected CheckBox cbAddComposite;
@@ -53,8 +61,10 @@ public class QueryController implements Initializable {
 	private TableVisualizer tableVisualizer;
 	private LineChartVisualizer lineChartVisualizer;
 	
-	protected ArrayList<Integer> constraintID;
-	private ArrayList<Feature> features;
+	private int cursor;
+	private List<Object> results;
+	protected List<Integer> constraintID;
+	private List<Feature> features;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -67,13 +77,16 @@ public class QueryController implements Initializable {
 		constraintID = new ArrayList<Integer>();
 		
 		cbbFeature.getItems().add("");
-		cbbFeature.getItems().add("Month Average");
-		cbbFeature.getItems().add("Year Average");
-		
 		features = new ArrayList<Feature>();
 		features.add(null);
-		features.add(new MonthAverage());
-		features.add(new YearAverage());
+		
+		for (Feature f : Feature.DEFAULT_FEATURES) {
+			cbbFeature.getItems().add(f.getName());
+			features.add(f);
+		}
+		
+		results = new ArrayList<Object>();
+		cursor = -1;
 	}
 
 	@FXML
@@ -93,19 +106,38 @@ public class QueryController implements Initializable {
 		dataQuery.setMaxResult(maxResult);
 		dataQuery.clearFields();
 		if (!lvFields.getItems().isEmpty()) {
-			for (String queryField : lvFields.getItems()) {
+			List<String> toAdd;
+			if (StageMaster.getPrimaryController().cmiAdvancedQuery.isSelected()) {
+				toAdd = lvFields.getItems();
+			} else {
+				toAdd = new Mapper<String, String>() {
+					@Override
+					public String map(String input) {
+						return TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR).fieldTranslate(input);
+					}
+				}.map(lvFields.getItems());
+			}
+			
+			for (String queryField : toAdd) {
 				dataQuery.addField(queryField);
 			}
 		} else {
 			dataQuery.setDefaultField();
 		}
 		
+		dataQuery.setFrom(new TableFragment(tfFrom.getText(), null));
 		
-		lcResult.setVisible(false);
-		tbResult.setVisible(true);
-		lResult.setVisible(false);
-		tbResult.toFront();
-		tableVisualizer.visualize(dataQuery.query());
+		results.add(dataQuery.query());
+		this.getDataVisualizer().visualize(results.get(results.size() - 1));
+		if (results.size() > MAX_QUERY_HISTORY) {
+			results.remove(0);
+		}
+		
+		cursor = results.size() - 1;
+		if (results.size() > 1) {
+			bPrevious.setDisable(false);
+		}
+		bNext.setDisable(true);
 	}
 	
 	/***********************************************************************************/
@@ -139,6 +171,27 @@ public class QueryController implements Initializable {
 			StageMaster.addConstraint().toFront();
 		}
 	}
+	/***********************************************************************************/
+	@FXML
+	private void bPreviousPressed(ActionEvent e) {
+		bNext.setDisable(false);
+		cursor--;
+		tableVisualizer.visualize(results.get(cursor));
+		
+		if (cursor <= 1) {
+			bPrevious.setDisable(true);
+		}
+	}
+	
+	@FXML
+	private void bNextPressed(ActionEvent e) {
+		bPrevious.setDisable(false);
+		cursor++;
+		tableVisualizer.visualize(results.get(cursor));
+		if (cursor >= results.size() - 1) {
+			bNext.setDisable(true);
+		}
+	}
 	
 	/***********************************************************************************/
 	@FXML
@@ -165,7 +218,9 @@ public class QueryController implements Initializable {
 	@FXML
 	private void mouseReleasedListViewConstraint(MouseEvent mouseEvent) {
 		if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-			deleteConstraint();
+			if (mouseEvent.getClickCount() >= 2) {
+				deleteConstraint();
+			}
 		}
 	}
 	/***********************************************************************************/
@@ -177,14 +232,31 @@ public class QueryController implements Initializable {
 		int selected = cbbFeature.getSelectionModel().getSelectedIndex();
 		if (selected != 0) {
 			Feature selectedFeature = features.get(selected);
-			selectedFeature.apply(DataController.getInstance().queryManager);
+			StageMaster.getPrimaryController().cmiAdvancedQuery.setSelected(selectedFeature.isAdvanced());
+			
+			constraintID = selectedFeature.apply(DataController.getInstance().queryManager);
 			
 			lvFields.getItems().addAll(DataController.getInstance().queryManager.getFields());
-			lvConstraints.getItems().addAll(DataController.getInstance().queryManager.getConstraints());
+			lvConstraints.getItems().addAll(DataController.getInstance().queryManager.getConstraintStrings());
 		}
 	}
 	
 	/***********************************************************************************/
+	@FXML
+	private void tfFromClicked(MouseEvent e) {
+		if (StageMaster.getPrimaryController().cmiAdvancedQuery.isSelected()) {
+			StageMaster.compositeTable().show();
+			StageMaster.compositeTable().toFront();
+		} else {
+			lStatus.setText("Has to be in advanced query mode to change table...");
+		}
+	}
+	
+	/***********************************************************************************/
+	protected void addFeature(Feature newComer) {
+		features.add(newComer);
+		cbbFeature.getItems().add(newComer.getName());
+	}
 	
 	private void deleteField() {
 		int selectedItem = lvFields.getSelectionModel().getSelectedIndex();
@@ -195,7 +267,31 @@ public class QueryController implements Initializable {
 	
 	private void deleteConstraint() {
 		int selectedItem = lvConstraints.getSelectionModel().getSelectedIndex();
-		lvConstraints.getItems().remove(selectedItem);
-		dataQuery.removeConstraint(constraintID.remove(selectedItem));
+		if (selectedItem != -1) {
+			lvConstraints.getItems().remove(selectedItem);
+			dataQuery.removeConstraint(constraintID.remove(selectedItem));
+		}
+	}
+	
+	private IDataVisualizer getDataVisualizer() {
+		lcResult.setVisible(false);
+		tbResult.setVisible(false);
+		lResult.setVisible(false);
+		
+		if (StageMaster.getPrimaryController().rmiLabelVisualizer.isSelected()) {
+			lResult.setVisible(true);
+			lResult.toFront();
+			return labelVisualizer;
+		} else if (StageMaster.getPrimaryController().rmiTableVisualizer.isSelected()) {
+			tbResult.setVisible(true);
+			tbResult.toFront();
+			return tableVisualizer;
+		} else if (StageMaster.getPrimaryController().rmiLineChartVisualizer.isSelected()) {
+			lcResult.setVisible(true);
+			lcResult.toFront();
+			return lineChartVisualizer;
+		} else {
+			return null;
+		}
 	}
 }

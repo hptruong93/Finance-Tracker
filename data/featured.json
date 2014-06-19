@@ -1,0 +1,160 @@
+{
+	"user_id": "1",
+	"date": "2014-06-13",
+	"content": [
+		{
+			"name": "Month Sum",
+			"description": "Total cost of this month",
+			"mode": "normal",
+			"fields": [
+				"MONTH(date)",
+				"SUM(cost)"
+			],
+			"criteria": [
+				{
+					"field": "MONTH(date)",
+					"condition": "EQUAL",
+					"value": "#THIS_MONTH"
+				},
+				{
+					"field": "YEAR(date)",
+					"condition": "EQUAL",
+					"value": "#THIS_YEAR"
+				}
+			],
+			"group_by": [],
+			"having": [],
+			"order_by": []
+		},
+		{
+			"name": "Monthly Sum",
+			"description": "Total cost of every month of the year",
+			"mode": "normal",
+			"fields": [
+				"MONTH(date)",
+				"SUM(cost)"
+			],
+			"criteria": [],
+			"group_by": [
+				"MONTH(date)"
+			],
+			"having": [],
+			"order_by": []
+		},
+		{
+			"name": "Year Sum",
+			"description": "Total cost of this year",
+			"mode": "normal",
+			"fields": [
+				"YEAR(date)",
+				"SUM(cost)"
+			],
+			"criteria": [
+				{
+					"field": "YEAR(date)",
+					"condition": "EQUAL",
+					"value": "#THIS_YEAR"
+				}
+			],
+			"group_by": [],
+			"having": [],
+			"order_by": []
+		},
+		{
+			"name": "Yearly Sum",
+			"description": "Total cost of every year",
+			"mode": "normal",
+			"fields": [
+				"YEAR(date)",
+				"SUM(cost)"
+			],
+			"criteria": [],
+			"group_by": [
+				"YEAR(date)"
+			],
+			"having": [],
+			"order_by": []
+		},
+		{
+			"name": "Monthly Food Sum",
+			"description": "Total cost of food every month of this year",
+			"mode": "normal",
+			"fields": [
+				"MONTH(date)",
+				"SUM(cost)"
+			],
+			"criteria": [
+				{
+					"field": "YEAR(date)",
+					"condition": "EQUAL",
+					"value": "#THIS_YEAR"
+				},
+				{
+					"field": "type",
+					"condition": "EQUAL",
+					"value": "#FOOD"
+				}
+			],
+			"group_by": [
+				"MONTH(date)"
+			],
+			"having": [],
+			"order_by": []
+		},
+		{
+			"name": "Monthly Non-Food Sum",
+			"description": "Total cost of non-food every month of this year",
+			"mode": "normal",
+			"fields": [
+				"MONTH(date)",
+				"SUM(cost)"
+			],
+			"criteria": [
+				{
+					"field": "YEAR(date)",
+					"condition": "EQUAL",
+					"value": "#THIS_YEAR"
+				},
+				{
+					"field": "type",
+					"condition": "NOT_EQUAL",
+					"value": "#FOOD"
+				}
+			],
+			"group_by": [
+				"MONTH(date)"
+			],
+			"having": [],
+			"order_by": []
+		},
+		{
+			"name": "test",
+			"description": "a random test",
+			"mode": "advanced",
+			"fields": [
+				"MONTH(a.date)", 
+				"AVG(b.cost)"
+			],
+			"table": "(
+						SELECT SUM(cost) as cost, ps.date 
+						FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
+						GROUP BY MONTH(ps.date)
+					  ) a
+					  INNER JOIN
+					  (
+						SELECT SUM(cost) as cost, ps.date 
+						FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
+						GROUP BY MONTH(ps.date)
+					  ) b
+					  ON MONTH(a.date) >= MONTH(b.date)",
+			"criteria": [
+				{
+					"condition": "YEAR(a.date) = 2014"
+				}
+			],
+			"group_by": [],
+			"having": [],
+			"order_by": []
+		}
+	]
+}

@@ -30,12 +30,14 @@
         <Button fx:id="bQuery" layoutX="14.0" layoutY="44.0" mnemonicParsing="false" onAction="#query" prefHeight="38.0" prefWidth="122.0" text="Query" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="44.0" />
         <AnchorPane prefHeight="656.0" prefWidth="232.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="90.0">
            <children>
-              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="296.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="93.0" text="Add Constraint" />
-              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="328.0" onKeyReleased="#keyReleasedListViewConstraint" onMouseReleased="#mouseReleasedListViewConstraint" prefHeight="276.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="328.0" />
+              <Button fx:id="bAddConstraint" layoutX="16.0" layoutY="308.0" mnemonicParsing="false" onAction="#addConstraint" prefHeight="24.0" prefWidth="93.0" text="Add Constraint" />
+              <ListView fx:id="lvConstraints" layoutX="16.0" layoutY="346.0" onKeyReleased="#keyReleasedListViewConstraint" onMouseReleased="#mouseReleasedListViewConstraint" prefHeight="324.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="346.0" />
               <Button fx:id="bAddField" layoutX="16.0" layoutY="11.0" mnemonicParsing="false" onAction="#addField" prefHeight="24.0" prefWidth="93.0" text="Add Field" />
-              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" onKeyReleased="#keyReleasedListViewField" onMouseReleased="#mouseReleasedListViewField" prefHeight="240.0" prefWidth="200.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
-              <CheckBox fx:id="cbAddComposite" layoutX="117.0" layoutY="300.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="99.0" text="Add Composite" />
+              <ListView fx:id="lvFields" layoutX="17.0" layoutY="44.0" onKeyReleased="#keyReleasedListViewField" onMouseReleased="#mouseReleasedListViewField" prefHeight="219.0" prefWidth="200.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0" />
+              <CheckBox fx:id="cbAddComposite" layoutX="122.0" layoutY="312.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="99.0" text="Add Composite" />
               <Button fx:id="bSelectAll" layoutX="125.0" layoutY="11.0" mnemonicParsing="false" onAction="#selectAllPressed" prefHeight="24.0" prefWidth="93.0" text="Select All" />
+            <Label layoutX="17.0" layoutY="277.0" text="From" />
+            <TextField fx:id="tfFrom" editable="false" layoutX="63.0" layoutY="273.0" onMouseReleased="#tfFromClicked" prefHeight="22.0" prefWidth="156.0" text="purchase p LEFT JOIN purchase_set ON (p.purchase_set = purchase_set.id)" />
            </children>
         </AnchorPane>
         <TextField fx:id="tfMaxResult" layoutX="1187.0" layoutY="52.0" prefHeight="22.0" prefWidth="72.0" text="100" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="52.0" />
@@ -44,5 +46,7 @@
       <Button layoutX="145.0" layoutY="44.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="72.0" text="Dekete" AnchorPane.leftAnchor="145.0" AnchorPane.topAnchor="44.0" />
       <ComboBox fx:id="cbbFeature" layoutX="68.0" layoutY="15.0" onAction="#changeFeature" prefWidth="150.0" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="15.0" />
       <Label layoutX="14.0" layoutY="19.0" text="Features" />
+      <Button fx:id="bPrevious" disable="true" layoutX="260.0" layoutY="29.0" mnemonicParsing="false" onAction="#bPreviousPressed" text="Previous" />
+      <Button fx:id="bNext" disable="true" layoutX="325.0" layoutY="29.0" mnemonicParsing="false" onAction="#bNextPressed" text="Next" />
      </children>
 </fx:root>

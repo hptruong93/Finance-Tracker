@@ -1,24 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="798.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.PrimaryController">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="798.0" prefWidth="1016.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.PrimaryController">
    <children>
       <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="X" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
+            <Menu mnemonicParsing="false" text="Tool">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#query" text="Query" />
+                  <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#addField" text="Add Field" />
+                  <MenuItem mnemonicParsing="false" onAction="#addConstraint" text="Add Constraint" />
+                  <MenuItem mnemonicParsing="false" onAction="#modifyFrom" text="Modify From" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Features">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#saveFeature" text="Save current query as..." />
+                        <MenuItem mnemonicParsing="false" text="Add features from files..." />
+                    </items>
+                  </Menu>
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Option">
+               <items>
+                  <Menu mnemonicParsing="false" text="Visualizer...">
+                    <items>
+                        <RadioMenuItem fx:id="rmiLabelVisualizer" mnemonicParsing="false" text="Label Visualizer">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="visualizer" />
+                           </toggleGroup>
+                        </RadioMenuItem>
+                        <RadioMenuItem fx:id="rmiTableVisualizer" mnemonicParsing="false" selected="true" text="Table Visualizer" toggleGroup="$visualizer" />
+                        <RadioMenuItem fx:id="rmiLineChartVisualizer" mnemonicParsing="false" text="Linechart Visualizer" toggleGroup="$visualizer" />
+                    </items>
+                  </Menu>
+                  <CheckMenuItem fx:id="cmiAdvancedQuery" mnemonicParsing="false" text="Advanced Query" />
+               </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
@@ -31,12 +64,12 @@
         <tabs>
           <Tab text="Analysis">
             <content>
-              <fx:include fx:id="query" source="Query.fxml"/>
+              <fx:include fx:id="query" source="Query.fxml" />
             </content>
           </Tab>
           <Tab text="Import">
             <content>
-              <fx:include fx:id="importPage" source="Import.fxml"/>
+              <fx:include fx:id="importPage" source="Import.fxml" />
             </content>
           </Tab>
         </tabs>

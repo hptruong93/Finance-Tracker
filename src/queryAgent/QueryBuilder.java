@@ -22,27 +22,31 @@ import utilities.functional.Mapper;
  */
 public class QueryBuilder {
 
-	public static final String PURCHASE_SET_TABLE = "purchaseSet";
+	public static final String DEFAULT_DATA_TABLE = "purchase as p left join purchase_set on p.purchase_set = purchase_set.id";
+	public static final String PURCHASE_SET_TABLE = "purchase_set";
 
-	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL",
-			"GREATER_THAN", "LESS_THAN", "LIKE", "ILIKE", "IS_EMPTY", "IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL")));
+	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL",
+			"GREATER_THAN", "LESS_THAN", "LIKE", "ILIKE", "IS_EMPTY", "IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL"));
 
 	private static final Set<String> SUPPORTED_COUNT_OPTION = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DISTINCT", "ALL")));
 
 	public static final Set<String> SUPPORTED_FUNCTIONS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DATE", "MONTH", "YEAR", "SUM", "AVG",
 			"MIN", "MAX", "COUNT")));
 
-	public static final List<String> FIELD_LIST = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("id", "description", "type", "quantity",
-			"unit", "cost", PURCHASE_SET_TABLE + ".location", PURCHASE_SET_TABLE + ".date")));
+	public static final List<String> JOIN_TYPE = Collections.unmodifiableList(Arrays.asList("JOIN", "INNER JOIN", "LEFT JOIN", "RIGHT JOIN"));
+	
+	public static final List<String> FIELD_LIST = Collections.unmodifiableList(Arrays.asList("p.id", "description", "type", "quantity",
+			"unit", "cost", PURCHASE_SET_TABLE + ".location", PURCHASE_SET_TABLE + ".date"));
 
-	private HQLTranslator translator;
+	
+	private SQLTranslator translator;
 	private int varID;
 
 	public QueryBuilder() {
 		translator = TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR);
 	}
 
-	public QueryBuilder(HQLTranslator translator) {
+	public QueryBuilder(SQLTranslator translator) {
 		this.translator = translator;
 	}
 	
@@ -80,6 +84,10 @@ public class QueryBuilder {
 		}
 	}
 
+	public String simplify(String field) {
+		return translator.simplify(field);
+	}
+	
 	public String buildOrderBy(String input, String option) {
 		if (option.equals("ASC")) {
 			return translator.fieldTranslate(input) + " ASC";
@@ -100,7 +108,7 @@ public class QueryBuilder {
 			return null;
 		}
 		
-		field = "p." + translator.fieldTranslate(field);
+		field = translator.fieldTranslate(field);
 		if (function != null) {
 			return function + "(" + field + ")";
 		} else {
@@ -110,30 +118,37 @@ public class QueryBuilder {
 	
 	public RestrictionFragment buildConstraint(String field, String condition, String value) {
 		final String finalField = translator.fieldTranslate(field);
-		String[] conditions = translator.conditionTranslate(condition);
 		String[] values = value.split(", ");
-		List<Object> realValues = new Mapper<String, Object>() {
+		final List<Object> realValues = new ArrayList<Object>(); 
+		new Mapper<String, Void>() {
 			@Override
-			public Object map(String input) {
-				return translator.valueTranslate(finalField, input);
+			public Void map(String input) {
+				realValues.addAll(Arrays.asList(translator.valueTranslate(finalField, input)));
+				return null;
 			}
 		}.map(values);
+		Map<String, Object> parsedConditions = translator.conditionTranslate(condition, realValues);
+		String[] conditions = (String[]) parsedConditions.get("condition");
+		String joiner = (String) parsedConditions.get("joiner");
 
 		Map<Integer, Object> valueMapping = new HashMap<Integer, Object>();
 		List<String> combining = new ArrayList<String>();
-
+		
 		for (int i = 0; i < conditions.length; i++) {
 			String currentCondition = conditions[i];
 			varID++;
 			valueMapping.put(varID, realValues.get(i));
 			combining.add(finalField + " " + currentCondition + " :var" + varID);
 		}
-
-		String finalQuery = joinCondition(combining, "AND");
+		String finalQuery = joinCondition(combining, joiner);
 
 		return new RestrictionFragment(finalQuery, valueMapping);
 	}
 
+	public TableFragment buildTable(List<String> fields, String tableName, String alias) {
+		return translator.tableTranslate(fields, tableName, alias);
+	}
+	
 	/**
 	 * Generate a join between two tables given two list of fields to compare
 	 * 
