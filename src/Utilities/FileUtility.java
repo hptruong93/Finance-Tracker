@@ -108,6 +108,15 @@ public class FileUtility {
 	}
 
 	/**
+	 * Write a JSON content into a file
+	 * @param node the json node which content will be written to file
+	 * @param file the file to write to. File content will be overriden. (i.e. no appending)
+	 */
+	public static void writeJson(JsonRootNode node, File file) {
+		writeToFile(new StringBuffer(GeneralUtility.jsonToString(node)), file, false);
+	}
+	
+	/**
 	 * IO combining two paths
 	 * @param path1 first path
 	 * @param path2 second path

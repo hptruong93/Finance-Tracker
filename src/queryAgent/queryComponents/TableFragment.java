@@ -3,11 +3,16 @@ package queryAgent.queryComponents;
 import java.util.Arrays;
 import java.util.List;
 
+import utilities.IJsonable;
 import utilities.StringUtility;
 import utilities.functional.Filter;
+import utilities.functional.Mapper;
+import argo.jdom.JsonNodeFactories;
+import argo.jdom.JsonRootNode;
+import argo.jdom.JsonStringNode;
 
 
-public class TableFragment {
+public class TableFragment implements IJsonable {
 	
 	private List<String> select;
 	private String tableName;
@@ -71,6 +76,24 @@ public class TableFragment {
 			}
 		}
 		return selectPart;
+	}
+	
+	@Override
+	public JsonRootNode jsonize() {
+		JsonRootNode select = JsonNodeFactories.array(new Mapper<String, JsonStringNode>() {
+			@Override
+			public JsonStringNode map(String input) {
+				return JsonNodeFactories.string(input);
+			}}.map(this.select));
+		JsonStringNode table = JsonNodeFactories.string(this.tableName);
+		JsonStringNode alias = JsonNodeFactories.string(this.alias);
+		
+		JsonRootNode output = JsonNodeFactories.object(
+				JsonNodeFactories.field("select", select),
+				JsonNodeFactories.field("table", table),
+				JsonNodeFactories.field("alias", alias)
+				);
+		return output;
 	}
 	
 	@Override

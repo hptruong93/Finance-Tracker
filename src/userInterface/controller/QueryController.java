@@ -65,7 +65,7 @@ public class QueryController implements Initializable {
 	private int cursor;
 	private List<QueryResult> results;
 	protected List<Integer> constraintID;
-	private List<Feature> features;
+	protected List<Feature> features;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {

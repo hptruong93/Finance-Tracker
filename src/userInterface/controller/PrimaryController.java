@@ -77,6 +77,15 @@ public class PrimaryController implements Initializable {
 		toBeSaved.loadConfig(DataController.getInstance().queryManager, name, description, isAdvanced);
 		StageMaster.getQueryController().addFeature(toBeSaved);
 	}
+	
+	@FXML
+	private void deleteCurrentFeature(ActionEvent e) {
+		int selected = StageMaster.getQueryController().cbbFeature.getSelectionModel().getSelectedIndex();
+		if (selected > 0) {
+			StageMaster.getQueryController().features.remove(selected);
+			StageMaster.getQueryController().cbbFeature.getItems().remove(selected);
+		}
+	}
 	/*********************************************************************************/
 	@FXML
 	private void queryModeChanged(ActionEvent e) {

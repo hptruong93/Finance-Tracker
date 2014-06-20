@@ -32,6 +32,7 @@
                   <Menu mnemonicParsing="false" text="Features">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#saveFeature" text="Save current query as..." />
+                        <MenuItem mnemonicParsing="false" onAction="#deleteCurrentFeature" text="Delete currently selected feature" />
                         <MenuItem mnemonicParsing="false" text="Add features from files..." />
                     </items>
                   </Menu>

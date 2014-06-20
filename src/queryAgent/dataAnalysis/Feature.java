@@ -1,5 +1,6 @@
 package queryAgent.dataAnalysis;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +15,15 @@ import queryAgent.queryBuilder.TranslatorFactory;
 import queryAgent.queryComponents.RestrictionFragment;
 import queryAgent.queryComponents.TableFragment;
 import utilities.FileUtility;
+import utilities.GeneralUtility;
+import utilities.IJsonable;
+import utilities.functional.Mapper;
 import argo.jdom.JsonNode;
+import argo.jdom.JsonNodeFactories;
+import argo.jdom.JsonRootNode;
+import argo.jdom.JsonStringNode;
 
-public class Feature {
+public class Feature implements IJsonable {
 
 	public static final List<Feature> DEFAULT_FEATURES;
 
@@ -155,10 +162,6 @@ public class Feature {
 		fields.clear();
 	}
 
-	public JsonNode dumpConfigJSON() {
-		return null;
-	}
-	
 	public final List<Integer> apply(QueryManager queryManager) {
 		List<Integer> constraintID = new ArrayList<Integer>();
 		
@@ -260,5 +263,77 @@ public class Feature {
 		}
 
 		return out.toString();
+	}
+	
+	public static void main(String[] args) {
+		Feature t = DEFAULT_FEATURES.get(0);
+		System.out.println(GeneralUtility.jsonToString(t.jsonize()));
+	}
+	
+	@Override
+	public JsonRootNode jsonize() {
+		JsonStringNode name = JsonNodeFactories.string(this.name);
+		JsonStringNode description = JsonNodeFactories.string(this.description);
+		JsonStringNode mode = JsonNodeFactories.string(isAdvanced ? "advanced" : "normal");
+		JsonNode fields, from;
+		if (isAdvanced) {
+			fields = JsonNodeFactories.array(new Mapper<String, JsonStringNode>() {
+				@Override
+				public JsonStringNode map(String input) {
+					return JsonNodeFactories.string(input);
+				}
+			}.map(this.fields));
+			from = JsonNodeFactories.array(new Mapper<TableFragment, JsonRootNode>(){
+				@Override
+				public JsonRootNode map(TableFragment input) {
+					return input.jsonize();
+				}}.map(this.from));
+		} else {
+			fields = JsonNodeFactories.array(new Mapper<String, JsonStringNode>() {
+				@Override
+				public JsonStringNode map(String input) {
+					return JsonNodeFactories.string(translator.fieldDetranslate(input));
+				}
+			}.map(this.fields));
+			from = JsonNodeFactories.array(new ArrayList<JsonStringNode>());
+		}
+		
+		
+		JsonNode criteria = JsonNodeFactories.array(new Mapper<RestrictionFragment, JsonRootNode>(){
+			@Override
+			public JsonRootNode map(RestrictionFragment input) {
+				return input.jsonize();
+			}}.map(this.criteria));
+		
+		JsonNode groupBy = JsonNodeFactories.array(new Mapper<String, JsonStringNode>(){
+			@Override
+			public JsonStringNode map(String input) {
+				return JsonNodeFactories.string(input);
+			}}.map(this.groupBy));
+		
+		JsonNode having = JsonNodeFactories.array(new Mapper<RestrictionFragment, JsonRootNode>(){
+			@Override
+			public JsonRootNode map(RestrictionFragment input) {
+				return input.jsonize();
+			}}.map(this.having));
+		
+		JsonNode orderBy = JsonNodeFactories.array(new Mapper<String, JsonStringNode>(){
+			@Override
+			public JsonStringNode map(String input) {
+				return JsonNodeFactories.string(input);
+			}}.map(this.orderedBy));
+		
+		JsonRootNode output = JsonNodeFactories.object(
+				JsonNodeFactories.field("name", name),
+				JsonNodeFactories.field("description", description),
+				JsonNodeFactories.field("mode", mode),
+				JsonNodeFactories.field("fields", fields),
+				JsonNodeFactories.field("from", from),
+				JsonNodeFactories.field("criteria", criteria),
+				JsonNodeFactories.field("group_by", groupBy),
+				JsonNodeFactories.field("having", having),
+				JsonNodeFactories.field("order_by", orderBy));
+		
+		return output;
 	}
 }

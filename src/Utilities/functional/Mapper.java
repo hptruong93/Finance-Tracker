@@ -21,8 +21,10 @@ public abstract class Mapper<D, R> {
 	 */
 	public List<R> map(Iterable<D> items) {
 		ArrayList<R> output = new ArrayList<R>();
-		for (D s : items) {
-			output.add(map(s));
+		if (items != null) {
+			for (D s : items) {
+				output.add(map(s));
+			}
 		}
 		
 		return output;
@@ -47,7 +49,11 @@ public abstract class Mapper<D, R> {
 	 * @return array of items in Range class
 	 */
 	public List<R> map(D... items) {
-		return map(Arrays.asList(items));
+		if (items != null) {
+			return map(Arrays.asList(items));
+		} else {
+			return new ArrayList<R>();
+		}
 	}
 	
 	/**

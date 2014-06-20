@@ -7,8 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import queryAgent.queryBuilder.QueryBuilder;
+import utilities.IJsonable;
+import argo.jdom.JsonNodeFactories;
+import argo.jdom.JsonRootNode;
+import argo.jdom.JsonStringNode;
 
-public class RestrictionFragment {
+public class RestrictionFragment implements IJsonable {
 	
 	private static final Pattern VAR_PATTERN = Pattern.compile(":var([0-9])++");
 	private String restriction;
@@ -64,6 +68,28 @@ public class RestrictionFragment {
 		for (Integer i : varPlaces) {
 			output = output.replaceFirst(":var" + i, variables.get(i).toString());
 		}
+		
+		return output;
+	}
+
+	@Override
+	public JsonRootNode jsonize() {
+		
+		JsonRootNode json = JsonNodeFactories.object( JsonNodeFactories.field("name", JsonNodeFactories.string("Black Lace")), 
+				JsonNodeFactories.field("sales", JsonNodeFactories.number("110921")), 
+				JsonNodeFactories.field("totalRoyalties", JsonNodeFactories.number("10223.82")), 
+				JsonNodeFactories.field("singles", JsonNodeFactories.array( JsonNodeFactories.string("Superman"), 
+						JsonNodeFactories.string("Agadoo") )) );
+		
+		JsonStringNode field = JsonNodeFactories.string("bla");
+		JsonStringNode condition = JsonNodeFactories.string("condition");
+		JsonStringNode value = JsonNodeFactories.string("value");
+		
+		JsonRootNode output = JsonNodeFactories.object( 
+				JsonNodeFactories.field("field", field),
+				JsonNodeFactories.field("condition", condition),
+				JsonNodeFactories.field("value", value)
+				);
 		
 		return output;
 	}
