@@ -2,16 +2,17 @@ package queryAgent.dataAnalysis;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import queryAgent.PlainBuilder;
-import queryAgent.QueryBuilder;
 import queryAgent.QueryManager;
-import queryAgent.RestrictionFragment;
-import queryAgent.SQLTranslator;
-import queryAgent.TableFragment;
-import queryAgent.TranslatorFactory;
+import queryAgent.queryBuilder.PlainBuilder;
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryBuilder.SQLTranslator;
+import queryAgent.queryBuilder.TranslatorFactory;
+import queryAgent.queryComponents.RestrictionFragment;
+import queryAgent.queryComponents.TableFragment;
 import utilities.FileUtility;
 import argo.jdom.JsonNode;
 
@@ -66,6 +67,13 @@ public class Feature {
 			builder = new PlainBuilder();
 			for (JsonNode sub : node.getArrayNode("fields")) {
 				fields.add(sub.getText());
+			}
+			
+			for (JsonNode sub : node.getArrayNode("from")) {
+				String select = sub.getStringValue("select");
+				String table = sub.getStringValue("table");
+				String alias = sub.getStringValue("alias");
+				from.add(new TableFragment(Arrays.asList(select.split(", ")), table, alias));
 			}
 			
 			for (JsonNode sub : node.getArrayNode("criteria")) {
@@ -155,6 +163,13 @@ public class Feature {
 		List<Integer> constraintID = new ArrayList<Integer>();
 		
 		queryManager.removeAllConstraints();
+		
+		if (!isAdvanced) {
+			queryManager.setDefaultFrom();
+		} else {
+			queryManager.setFrom(from);
+		}
+		
 		for (RestrictionFragment rf : criteria) {
 			constraintID.add(queryManager.addConstraint(rf));
 		}

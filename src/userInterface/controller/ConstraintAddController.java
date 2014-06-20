@@ -12,8 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import queryAgent.QueryBuilder;
-import queryAgent.RestrictionFragment;
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryComponents.RestrictionFragment;
 import userInterface.StageMaster;
 import utilities.functional.Mapper;
 
@@ -36,13 +36,10 @@ public class ConstraintAddController implements Initializable {
 	@FXML
 	protected Label lStatus;
 
-	private QueryBuilder queryBuilder;
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		queryBuilder = DataController.getInstance().queryBuilder;
-
 		cbbCondition.getItems().addAll(QueryBuilder.SUPPORTED_CONDITION);
+		cbbField.setEditable(true);
 		cbbField.getItems().add("");
 		cbbField.getItems().addAll((new Mapper<String, String>() {
 			@Override
@@ -70,6 +67,7 @@ public class ConstraintAddController implements Initializable {
 			field = function + "(" + field + ")";
 		}
 
+		QueryBuilder queryBuilder = DataController.getInstance().queryBuilder;
 		RestrictionFragment identified;
 		try {
 			identified = queryBuilder.buildConstraint(field, condition, value);

@@ -11,11 +11,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import queryAgent.RestrictionFragment;
+import queryAgent.queryComponents.RestrictionFragment;
 import userInterface.StageMaster;
 
 public class CompositeConstraintController implements Initializable {
@@ -46,6 +47,7 @@ public class CompositeConstraintController implements Initializable {
 				joining = "AND";
 			} else {
 				lStatus.setText("Invalid joiner...");
+				Dialogs.showErrorDialog(null, "Invalid joiner...");
 				return;
 			}
 			
@@ -61,6 +63,7 @@ public class CompositeConstraintController implements Initializable {
 			joiner = "OR";
 		} else {
 			lStatus.setText("Invalid joiner...");
+			Dialogs.showErrorDialog(null, "Invalid joiner...");
 			return;
 		}
 		

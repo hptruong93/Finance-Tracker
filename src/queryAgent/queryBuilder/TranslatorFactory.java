@@ -1,4 +1,4 @@
-package queryAgent;
+package queryAgent.queryBuilder;
 
 public class TranslatorFactory {
 	

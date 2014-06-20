@@ -1,10 +1,12 @@
-package queryAgent;
+package queryAgent.queryComponents;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import queryAgent.queryBuilder.QueryBuilder;
 
 public class RestrictionFragment {
 	

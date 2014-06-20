@@ -12,7 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import queryAgent.QueryBuilder;
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryValidator.QueryValidator;
 import userInterface.StageMaster;
 import utilities.functional.Mapper;
 
@@ -26,12 +27,8 @@ public class AddFieldController implements Initializable {
 	@FXML protected ComboBox<String> cbbFunction;
 	@FXML protected ComboBox<String> cbbField;
 	
-	private QueryBuilder queryBuilder;
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		queryBuilder = DataController.getInstance().queryBuilder;
-		
 		cbbField.getItems().add("");
 		cbbField.getItems().addAll((new Mapper<String, String>() {
 			@Override
@@ -50,7 +47,7 @@ public class AddFieldController implements Initializable {
 	@FXML
 	public void addPressed(ActionEvent e) {
 		String toAdd = StageMaster.getAddFieldController().tfField.getText();
-		if (QueryBuilder.validSelect(toAdd) || StageMaster.getPrimaryController().cmiAdvancedQuery.isSelected()) {
+		if (QueryValidator.validSelect(toAdd) || StageMaster.getPrimaryController().cmiAdvancedQuery.isSelected()) {
 			StageMaster.getQueryController().lvFields.getItems().add(toAdd);
 			lStatus.setText("");
 		} else {

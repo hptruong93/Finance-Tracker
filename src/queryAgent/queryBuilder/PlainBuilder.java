@@ -1,9 +1,12 @@
-package queryAgent;
+package queryAgent.queryBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import queryAgent.queryComponents.RestrictionFragment;
+import queryAgent.queryComponents.TableFragment;
 
 public class PlainBuilder extends QueryBuilder {
 	

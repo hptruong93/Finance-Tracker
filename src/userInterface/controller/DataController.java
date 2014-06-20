@@ -1,9 +1,9 @@
 package userInterface.controller;
 
 import purchases.DataManager;
-import queryAgent.QueryBuilder;
 import queryAgent.QueryManager;
-import queryAgent.TranslatorFactory;
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryBuilder.TranslatorFactory;
 
 public class DataController {
 	protected QueryManager queryManager;

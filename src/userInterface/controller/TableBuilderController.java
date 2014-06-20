@@ -11,21 +11,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import queryAgent.QueryBuilder;
-import queryAgent.TableFragment;
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryComponents.TableFragment;
 import userInterface.StageMaster;
 
 public class TableBuilderController implements Initializable {
 
-	@FXML private TextField tfTable1;
-	@FXML private TextField tfSelect1;
-	@FXML private TextField tfFrom1;
-	@FXML private TextField tfAlias1;
+	@FXML protected TextField tfTable1;
+	@FXML protected TextField tfSelect1;
+	@FXML protected TextField tfFrom1;
+	@FXML protected TextField tfAlias1;
 	
-	@FXML private TextField tfResult1;
+	@FXML protected TextField tfResult1;
 	
-	@FXML private Button bOK;
-	@FXML private Button bCancel;
+	@FXML protected Button bOK;
+	@FXML protected Button bCancel;
 	
 	private TableFragment table1;
 	private QueryBuilder queryBuilder;

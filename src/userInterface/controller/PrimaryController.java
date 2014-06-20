@@ -8,9 +8,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.layout.AnchorPane;
 import queryAgent.dataAnalysis.Feature;
+import queryAgent.queryBuilder.PlainBuilder;
+import queryAgent.queryBuilder.QueryBuilder;
 import userInterface.StageMaster;
 
 public class PrimaryController implements Initializable {
@@ -67,10 +70,22 @@ public class PrimaryController implements Initializable {
 	private void saveFeature(ActionEvent e) {
 		boolean isAdvanced = cmiAdvancedQuery.isSelected();
 		Feature toBeSaved = new Feature();
-		toBeSaved.loadConfig(DataController.getInstance().queryManager, "test", "this is a test", isAdvanced);
+		
+		String name = Dialogs.showInputDialog(null, "Name of the new feature");
+		String description = Dialogs.showInputDialog(null, "Description of the feature");
+		
+		toBeSaved.loadConfig(DataController.getInstance().queryManager, name, description, isAdvanced);
 		StageMaster.getQueryController().addFeature(toBeSaved);
 	}
-	
+	/*********************************************************************************/
+	@FXML
+	private void queryModeChanged(ActionEvent e) {
+		if (cmiAdvancedQuery.isSelected()) {
+			DataController.getInstance().queryBuilder = new PlainBuilder();
+		} else {
+			DataController.getInstance().queryBuilder = new QueryBuilder();
+		}
+	}
 	/*********************************************************************************/
 	@FXML
 	private void exit(ActionEvent e) {

@@ -1,6 +1,6 @@
 {
 	"user_id": "1",
-	"date": "2014-06-13",
+	"date": "2014-06-19",
 	"content": [
 		{
 			"name": "Month Sum",
@@ -129,30 +129,36 @@
 		},
 		{
 			"name": "test",
-			"description": "a random test",
+			"description": "a test",
 			"mode": "advanced",
 			"fields": [
 				"MONTH(a.date)", 
 				"AVG(b.cost)"
 			],
-			"table": "(
-						SELECT SUM(cost) as cost, ps.date 
-						FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
-						GROUP BY MONTH(ps.date)
-					  ) a
-					  INNER JOIN
-					  (
-						SELECT SUM(cost) as cost, ps.date 
-						FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
-						GROUP BY MONTH(ps.date)
-					  ) b
-					  ON MONTH(a.date) >= MONTH(b.date)",
+			"from": [
+				{
+					"select": "",
+					"table": "(
+								SELECT SUM(cost) as cost, ps.date 
+								FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
+								GROUP BY MONTH(ps.date)
+							  ) a
+							  INNER JOIN
+							  (
+								SELECT SUM(cost) as cost, ps.date 
+								FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
+								GROUP BY MONTH(ps.date)
+							  ) b
+							  ON MONTH(a.date) >= MONTH(b.date)",
+					"alias": ""
+				}
+			],
 			"criteria": [
 				{
 					"condition": "YEAR(a.date) = 2014"
 				}
 			],
-			"group_by": [],
+			"group_by": ["MONTH(a.date)"],
 			"having": [],
 			"order_by": []
 		}

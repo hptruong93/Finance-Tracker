@@ -12,6 +12,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
@@ -21,9 +22,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import queryAgent.QueryManager;
-import queryAgent.TableFragment;
-import queryAgent.TranslatorFactory;
 import queryAgent.dataAnalysis.Feature;
+import queryAgent.queryBuilder.TranslatorFactory;
+import queryAgent.queryComponents.TableFragment;
 import userInterface.StageMaster;
 import userInterface.controller.visualizer.IDataVisualizer;
 import userInterface.controller.visualizer.LabelVisualizer;
@@ -96,10 +97,12 @@ public class QueryController implements Initializable {
 			maxResult = Integer.parseInt(tfMaxResult.getText());
 			if (maxResult < 1) {
 				lStatus.setText("Invalid number of max result. Must be greater than 0...");
+				Dialogs.showErrorDialog(null, "Invalid number of max result. Must be greater than 0...");
 				tfMaxResult.requestFocus();	
 			}
 		} catch (NumberFormatException ex) {
 			lStatus.setText("Invalid number of max result... " + maxResult + " is not a number.");
+			Dialogs.showErrorDialog(null, "Invalid number of max result... " + maxResult + " is not a number.");
 			tfMaxResult.requestFocus();
 		}
 		
@@ -127,7 +130,14 @@ public class QueryController implements Initializable {
 		
 		dataQuery.setFrom(new TableFragment(tfFrom.getText(), null));
 		
-		results.add(dataQuery.query());
+		Object result = dataQuery.query();
+		if (result == null) {
+			Dialogs.showErrorDialog(null, "Please check query information.\nCheck log for exception encountered");
+			return;
+		} else {
+			results.add(result);
+		}
+		
 		this.getDataVisualizer().visualize(results.get(results.size() - 1));
 		if (results.size() > MAX_QUERY_HISTORY) {
 			results.remove(0);
@@ -228,6 +238,7 @@ public class QueryController implements Initializable {
 	private void changeFeature(ActionEvent e) {
 		lvFields.getItems().clear();
 		lvConstraints.getItems().clear();
+		tfFrom.clear();
 		
 		int selected = cbbFeature.getSelectionModel().getSelectedIndex();
 		if (selected != 0) {
@@ -238,6 +249,7 @@ public class QueryController implements Initializable {
 			
 			lvFields.getItems().addAll(DataController.getInstance().queryManager.getFields());
 			lvConstraints.getItems().addAll(DataController.getInstance().queryManager.getConstraintStrings());
+			tfFrom.setText(DataController.getInstance().queryManager.getFromString());
 		}
 	}
 	
@@ -245,10 +257,12 @@ public class QueryController implements Initializable {
 	@FXML
 	private void tfFromClicked(MouseEvent e) {
 		if (StageMaster.getPrimaryController().cmiAdvancedQuery.isSelected()) {
-			StageMaster.compositeTable().show();
-			StageMaster.compositeTable().toFront();
+			if (e.getClickCount() >= 2) {
+				StageMaster.compositeTable().show();
+				StageMaster.compositeTable().toFront();
+			}
 		} else {
-			lStatus.setText("Has to be in advanced query mode to change table...");
+			Dialogs.showErrorDialog(StageMaster.primaryStage(),"Has to be in advanced query mode to change table...");
 		}
 	}
 	

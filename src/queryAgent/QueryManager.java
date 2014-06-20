@@ -7,8 +7,12 @@ import java.util.Map.Entry;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryComponents.RestrictionFragment;
+import queryAgent.queryComponents.TableFragment;
 import utilities.Log;
 import utilities.StringUtility;
+import utilities.functional.Mapper;
 
 public class QueryManager extends QueryAgent<Object> {
 
@@ -120,6 +124,11 @@ public class QueryManager extends QueryAgent<Object> {
 		this.from.add(newComer);
 	}
 	
+	public void setFrom(List<TableFragment> newComers) {
+		this.from.clear();
+		this.from.addAll(newComers);
+	}
+	
 	public void setDefaultFrom() {
 		from.clear();
 		from.add(new TableFragment(QueryBuilder.DEFAULT_DATA_TABLE, null));
@@ -213,6 +222,14 @@ public class QueryManager extends QueryAgent<Object> {
 	}
 
 	/***************************Getters and setters**********************************/
+
+	public String getFromString() {
+		return StringUtility.join(new Mapper<TableFragment, String>() {
+			@Override
+			public String map(TableFragment input) {
+				return input.toString();
+			}}.map(from), ", ");
+	}
 	
 	public List<String> getConstraintStrings() {
 		List<String> output = new ArrayList<String>();

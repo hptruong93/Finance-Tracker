@@ -50,7 +50,7 @@
                         <RadioMenuItem fx:id="rmiLineChartVisualizer" mnemonicParsing="false" text="Linechart Visualizer" toggleGroup="$visualizer" />
                     </items>
                   </Menu>
-                  <CheckMenuItem fx:id="cmiAdvancedQuery" mnemonicParsing="false" text="Advanced Query" />
+                  <CheckMenuItem fx:id="cmiAdvancedQuery" mnemonicParsing="false" onAction="#queryModeChanged" text="Advanced Query" />
                </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

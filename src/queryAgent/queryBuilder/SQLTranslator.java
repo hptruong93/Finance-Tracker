@@ -1,4 +1,4 @@
-package queryAgent;
+package queryAgent.queryBuilder;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import queryAgent.queryComponents.TableFragment;
 import utilities.DateUtility;
 import utilities.StringUtility;
 import utilities.functional.Filter;

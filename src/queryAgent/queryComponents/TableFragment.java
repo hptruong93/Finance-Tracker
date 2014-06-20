@@ -1,4 +1,4 @@
-package queryAgent;
+package queryAgent.queryComponents;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +28,8 @@ public class TableFragment {
 	}
 	
 	public void join(TableFragment other, String joinType, String joiningCondition, String newAlias) {
-		this.tableName = "(" + this.toString() + ") " + joinType + "(" + other.toString() + ") ON (" +  joiningCondition + ")";
+		this.tableName = "(" + this.toString() + ") " + joinType + " (" + other.toString() + ") "
+				+ "ON (" +  joiningCondition + ")";
 		alias = newAlias;
 	}
 

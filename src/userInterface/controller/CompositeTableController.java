@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
@@ -18,8 +19,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import queryAgent.QueryBuilder;
-import queryAgent.TableFragment;
+import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryComponents.TableFragment;
 import userInterface.StageMaster;
 
 public class CompositeTableController implements Initializable {
@@ -48,6 +49,7 @@ public class CompositeTableController implements Initializable {
 	private void join(ActionEvent e) {
 		ObservableList<Integer> selected = lvTables.getSelectionModel().getSelectedIndices();
 		if (selected.size() < 2) {
+			Dialogs.showErrorDialog(null, "Select two or more tables to join!");
 			return;
 		} else {
 			TableFragment current = null;
@@ -69,7 +71,7 @@ public class CompositeTableController implements Initializable {
 			StageMaster.getQueryController().tfFrom.setText(lvTables.getSelectionModel().getSelectedItem());
 			bCancelPressed(null);
 		} catch (Exception ex) {
-			
+			Dialogs.showErrorDialog(null, "Please select a valid table!");
 		}
 	}
 	
@@ -83,6 +85,11 @@ public class CompositeTableController implements Initializable {
 	private void lvTableMouseReleased(MouseEvent e) {
 		if (e.getClickCount() >= 2) {
 			if (e.getButton() == MouseButton.PRIMARY) {
+				int index = lvTables.getSelectionModel().getSelectedIndex();
+				if (index != -1) {
+					StageMaster.getTableBuilderController().tfTable1.setText(lvTables.getItems().get(index));
+				}
+				
 				StageMaster.tableBuilder().show();
 				StageMaster.tableBuilder().toFront();
 			} else if (e.getButton() == MouseButton.SECONDARY) {
@@ -100,8 +107,10 @@ public class CompositeTableController implements Initializable {
 	
 	private void deleteCurrent() {
 		int index = lvTables.getSelectionModel().getSelectedIndex();
-		tables.remove(index);
-		lvTables.getItems().remove(index);
+		if (index != -1) {
+			tables.remove(index);
+			lvTables.getItems().remove(index);
+		}
 	}
 	
 	private void clear() {

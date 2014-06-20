@@ -1,4 +1,4 @@
-package queryAgent;
+package queryAgent.queryBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;

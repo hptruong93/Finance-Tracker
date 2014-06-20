@@ -1,4 +1,4 @@
-package queryAgent;
+package queryAgent.queryBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import queryAgent.queryComponents.RestrictionFragment;
+import queryAgent.queryComponents.TableFragment;
 import utilities.StringUtility;
 import utilities.functional.Mapper;
 
@@ -28,7 +30,7 @@ public class QueryBuilder {
 	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL",
 			"GREATER_THAN", "LESS_THAN", "LIKE", "ILIKE", "IS_EMPTY", "IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL"));
 
-	private static final Set<String> SUPPORTED_COUNT_OPTION = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DISTINCT", "ALL")));
+	public static final Set<String> SUPPORTED_COUNT_OPTION = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DISTINCT", "ALL")));
 
 	public static final Set<String> SUPPORTED_FUNCTIONS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DATE", "MONTH", "YEAR", "SUM", "AVG",
 			"MIN", "MAX", "COUNT")));
@@ -50,40 +52,6 @@ public class QueryBuilder {
 		this.translator = translator;
 	}
 	
-	public static boolean validSelect(String selectField) {
-		Map<String, String> parsed = parseQueryField(selectField);
-		String field = parsed.get("field");
-		String function = parsed.get("function");
-		String option = parsed.get("option");
-
-		if (field == null) {
-			return false;
-		} else {
-			if (!(new Mapper<String, String>() {
-				@Override
-				public String map(String input) {
-					String[] split = input.split("\\.");
-					return split[split.length - 1];
-				}
-			}.map(FIELD_LIST).contains(StringUtility.getComponent(field, "\\.", -1)))) {
-				return false;
-			}
-
-			if (function != null) {
-				if (!SUPPORTED_FUNCTIONS.contains(function)) {
-					return false;
-				}
-
-				if (option != null) {
-					if (function.toUpperCase().equals("COUNT")) {
-						return SUPPORTED_COUNT_OPTION.contains(option);
-					}
-				}
-			}
-			return true;
-		}
-	}
-
 	public String simplify(String field) {
 		return translator.simplify(field);
 	}
@@ -188,7 +156,7 @@ public class QueryBuilder {
 		return joinCondition(Arrays.asList(condition), joiner);
 	}
 
-	protected static Map<String, String> parseQueryField(String queryField) {
+	public static Map<String, String> parseQueryField(String queryField) {
 		HashMap<String, String> output = new HashMap<String, String>();
 		String field, function, option;
 
