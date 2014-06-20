@@ -3,6 +3,7 @@ package userInterface.controller.visualizer;
 import java.util.List;
 
 import javafx.scene.control.Label;
+import userInterface.controller.QueryController.QueryResult;
 import utilities.RecursivePrinter;
 
 public class LabelVisualizer implements IDataVisualizer {
@@ -14,8 +15,8 @@ public class LabelVisualizer implements IDataVisualizer {
 	}
 	
 	@Override
-	public void visualize(Object data) {
-		List<?> temp = (List<?>) data;
+	public void visualize(QueryResult result) {
+		List<?> temp = (List<?>) result.getResult();
 		tool.setText(new RecursivePrinter(true).print(temp));
 	}
 }

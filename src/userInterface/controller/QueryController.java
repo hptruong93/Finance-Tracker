@@ -36,16 +36,16 @@ public class QueryController implements Initializable {
 
 	private static final int MAX_QUERY_HISTORY = 10;
 	private QueryManager dataQuery;
-	
+
 	@FXML protected ComboBox<String> cbbFeature;
 	@FXML protected Button bQuery;
 	@FXML protected Button bAddField;
 	@FXML protected Button bAddConstraint;
 	@FXML protected Button bSelectAll;
-	
+
 	@FXML protected Button bPrevious;
 	@FXML protected Button bNext;
-	
+
 	@FXML public ListView<String> lvFields;
 	@FXML protected ListView<String> lvConstraints;
 	
@@ -63,7 +63,7 @@ public class QueryController implements Initializable {
 	private LineChartVisualizer lineChartVisualizer;
 	
 	private int cursor;
-	private List<Object> results;
+	private List<QueryResult> results;
 	protected List<Integer> constraintID;
 	private List<Feature> features;
 
@@ -86,7 +86,7 @@ public class QueryController implements Initializable {
 			features.add(f);
 		}
 		
-		results = new ArrayList<Object>();
+		results = new ArrayList<QueryResult>();
 		cursor = -1;
 	}
 
@@ -135,7 +135,9 @@ public class QueryController implements Initializable {
 			Dialogs.showErrorDialog(null, "Please check query information.\nCheck log for exception encountered");
 			return;
 		} else {
-			results.add(result);
+			List<String> currentFields = new ArrayList<String>();
+			currentFields.addAll(lvFields.getItems());
+			results.add(new QueryResult(currentFields, result));
 		}
 		
 		this.getDataVisualizer().visualize(results.get(results.size() - 1));
@@ -186,7 +188,7 @@ public class QueryController implements Initializable {
 	private void bPreviousPressed(ActionEvent e) {
 		bNext.setDisable(false);
 		cursor--;
-		tableVisualizer.visualize(results.get(cursor));
+		getDataVisualizer().visualize(results.get(cursor));
 		
 		if (cursor <= 1) {
 			bPrevious.setDisable(true);
@@ -197,7 +199,7 @@ public class QueryController implements Initializable {
 	private void bNextPressed(ActionEvent e) {
 		bPrevious.setDisable(false);
 		cursor++;
-		tableVisualizer.visualize(results.get(cursor));
+		getDataVisualizer().visualize(results.get(cursor));
 		if (cursor >= results.size() - 1) {
 			bNext.setDisable(true);
 		}
@@ -306,6 +308,25 @@ public class QueryController implements Initializable {
 			return lineChartVisualizer;
 		} else {
 			return null;
+		}
+	}
+	
+	/***********************************************************************************/
+	public static class QueryResult {
+		private List<String> fields;
+		private Object result;
+		
+		private QueryResult(List<String> fields, Object result) {
+			this.fields = fields;
+			this.result = result;
+		}
+		
+		public List<String> getFields() {
+			return fields;
+		}
+		
+		public Object getResult() {
+			return result;
 		}
 	}
 }

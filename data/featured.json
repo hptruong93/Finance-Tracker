@@ -128,8 +128,8 @@
 			"order_by": []
 		},
 		{
-			"name": "test",
-			"description": "a test",
+			"name": "Incremental average",
+			"description": "Sum of month average since beginning of record",
 			"mode": "advanced",
 			"fields": [
 				"MONTH(a.date)", 

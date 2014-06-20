@@ -10,7 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import userInterface.StageMaster;
+import userInterface.controller.QueryController.QueryResult;
 import utilities.Log;
 import utilities.RecursivePrinter;
 
@@ -26,10 +26,10 @@ public class TableVisualizer implements IDataVisualizer {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void visualize(Object data) {
+	public void visualize(QueryResult result) {
 		tool.getColumns().clear();
 		tool.getItems().clear();
-		final List<?> rowList = (List<?>) data;
+		final List<?> rowList = (List<?>) result.getResult();
 		int column = 1;
 
 		//If query has no result
@@ -54,11 +54,11 @@ public class TableVisualizer implements IDataVisualizer {
 		/***********Finish getting number of column*****************************************/
 		List<String> columnNames = null;
 		//Now double check with query fields list that the number of column is correct
-		if (column != StageMaster.getQueryController().lvFields.getItems().size()) {
+		if (column != result.getFields().size()) {
 			Log.exception(new IllegalArgumentException("Result inconsistent with query..."));
 			return;
 		} else {//Get column info
-			 columnNames = StageMaster.getQueryController().lvFields.getItems();
+			 columnNames = result.getFields();
 		}
 		
 		/**********************************
