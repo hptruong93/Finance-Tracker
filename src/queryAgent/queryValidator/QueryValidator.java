@@ -8,6 +8,14 @@ import utilities.functional.Mapper;
 
 public class QueryValidator {
 
+	public static void main(String[] args) {
+		String a = "((a = 2 AND b > 3) OR (b = 4 OR d >= 5)";
+		String b = a.replaceAll("\\(", "( ").replaceAll("\\)", " )");
+		for (String x : b.split(" ")) {
+			System.out.println(x);
+		}
+	}
+	
 	public static boolean validSelect(String selectField) {
 		selectField = selectField.split(" (?i)as ")[0];
 		Map<String, String> parsed = QueryBuilder.parseQueryField(selectField);

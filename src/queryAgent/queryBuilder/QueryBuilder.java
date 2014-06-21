@@ -28,7 +28,7 @@ public class QueryBuilder {
 	public static final String PURCHASE_SET_TABLE = "purchase_set";
 
 	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL",
-			"GREATER_THAN", "LESS_THAN", "LIKE", "ILIKE", "IS_EMPTY", "IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL"));
+			"GREATER_THAN", "LESS_THAN", "LIKE", "ILIKE", "IN", "IS_EMPTY", "IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL"));
 
 	public static final Set<String> SUPPORTED_COUNT_OPTION = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DISTINCT", "ALL")));
 
@@ -102,11 +102,21 @@ public class QueryBuilder {
 		Map<Integer, Object> valueMapping = new HashMap<Integer, Object>();
 		List<String> combining = new ArrayList<String>();
 		
-		for (int i = 0; i < conditions.length; i++) {
-			String currentCondition = conditions[i];
-			varID++;
-			valueMapping.put(varID, realValues.get(i));
-			combining.add(finalField + " " + currentCondition + " :var" + varID);
+		if (conditions.length == realValues.size()) {//Match one by one
+			for (int i = 0; i < conditions.length; i++) {
+				String currentCondition = conditions[i];
+				varID++;
+				valueMapping.put(varID, realValues.get(i));
+				combining.add(finalField + " " + currentCondition + " :var" + varID);
+			}
+		} else {//Distributive
+			for (String currentCondition : conditions) {
+				for (Object realValue : realValues) {
+					varID++;
+					valueMapping.put(varID, realValue);
+					combining.add(finalField + " " + currentCondition + " (:var" + varID + ")");
+				}
+			}
 		}
 		String finalQuery = joinCondition(combining, joiner);
 

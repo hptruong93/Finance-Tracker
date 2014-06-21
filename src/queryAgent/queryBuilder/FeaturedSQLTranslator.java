@@ -12,6 +12,7 @@ public class FeaturedSQLTranslator extends SQLTranslator {
 	
 	private static final Map<String,Function<Void, Object[]>> FEATURED_VALUES;
 	
+	
 	static {
 		HashMap<String, Function<Void, Object[]>> temp = new HashMap<String, Function<Void, Object[]>>();
 		
@@ -37,6 +38,8 @@ public class FeaturedSQLTranslator extends SQLTranslator {
 			}});
 		
 		FEATURED_VALUES = Collections.unmodifiableMap(temp);
+		
+		
 	}
 	
 	protected FeaturedSQLTranslator() {

@@ -2,6 +2,7 @@ package queryAgent.queryBuilder;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +13,13 @@ import queryAgent.queryComponents.TableFragment;
 import utilities.DateUtility;
 import utilities.StringUtility;
 import utilities.functional.Filter;
+import utilities.functional.Function;
 
 public class SQLTranslator {
 	private HashMap<String, String> varMapper;
 	
 	private static final HashMap<String, Class<?>> TYPES;
+	private static final Map<String, Function<String, Object>> PARSEABLE_TYPES;
 	
 	static {
 		TYPES = new HashMap<String, Class<?>>();
@@ -41,6 +44,39 @@ public class SQLTranslator {
 		TYPES.put("MIN", Void.class);
 		TYPES.put("MAX", Void.class);
 		TYPES.put("COUNT", Integer.class);
+		
+		HashMap<String, Function<String, Object>> temp1 = new HashMap<String, Function<String, Object>>();
+		temp1.put("java.sql.Date", new Function<String, Object>(){
+			@Override
+			public Object function(String input) {
+				return DateUtility.parseDate(input);
+			}});
+		
+		temp1.put("java.lang.Integer", new Function<String, Object>(){
+			@Override
+			public Object function(String input) {
+				return Integer.parseInt(input);
+			}});
+		
+		temp1.put("java.lang.Float", new Function<String, Object>(){
+			@Override
+			public Object function(String input) {
+				return Float.parseFloat(input);
+			}});
+		
+		temp1.put("java.lang.Double", new Function<String, Object>(){
+			@Override
+			public Object function(String input) {
+				return Double.parseDouble(input);
+			}});
+		
+		temp1.put("java.lang.String", new Function<String, Object>(){
+			@Override
+			public Object function(String input) {
+				return input;
+			}});
+		
+		PARSEABLE_TYPES = Collections.unmodifiableMap(temp1);
 	}
 	
 	protected SQLTranslator() {
@@ -146,8 +182,13 @@ public class SQLTranslator {
 		}
 	}
 	
+	public Object valueParse(String value, String type) {
+		System.out.println(type);
+		return PARSEABLE_TYPES.get(type).function(value);
+	}
+	
 	/**
-	 * Translate a condition string into HQL equivalent representation
+	 * Translate a condition string into SQL equivalent representation
 	 * @param condition condition in String, @see SUPPORTED_CONDITION in QueryBuilder
 	 * @param values values that have been parsed by valueTranslate method
 	 * @return map with two keys: array of strings "condition" for the HQL conditions parsed
@@ -197,6 +238,9 @@ public class SQLTranslator {
 			}
 			out.put("condition", output);
 			out.put("joiner", "OR");
+			break;
+		case "IN":
+			out.put("condition", new String[]{"IN"});
 			break;
 		case "ILIKE":
 			output = new String[values.size()];

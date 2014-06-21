@@ -2,17 +2,23 @@ package queryAgent.queryComponents;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import queryAgent.queryBuilder.QueryBuilder;
+import queryAgent.queryBuilder.SQLTranslator;
+import queryAgent.queryBuilder.TranslatorFactory;
+import queryAgent.queryComponents.RestrictionTree.RestrictionNode;
+import utilities.GeneralUtility;
 import utilities.IJsonable;
 import utilities.functional.Mapper;
+import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonRootNode;
-import argo.jdom.JsonStringNode;
 
 public class RestrictionFragment implements IJsonable {
 	
@@ -23,6 +29,21 @@ public class RestrictionFragment implements IJsonable {
 	public RestrictionFragment(String restriction, Map<Integer, Object> variables) {
 		this.restriction = restriction;
 		this.variables = Collections.unmodifiableMap(variables);
+	}
+	
+	public RestrictionFragment(JsonNode node) {
+		restriction = new RestrictionNode(node.getNode("condition")).toString();
+		HashMap<Integer, Object> varTemp = new HashMap<Integer, Object>();
+		
+		List<JsonNode> values = node.getArrayNode("values");
+		for (JsonNode sub : values) {
+			Integer id = Integer.parseInt(sub.getNumberValue("id"));
+				
+			SQLTranslator translator = TranslatorFactory.getTranslator(TranslatorFactory.FEATURED_TRANSLATOR);
+			Object val = translator.valueParse(sub.getStringValue("value"), sub.getStringValue("type"));
+			varTemp.put(id, val);
+		}
+		variables = Collections.unmodifiableMap(varTemp);
 	}
 	
 	public void join(RestrictionFragment other, String joiner) {
@@ -40,6 +61,15 @@ public class RestrictionFragment implements IJsonable {
 	
 	public void xor(RestrictionFragment other) {
 		join(other, "XOR");
+	}
+	
+	public static void main(String[] args) {
+		Map<Integer, Object> a = new HashMap<Integer, Object>();
+		a.put(1, 7.0f);
+		a.put(2, 8.0f);
+		RestrictionFragment x = new RestrictionFragment("(cost > :var1) AND (cost < :var2)", a);
+		RestrictionFragment y = new RestrictionFragment(x.jsonize());
+		System.out.println(GeneralUtility.jsonToString(y.jsonize()));
 	}
 	
 	public RestrictionFragment not() {
@@ -80,7 +110,6 @@ public class RestrictionFragment implements IJsonable {
 
 	@Override
 	public JsonRootNode jsonize() {
-		JsonStringNode condition = JsonNodeFactories.string(restriction);
 		JsonRootNode values = JsonNodeFactories.array(new Mapper<Entry<Integer, Object>, JsonRootNode>() {
 			@Override
 			public JsonRootNode map(Entry<Integer, Object> input) {
@@ -93,7 +122,7 @@ public class RestrictionFragment implements IJsonable {
 		}.map(this.variables.entrySet()));
 		
 		JsonRootNode output = JsonNodeFactories.object( 
-				JsonNodeFactories.field("condition", condition),
+				JsonNodeFactories.field("condition", RestrictionTree.parse(restriction).jsonize()),
 				JsonNodeFactories.field("values", values)
 				);
 		
