@@ -3,11 +3,13 @@ package queryAgent.queryComponents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import queryAgent.queryBuilder.QueryBuilder;
 import utilities.IJsonable;
+import utilities.functional.Mapper;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonRootNode;
 import argo.jdom.JsonStringNode;
@@ -34,6 +36,10 @@ public class RestrictionFragment implements IJsonable {
 	
 	public void or(RestrictionFragment other) {
 		join(other, "OR");
+	}
+	
+	public void xor(RestrictionFragment other) {
+		join(other, "XOR");
 	}
 	
 	public RestrictionFragment not() {
@@ -74,21 +80,21 @@ public class RestrictionFragment implements IJsonable {
 
 	@Override
 	public JsonRootNode jsonize() {
-		
-		JsonRootNode json = JsonNodeFactories.object( JsonNodeFactories.field("name", JsonNodeFactories.string("Black Lace")), 
-				JsonNodeFactories.field("sales", JsonNodeFactories.number("110921")), 
-				JsonNodeFactories.field("totalRoyalties", JsonNodeFactories.number("10223.82")), 
-				JsonNodeFactories.field("singles", JsonNodeFactories.array( JsonNodeFactories.string("Superman"), 
-						JsonNodeFactories.string("Agadoo") )) );
-		
-		JsonStringNode field = JsonNodeFactories.string("bla");
-		JsonStringNode condition = JsonNodeFactories.string("condition");
-		JsonStringNode value = JsonNodeFactories.string("value");
+		JsonStringNode condition = JsonNodeFactories.string(restriction);
+		JsonRootNode values = JsonNodeFactories.array(new Mapper<Entry<Integer, Object>, JsonRootNode>() {
+			@Override
+			public JsonRootNode map(Entry<Integer, Object> input) {
+				return JsonNodeFactories.object(
+						JsonNodeFactories.field("id", JsonNodeFactories.number(input.getKey())),
+						JsonNodeFactories.field("value", JsonNodeFactories.string(input.getValue().toString())),
+						JsonNodeFactories.field("type", JsonNodeFactories.string(input.getValue().getClass().getName()))
+						);
+			}
+		}.map(this.variables.entrySet()));
 		
 		JsonRootNode output = JsonNodeFactories.object( 
-				JsonNodeFactories.field("field", field),
 				JsonNodeFactories.field("condition", condition),
-				JsonNodeFactories.field("value", value)
+				JsonNodeFactories.field("values", values)
 				);
 		
 		return output;

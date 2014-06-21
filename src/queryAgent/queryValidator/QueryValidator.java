@@ -9,6 +9,7 @@ import utilities.functional.Mapper;
 public class QueryValidator {
 
 	public static boolean validSelect(String selectField) {
+		selectField = selectField.split(" (?i)as ")[0];
 		Map<String, String> parsed = QueryBuilder.parseQueryField(selectField);
 		String field = parsed.get("field");
 		String function = parsed.get("function");

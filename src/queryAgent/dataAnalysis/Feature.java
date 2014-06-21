@@ -266,7 +266,9 @@ public class Feature implements IJsonable {
 	}
 	
 	public static void main(String[] args) {
-		Feature t = DEFAULT_FEATURES.get(0);
+		Feature t = DEFAULT_FEATURES.get(4);
+		
+		
 		System.out.println(GeneralUtility.jsonToString(t.jsonize()));
 	}
 	

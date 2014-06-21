@@ -30,6 +30,7 @@ import userInterface.controller.visualizer.IDataVisualizer;
 import userInterface.controller.visualizer.LabelVisualizer;
 import userInterface.controller.visualizer.LineChartVisualizer;
 import userInterface.controller.visualizer.TableVisualizer;
+import utilities.StringUtility;
 import utilities.functional.Mapper;
 
 public class QueryController implements Initializable {
@@ -116,7 +117,8 @@ public class QueryController implements Initializable {
 				toAdd = new Mapper<String, String>() {
 					@Override
 					public String map(String input) {
-						return TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR).fieldTranslate(input);
+						return TranslatorFactory.getTranslator(TranslatorFactory.STANDARD_TRANSLATOR)
+								.fieldTranslate(input.split(" (?i)as ")[0]);
 					}
 				}.map(lvFields.getItems());
 			}
@@ -136,7 +138,12 @@ public class QueryController implements Initializable {
 			return;
 		} else {
 			List<String> currentFields = new ArrayList<String>();
-			currentFields.addAll(lvFields.getItems());
+			currentFields.addAll(new Mapper<String, String>() {
+				@Override
+				public String map(String input) {
+					return StringUtility.getComponent(input, " (?i)as ", -1);
+				}
+			}.map(lvFields.getItems()));
 			results.add(new QueryResult(currentFields, result));
 		}
 		
