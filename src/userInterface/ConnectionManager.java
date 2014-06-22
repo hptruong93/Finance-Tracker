@@ -47,6 +47,7 @@ public class ConnectionManager {
 		QueryAgent.closeFactory();
 		connections[DATABASE] = false;
 		connections[SERVER] = false;
+		connections[FEATURE] = false;
 		return isDisconnected();
 	}
 	
