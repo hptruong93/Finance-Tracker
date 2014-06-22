@@ -31,9 +31,15 @@ public class RestrictionTree {
 	}
 	
 	public static void main(String[] args) {
-		String a = "( type = :var11 )   OR   (    (  type = :var10  )   OR   (    (  type = :var9  )   OR   (    (  type = :var8  )   OR   (    (  type = :var7  )   OR   (    (  type = :var6  )   OR   (    (  type = :var5  )   OR   (    (  type = :var4  )   OR   (    (  type = :var3  )   OR   (  type = :var2 )  )  )  )  )  )  )  )  ) ";
-		RestrictionNode n = parse(a);
-		System.out.println(n.preOrder());
+//		String a = "( type = :var11 )   OR   (    (  type = :var10  )   OR   (    (  type = :var9  )   OR   (    (  type = :var8  )   OR   (    (  type = :var7  )   OR   (    (  type = :var6  )   OR   (    (  type = :var5  )   OR   (    (  type = :var4  )   OR   (    (  type = :var3  )   OR   (  type = :var2 )  )  )  )  )  )  )  )  ) ";
+//		RestrictionNode n = parse(a);
+//		System.out.println(n.preOrder());
+		String a = "(MONTH(purchase_set.date) = :var1)";
+		Pattern x = Pattern.compile(":var[0-9\\.]+");
+		Matcher m = x.matcher(a);
+		while (m.find()) {
+			System.out.println("found " + a.substring(m.start(), m.end()));
+		}
 	}
 
 	public static RestrictionNode parse(String restriction) {
@@ -46,7 +52,6 @@ public class RestrictionTree {
 				restriction = restriction.replace(found, found.replaceAll(" ", ""));
 			}
 		}
-		System.out.println(restriction);
 		
 		List<String> expression = Arrays.asList(restriction.split(" "));
 		Collections.reverse(expression);
@@ -181,10 +186,50 @@ public class RestrictionTree {
 			}
 		}
 		
+		public boolean changeVar(String newID) {
+			Matcher m = RestrictionFragment.VAR_PATTERN.matcher(this.value);
+			if (!m.find()) {
+				return false;
+			} else {
+				String oldID = this.value.substring(m.start(), m.end());
+				this.value = this.value.replace(oldID, ":var" + newID);
+				return true;
+			}
+		}
+		
+		public void join(RestrictionNode other, String condition) {
+			RestrictionNode replacement = new RestrictionNode(this.value, this.left, this.right);
+			this.left = replacement;
+			this.right = other;
+			this.value = condition;
+		}
+		
+		public RestrictionNode findVar(String id) {
+			if (this.value.contains(id)) {
+				return this;
+			} else {
+				if (left != null && left.findVar(id) != null) {
+					return left;
+				} else if (right != null && right.findVar(id) != null) {
+					return right;
+				} else {
+					return null;
+				}
+			}
+		}
+		
 		public boolean isLeaf() {
 			return left == null && right == null;
 		}
 
+		public RestrictionNode cloneLeaf() {
+			if (isLeaf()) {
+				return new RestrictionNode(this.value);
+			} else {
+				return null;
+			}
+		}
+		
 		public String preOrder() {// Left, right, this
 			if (isLeaf()) {
 				return value;

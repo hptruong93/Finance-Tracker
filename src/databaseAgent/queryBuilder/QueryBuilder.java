@@ -11,10 +11,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import databaseAgent.queryComponents.RestrictionFragment;
-import databaseAgent.queryComponents.TableFragment;
 import utilities.StringUtility;
 import utilities.functional.Mapper;
+import databaseAgent.queryComponents.RestrictionFragment;
+import databaseAgent.queryComponents.TableFragment;
 
 /**
  * Helper function to build HQL queries
@@ -94,25 +94,24 @@ public class QueryBuilder {
 				return null;
 			}
 		}.map(values);
-		Map<String, Object> parsedConditions = translator.conditionTranslate(condition, realValues);
-		String[] conditions = (String[]) parsedConditions.get("condition");
-		String joiner = (String) parsedConditions.get("joiner");
+		String[] conditions = translator.conditionTranslate(condition, realValues);
+		String joiner = SQLTranslator.CONDITION_JOINER.get(condition);
 
-		Map<Integer, Object> valueMapping = new HashMap<Integer, Object>();
+		Map<String, Object> valueMapping = new HashMap<String, Object>();
 		List<String> combining = new ArrayList<String>();
 		
 		if (conditions.length == realValues.size()) {//Match one by one
 			for (int i = 0; i < conditions.length; i++) {
 				String currentCondition = conditions[i];
 				varID++;
-				valueMapping.put(varID, realValues.get(i));
+				valueMapping.put(varID + "", realValues.get(i));
 				combining.add(finalField + " " + currentCondition + " :var" + varID);
 			}
 		} else {//Distributive
 			for (String currentCondition : conditions) {
 				for (Object realValue : realValues) {
 					varID++;
-					valueMapping.put(varID, realValue);
+					valueMapping.put(varID + "", realValue);
 					combining.add(finalField + " " + currentCondition + " (:var" + varID + ")");
 				}
 			}

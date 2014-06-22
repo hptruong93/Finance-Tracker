@@ -26,7 +26,9 @@ public class SQLTranslator {
 	private static final String SAME_TYPE = "#SAME";
 	
 	//Refer to QueryBuider.SUPPORTED_CONDITIONS
-	protected static final BidiMap<String, String> TRANSLATED_CONDITION;
+	public static final BidiMap<String, String> TRANSLATED_CONDITION;
+	//Natural joiners for condition (e.g. EQUALS --> OR, NOT_EQUALS --> AND)
+	public static final Map<String, String> CONDITION_JOINER; 
 	
 	static {
 		TYPES = new HashMap<String, String>();
@@ -99,6 +101,19 @@ public class SQLTranslator {
 		translated.put("IS_NOT_NULL", "IS NOT NULL");
 		
 		TRANSLATED_CONDITION = UnmodifiableBidiMap.unmodifiableBidiMap(translated);
+		
+		Map<String, String> temp = new HashMap<String, String>();
+		temp.put("BETWEEN", "OR");
+		temp.put("EQUAL", "OR");
+		temp.put("NOT_EQUAL", "AND");
+		temp.put("GREATER_THAN", "AND");
+		temp.put("LESS_THAN", "AND");
+		temp.put("LIKE", "AND");
+		temp.put("IN", "OR");
+		temp.put("IS_EMPTY", "#"); //This does not really make sense to use joiner
+		temp.put("IS_NOT_EMPTY", "#"); //This does not really make sense to use joiner
+		temp.put("IS_NOT_NULL", "#"); //This does not really make sense to use joiner
+		CONDITION_JOINER = Collections.unmodifiableMap(temp);
 	}
 	
 	protected SQLTranslator() {
@@ -193,81 +208,68 @@ public class SQLTranslator {
 	 * Translate a condition string into SQL equivalent representation
 	 * @param condition condition in String, @see SUPPORTED_CONDITION in QueryBuilder
 	 * @param values values that have been parsed by valueTranslate method
-	 * @return map with two keys: array of strings "condition" for the HQL conditions parsed
-	 *  and "joiner" to join these conditions
+	 * @return array of strings condition in SQL for the condition parsed
 	 */
-	public Map<String, Object> conditionTranslate(String condition, List<Object> values) {
-		Map<String, Object> out = new HashMap<String, Object>();
-		out.put("joiner", "AND");
+	public String[] conditionTranslate(String condition, List<Object> values) {
+		String[] out;
 		
 		switch (condition) {
 		case "BETWEEN":
-			out.put("condition", new String[] {">", "<"});
+			out = new String[] {">", "<"};
 			break;
 		case "EQUAL":
-			String[] output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = "=";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = "=";
 			}
-			out.put("condition", output);
-			out.put("joiner", "OR");
 			break;
 		case "NOT_EQUAL":
-			output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = "<>";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = "<>";
 			}
-			out.put("condition", output);
 			break;
 		case "GREATER_THAN":
-			output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = ">";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = ">";
 			}
-			out.put("condition", output);
 			break;
 		case "LESS_THAN":
-			output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = "<";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = "<";
 			}
-			out.put("condition", output);
 			break;
 		case "LIKE":
-			output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = "LIKE";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = "LIKE";
 			}
-			out.put("condition", output);
-			out.put("joiner", "OR");
 			break;
 		case "IN":
-			output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = "=";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = "=";
 			}
-			out.put("condition", output);
-			out.put("joiner", "OR");
 			break;
 		case "ILIKE":
-			output = new String[values.size()];
-			for (int i = 0; i < output.length; i++) {
-				output[i] = "ILIKE";
+			out = new String[values.size()];
+			for (int i = 0; i < out.length; i++) {
+				out[i] = "ILIKE";
 			}
-			out.put("condition", output);
-			out.put("joiner", "OR");
 			break;
 		case "IS_EMPTY":
-			out.put("condition", new String[] {"IS EMPTY"});
+			out = new String[] {"IS EMPTY"};
 			break;
 		case "IS_NOT_EMPTY":
-			out.put("condition", new String[] {"IS NOT EMPTY"});
+			out = new String[] {"IS NOT EMPTY"};
 			break;
 		case "IS_NOT_NULL":
-			out.put("condition", new String[] {"IS NOT NULL"});
+			out = new String[] {"IS NOT NULL"};
 			break;
 		case "IS_NULL":
-			out.put("condition", new String[] {"IS NULL"});
+			out = new String[] {"IS NULL"};
 			break;
 		default:
 			return null;

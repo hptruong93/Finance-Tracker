@@ -22,7 +22,7 @@ public class PlainBuilder extends QueryBuilder {
 	
 	@Override
 	public RestrictionFragment buildConstraint(String field, String condition, String value) {
-		Map<Integer, Object> valueMapping = new HashMap<Integer, Object>();
+		Map<String, Object> valueMapping = new HashMap<String, Object>();
 		return new RestrictionFragment(condition, valueMapping);
 	}
 	

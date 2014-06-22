@@ -87,8 +87,6 @@ public class Feature implements IJsonable {
 			}
 			
 			for (JsonNode sub : node.getArrayNode("criteria")) {
-//				String condition = sub.getStringValue("condition");
-//				RestrictionFragment rf = builder.buildConstraint(null, condition, null);
 				RestrictionFragment rf = new RestrictionFragment(sub);
 				criteria.add(rf);
 			}
@@ -98,8 +96,6 @@ public class Feature implements IJsonable {
 			}
 
 			for (JsonNode sub : node.getArrayNode("having")) {
-				String condition = sub.getStringValue("condition");
-//				RestrictionFragment rf = builder.buildConstraint(null, condition, null);
 				RestrictionFragment rf = new RestrictionFragment(sub);
 				having.add(rf);
 			}
@@ -115,10 +111,6 @@ public class Feature implements IJsonable {
 			}
 			
 			for (JsonNode sub : node.getArrayNode("criteria")) {
-//				String field = sub.getStringValue("field");
-//				String condition = sub.getStringValue("condition");
-//				String value = sub.getStringValue("value");
-//				RestrictionFragment rf = builder.buildConstraint(field, condition, value);
 				RestrictionFragment rf = new RestrictionFragment(sub);
 				criteria.add(rf);
 			}
@@ -128,10 +120,6 @@ public class Feature implements IJsonable {
 			}
 
 			for (JsonNode sub : node.getArrayNode("having")) {
-//				String field = sub.getStringValue("field");
-//				String condition = sub.getStringValue("condition");
-//				String value = sub.getStringValue("value");
-//				RestrictionFragment rf = builder.buildConstraint(field, condition, value);
 				RestrictionFragment rf = new RestrictionFragment(sub);
 				having.add(rf);
 			}

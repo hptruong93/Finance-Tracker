@@ -7,12 +7,12 @@ import java.util.Map.Entry;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import databaseAgent.queryBuilder.QueryBuilder;
-import databaseAgent.queryComponents.RestrictionFragment;
-import databaseAgent.queryComponents.TableFragment;
 import utilities.Log;
 import utilities.StringUtility;
 import utilities.functional.Mapper;
+import databaseAgent.queryBuilder.QueryBuilder;
+import databaseAgent.queryComponents.RestrictionFragment;
+import databaseAgent.queryComponents.TableFragment;
 
 public class ServerQueryManager extends QueryManager {
 
@@ -100,12 +100,12 @@ public class ServerQueryManager extends QueryManager {
 		
 		Query query = session.createSQLQuery(sql);
 		for (RestrictionFragment rf : criteria) {
-			for (Entry<Integer, Object> entry : rf.getVariables().entrySet()) {
+			for (Entry<String, Object> entry : rf.getVariables().entrySet()) {
 				query.setParameter("var" + entry.getKey(), entry.getValue());
 			}
 		}
 		for (RestrictionFragment rf : having) {
-			for (Entry<Integer, Object> entry : rf.getVariables().entrySet()) {
+			for (Entry<String, Object> entry : rf.getVariables().entrySet()) {
 				query.setParameter("var" + entry.getKey(), entry.getValue());
 			}
 		}
