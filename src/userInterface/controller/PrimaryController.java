@@ -1,5 +1,6 @@
 package userInterface.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -9,12 +10,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Dialogs;
+import javafx.scene.control.Dialogs.DialogResponse;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.layout.AnchorPane;
-import queryAgent.dataAnalysis.Feature;
-import queryAgent.queryBuilder.PlainBuilder;
-import queryAgent.queryBuilder.QueryBuilder;
+import javafx.stage.FileChooser;
 import userInterface.StageMaster;
+import userProfile.UserProfile;
+import utilities.FileUtility;
+import utilities.JSONUtility;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonNodeFactories;
+import argo.jdom.JsonRootNode;
+import databaseAgent.dataAnalysis.Feature;
+import databaseAgent.queryBuilder.PlainBuilder;
+import databaseAgent.queryBuilder.QueryBuilder;
 
 public class PrimaryController implements Initializable {
 
@@ -33,11 +42,14 @@ public class PrimaryController implements Initializable {
 	@FXML protected RadioMenuItem rmiLineChartVisualizer;
 	@FXML protected CheckMenuItem cmiAdvancedQuery;
 	/************************Help menu************************************************/
+	
+	/*********************************************************************************/
+	protected UserProfile userProfile;
 	/*********************************************************************************/
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
+		userProfile = new UserProfile("HP");
 	}
 
 	@FXML
@@ -72,20 +84,57 @@ public class PrimaryController implements Initializable {
 		Feature toBeSaved = new Feature();
 		
 		String name = Dialogs.showInputDialog(null, "Name of the new feature");
-		String description = Dialogs.showInputDialog(null, "Description of the feature");
-		
-		toBeSaved.loadConfig(DataController.getInstance().queryManager, name, description, isAdvanced);
-		StageMaster.getQueryController().addFeature(toBeSaved);
+		if (name != null) {
+			String description = Dialogs.showInputDialog(null, "Description of the feature");
+
+			if (description != null) {
+				toBeSaved.loadConfig(DataController.getInstance().queryManager, name, description, isAdvanced);
+				StageMaster.getQueryController().addFeature(toBeSaved);
+			}
+		}
 	}
 	
 	@FXML
 	private void deleteCurrentFeature(ActionEvent e) {
 		int selected = StageMaster.getQueryController().cbbFeature.getSelectionModel().getSelectedIndex();
 		if (selected > 0) {
-			StageMaster.getQueryController().features.remove(selected);
+			StageMaster.getQueryController().featureManager.remove(selected);
 			StageMaster.getQueryController().cbbFeature.getItems().remove(selected);
 		}
 	}
+	
+	@FXML
+	private void exportFeatures(ActionEvent e) {
+		FileChooser fileChooser = new FileChooser();
+		File file = fileChooser.showSaveDialog(StageMaster.primaryStage());
+		if (file != null) {
+			JsonRootNode write = JsonNodeFactories.object(JsonNodeFactories.field("user_info", userProfile.jsonize()),
+				JsonNodeFactories.field("features", StageMaster.getQueryController().featureManager.jsonize()));
+			JSONUtility.dumpToFile(write, file);
+		}
+	}
+	
+	@FXML
+	private void importFeatures(ActionEvent e) {
+		DialogResponse response = Dialogs.showConfirmDialog(StageMaster.primaryStage(), "All current features will be removed.\nAre you sure?");
+		if (response.compareTo(DialogResponse.YES) == 0) {
+			File file = new FileChooser().showOpenDialog(StageMaster.primaryStage());
+			if (file != null) {
+				StageMaster.getQueryController().featureManager.clear();
+				StageMaster.getQueryController().featureManager.add(null);
+				StageMaster.getQueryController().cbbFeature.getItems().clear();
+				StageMaster.getQueryController().cbbFeature.getItems().add("");
+
+				JsonRootNode n = FileUtility.readJSON(file);
+				for (JsonNode sub : n.getArrayNode("features")) {
+					Feature f = new Feature();
+					f.loadConfig(sub);
+					StageMaster.getQueryController().addFeature(f);
+				}
+			}
+		}
+	}
+	
 	/*********************************************************************************/
 	@FXML
 	private void queryModeChanged(ActionEvent e) {

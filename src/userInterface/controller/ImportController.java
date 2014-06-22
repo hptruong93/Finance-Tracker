@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
+import databaseAgent.ServerDataManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import purchases.DataManager;
 import purchases.Purchase;
 import purchases.PurchaseSet;
 import purchases.Type;
@@ -92,13 +92,13 @@ public class ImportController implements Initializable {
 	private ArrayList<TextField> units;
 	private ArrayList<TextField> costs;
 	
-	private DataManager manager;
+	private ServerDataManager manager;
 	private ImportVerifier verifier;
 
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		manager = new DataManager();
+		manager = new ServerDataManager();
 		verifier = new ImportVerifier();
 		types = new ArrayList<ComboBox<String>>(Arrays.asList(
 				cbbType0, cbbType1, cbbType2, cbbType3, cbbType4, cbbType5, cbbType6, cbbType7, cbbType8, cbbType9));
@@ -146,7 +146,7 @@ public class ImportController implements Initializable {
 			}
 		}
 		if (adding.size() > 0) {
-			PurchaseSet toAdd = new PurchaseSet(tfLocation.getText(), DateUtility.parseDate(tfDate.getText()), adding);
+			PurchaseSet toAdd = new PurchaseSet(tfLocation.getText(), DateUtility.parseSQLDate(tfDate.getText()), adding);
 			manager.addPurchaseSet(toAdd);
 		} else if (lStatus.getText().length() == 0) {
 			lStatus.setText("Nothing to add");

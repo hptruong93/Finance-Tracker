@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import databaseAgent.queryBuilder.QueryBuilder;
+import databaseAgent.queryComponents.TableFragment;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,8 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import queryAgent.queryBuilder.QueryBuilder;
-import queryAgent.queryComponents.TableFragment;
 import userInterface.StageMaster;
 
 public class TableBuilderController implements Initializable {

@@ -1,4 +1,4 @@
-package queryAgent.queryBuilder;
+package databaseAgent.queryBuilder;
 
 public class TranslatorFactory {
 	

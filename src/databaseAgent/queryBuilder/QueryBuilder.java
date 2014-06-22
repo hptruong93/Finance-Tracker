@@ -1,4 +1,4 @@
-package queryAgent.queryBuilder;
+package databaseAgent.queryBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import queryAgent.queryComponents.RestrictionFragment;
-import queryAgent.queryComponents.TableFragment;
+import databaseAgent.queryComponents.RestrictionFragment;
+import databaseAgent.queryComponents.TableFragment;
 import utilities.StringUtility;
 import utilities.functional.Mapper;
 
@@ -27,8 +27,7 @@ public class QueryBuilder {
 	public static final String DEFAULT_DATA_TABLE = "purchase as p left join purchase_set on p.purchase_set = purchase_set.id";
 	public static final String PURCHASE_SET_TABLE = "purchase_set";
 
-	public static final List<String> SUPPORTED_CONDITION = Collections.unmodifiableList(Arrays.asList("BETWEEN", "EQUAL", "NOT_EQUAL",
-			"GREATER_THAN", "LESS_THAN", "LIKE", "ILIKE", "IN", "IS_EMPTY", "IS_NOT_EMPTY", "IS_NOT_NULL", "IS_NULL"));
+	public static final Set<String> SUPPORTED_CONDITION = Collections.unmodifiableSet(SQLTranslator.TRANSLATED_CONDITION.keySet());
 
 	public static final Set<String> SUPPORTED_COUNT_OPTION = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("DISTINCT", "ALL")));
 

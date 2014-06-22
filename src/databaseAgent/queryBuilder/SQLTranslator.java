@@ -1,6 +1,5 @@
-package queryAgent.queryBuilder;
+package databaseAgent.queryBuilder;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,47 +8,52 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import queryAgent.queryComponents.TableFragment;
 import utilities.DateUtility;
 import utilities.StringUtility;
 import utilities.functional.Filter;
 import utilities.functional.Function;
+import databaseAgent.queryComponents.TableFragment;
 
 public class SQLTranslator {
 	private HashMap<String, String> varMapper;
-	
-	private static final HashMap<String, Class<?>> TYPES;
+
+	//Refer to QueryBuilder.FIELD_LIST
+	private static final HashMap<String, String> TYPES;
 	private static final Map<String, Function<String, Object>> PARSEABLE_TYPES;
+	private static final String SAME_TYPE = "#SAME";
+	
+	//Refer to QueryBuider.SUPPORTED_CONDITIONS
+	protected static final Map<String, String> TRANSLATED_CONDITION;
 	
 	static {
-		TYPES = new HashMap<String, Class<?>>();
+		TYPES = new HashMap<String, String>();
 		
 		//Properties
-		TYPES.put("id", Integer.class);
-		TYPES.put("location", String.class);
-		TYPES.put("date", Date.class);
-		TYPES.put("description", String.class);
-		TYPES.put("type", String.class);
-		TYPES.put("quantity", Integer.class);
-		TYPES.put("unit", String.class);
-		TYPES.put("cost", Float.class);
-		TYPES.put("purchase_set_id", Integer.class);
+		TYPES.put("id", "java.lang.Integer");
+		TYPES.put("location", "java.lang.String");
+		TYPES.put("date", "java.sql.Date");
+		TYPES.put("description", "java.lang.String");
+		TYPES.put("type", "java.lang.String");
+		TYPES.put("quantity", "java.lang.Integer");
+		TYPES.put("unit", "java.lang.String");
+		TYPES.put("cost", "java.lang.Float");
+		TYPES.put("purchase_set_id", "java.lang.Integer");
 		
-		//Functions. Void class indicates that this functions returns the same type of the field
-		TYPES.put("DATE", Integer.class);
-		TYPES.put("MONTH", Integer.class);
-		TYPES.put("YEAR", Integer.class);
-		TYPES.put("SUM", Void.class);
-		TYPES.put("AVG", Void.class);
-		TYPES.put("MIN", Void.class);
-		TYPES.put("MAX", Void.class);
-		TYPES.put("COUNT", Integer.class);
+		//Functions. #SAME class indicates that this functions returns the same type of the field
+		TYPES.put("DATE", "java.lang.Integer");
+		TYPES.put("MONTH", "java.lang.Integer");
+		TYPES.put("YEAR", "java.lang.Integer");
+		TYPES.put("SUM", SAME_TYPE);
+		TYPES.put("AVG", SAME_TYPE);
+		TYPES.put("MIN", SAME_TYPE);
+		TYPES.put("MAX", SAME_TYPE);
+		TYPES.put("COUNT", "java.lang.Integer");
 		
 		HashMap<String, Function<String, Object>> temp1 = new HashMap<String, Function<String, Object>>();
 		temp1.put("java.sql.Date", new Function<String, Object>(){
 			@Override
 			public Object function(String input) {
-				return DateUtility.parseDate(input);
+				return DateUtility.parseSQLDate(input);
 			}});
 		
 		temp1.put("java.lang.Integer", new Function<String, Object>(){
@@ -77,6 +81,21 @@ public class SQLTranslator {
 			}});
 		
 		PARSEABLE_TYPES = Collections.unmodifiableMap(temp1);
+		Map<String, String> translated = new HashMap<String, String>();
+		translated.put("BETWEEN", "BETWEEN"); //Can't really translate
+		translated.put("EQUAL", "=");
+		translated.put("NOT_EQUAL", "<>");
+		translated.put("GREATER_THAN", ">");
+		translated.put("LESS_THAN", "<");
+		translated.put("LIKE", "LIKE");
+		translated.put("ILIKE", "ILIKE");
+		translated.put("IN", "IN");
+		translated.put("IS_EMPTY", "IS EMPTY");
+		translated.put("IS_NOT_EMPTY", "IS NOT EMPTY");
+		translated.put("IS_NULL", "IS NULL");
+		translated.put("IS_NOT_NULL", "IS NOT NULL");
+		
+		TRANSLATED_CONDITION = Collections.unmodifiableMap(translated);
 	}
 	
 	protected SQLTranslator() {
@@ -146,45 +165,25 @@ public class SQLTranslator {
 	}
 	
 	public Object[] valueTranslate(String field, String value) {
-		Object output = null;
 		Map<String, String> parsed = parseQueryField(field);
 		String function = parsed.get("function");
 		field = StringUtility.getComponent(parsed.get("field"), "\\.", -1);
 		
-		Class<?> toParse;
+		String toParse;
 		if (function == null) {
 			 toParse = TYPES.get(field);
 		} else {
 			toParse = TYPES.get(function);
-			if (toParse == Void.class) {
+			if (toParse.equals(SAME_TYPE)) {
 				toParse = TYPES.get(field);
 			}
 		}
 		
-		try {
-			if (toParse == Date.class) {
-				output = DateUtility.parseDate(value);
-			} else if (toParse == Integer.class) {
-				output = Integer.parseInt(value);
-			} else if (toParse == Float.class) {
-				output = Float.parseFloat(value);
-			} else if (toParse == String.class) {
-				output = value;
-			}
-		} catch (Exception e) {
-			output = null;
-		}
-		
-		if (output != null) {
-			return new Object[]{output};
-		} else {
-			return null;
-		}
+		return valueParse(value, toParse);
 	}
 	
-	public Object valueParse(String value, String type) {
-		System.out.println(type);
-		return PARSEABLE_TYPES.get(type).function(value);
+	public Object[] valueParse(String value, String type) {
+		return new Object[] {PARSEABLE_TYPES.get(type).function(value)};
 	}
 	
 	/**
@@ -200,7 +199,7 @@ public class SQLTranslator {
 		
 		switch (condition) {
 		case "BETWEEN":
-			out.put("condition", new String[] {"<", ">"});
+			out.put("condition", new String[] {">", "<"});
 			break;
 		case "EQUAL":
 			String[] output = new String[values.size()];
@@ -240,7 +239,12 @@ public class SQLTranslator {
 			out.put("joiner", "OR");
 			break;
 		case "IN":
-			out.put("condition", new String[]{"IN"});
+			output = new String[values.size()];
+			for (int i = 0; i < output.length; i++) {
+				output[i] = "=";
+			}
+			out.put("condition", output);
+			out.put("joiner", "OR");
 			break;
 		case "ILIKE":
 			output = new String[values.size()];

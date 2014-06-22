@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import databaseAgent.queryBuilder.QueryBuilder;
+import databaseAgent.queryComponents.TableFragment;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,8 +21,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import queryAgent.queryBuilder.QueryBuilder;
-import queryAgent.queryComponents.TableFragment;
 import userInterface.StageMaster;
 
 public class CompositeTableController implements Initializable {

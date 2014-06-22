@@ -1,4 +1,4 @@
-package queryAgent.queryComponents;
+package databaseAgent.queryComponents;
 
 import java.util.Arrays;
 import java.util.List;

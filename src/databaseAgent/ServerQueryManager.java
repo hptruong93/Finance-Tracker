@@ -1,4 +1,4 @@
-package queryAgent;
+package databaseAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +7,17 @@ import java.util.Map.Entry;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import queryAgent.queryBuilder.QueryBuilder;
-import queryAgent.queryComponents.RestrictionFragment;
-import queryAgent.queryComponents.TableFragment;
+import databaseAgent.queryBuilder.QueryBuilder;
+import databaseAgent.queryComponents.RestrictionFragment;
+import databaseAgent.queryComponents.TableFragment;
 import utilities.Log;
 import utilities.StringUtility;
 import utilities.functional.Mapper;
 
-public class QueryManager extends QueryAgent<Object> {
+public class ServerQueryManager extends QueryManager {
 
 	private static final int DEFAULT_MAX_COUNT = 100;
+	private static final int MAX_QUERY_COUNT = 500;
 	private static final String DEFAULT_MODE = "SELECT";
 	
 	protected String mode;
@@ -33,7 +34,7 @@ public class QueryManager extends QueryAgent<Object> {
 	protected List<RestrictionFragment> having;
 	protected List<String> orderBy;
 
-	public QueryManager() {
+	public ServerQueryManager() {
 		mode = DEFAULT_MODE;
 		restrictionCount = -1;
 		lastQueryCount = -1;
@@ -115,38 +116,46 @@ public class QueryManager extends QueryAgent<Object> {
 		return result;
 	}
 
+	@Override
 	public void addFrom(TableFragment newComer) {
 		this.from.add(newComer);
 	}
 	
+	@Override
 	public void setFrom(TableFragment newComer) {
 		this.from.clear();
 		this.from.add(newComer);
 	}
 	
+	@Override
 	public void setFrom(List<TableFragment> newComers) {
 		this.from.clear();
 		this.from.addAll(newComers);
 	}
 	
+	@Override
 	public void setDefaultFrom() {
 		from.clear();
 		from.add(new TableFragment(QueryBuilder.DEFAULT_DATA_TABLE, null));
 	}
 	
+	@Override
 	public void setDefaultField() {
 		fields.clear();
 		fields.addAll(QueryBuilder.FIELD_LIST);
 	}
 
+	@Override
 	public boolean addExplicitField(final String name) {
 		return fields.add(name);
 	}
 	
+	@Override
 	public boolean addField(final String name) {
 		return fields.add(name);
 	}
 
+	@Override
 	public boolean addField(String... names) {
 		boolean output = true;
 		for (String name : names) {
@@ -155,18 +164,23 @@ public class QueryManager extends QueryAgent<Object> {
 		return output;
 	}
 
-	public void removeField(int index) {
+	@Override
+	public boolean removeField(int index) {
 		fields.remove(index);
+		return true;
 	}
 	
+	@Override
 	public boolean removeField(String name) {
 		return fields.remove(name);
 	}
 	
+	@Override
 	public void clearFields() {
 		fields.clear();
 	}
 
+	@Override
 	public int addConstraint(RestrictionFragment condition) {
 		this.criteria.add(condition);
 		restrictionCount++;
@@ -174,6 +188,7 @@ public class QueryManager extends QueryAgent<Object> {
 		return constraintStack.size() - 1;
 	}
 	
+	@Override
 	public int addGroupBy(String groupBy) {
 		this.groupBy.add(groupBy);
 		restrictionCount++;
@@ -181,6 +196,7 @@ public class QueryManager extends QueryAgent<Object> {
 		return constraintStack.size() - 1;
 	}
 	
+	@Override
 	public int addHaving(RestrictionFragment having) {
 		this.having.add(having);
 		restrictionCount++;
@@ -188,6 +204,7 @@ public class QueryManager extends QueryAgent<Object> {
 		return constraintStack.size() - 1;
 	}
 	
+	@Override
 	public int addOrderBy(String input) {
 		restrictionCount++;
 		orderBy.add(input);
@@ -195,6 +212,7 @@ public class QueryManager extends QueryAgent<Object> {
 		return constraintStack.size() - 1;
 	}
 	
+	@Override
 	public boolean removeConstraint(int index) {
 		try {
 			int count = Integer.parseInt(constraintStack.get(index).substring(1));
@@ -213,6 +231,7 @@ public class QueryManager extends QueryAgent<Object> {
 		return true;
 	}
 	
+	@Override
 	public void removeAllConstraints() {
 		groupBy.clear();
 		criteria.clear();
@@ -223,6 +242,7 @@ public class QueryManager extends QueryAgent<Object> {
 
 	/***************************Getters and setters**********************************/
 
+	@Override
 	public String getFromString() {
 		return StringUtility.join(new Mapper<TableFragment, String>() {
 			@Override
@@ -231,6 +251,7 @@ public class QueryManager extends QueryAgent<Object> {
 			}}.map(from), ", ");
 	}
 	
+	@Override
 	public List<String> getConstraintStrings() {
 		List<String> output = new ArrayList<String>();
 		
@@ -251,37 +272,48 @@ public class QueryManager extends QueryAgent<Object> {
 		return output;
 	}
 	
+	@Override
 	public int getMaxResult() {
 		return maxResult;
 	}
 	
-	public void setMaxResult(int maxResult) {
-		this.maxResult = maxResult;
+	@Override
+	public boolean setMaxResult(int maxResult) {
+		if (maxResult > MAX_QUERY_COUNT) {
+			return false;
+		} else {
+			this.maxResult = maxResult;
+			return true;
+		}
 	}
 
+	@Override
 	public List<String> getFields() {
 		return fields;
 	}
 	
+	@Override
 	public List<TableFragment> getFrom() {
 		return this.from;
 	}
 
+	@Override
 	public List<String> getGroupBy() {
 		return this.groupBy;
 	}
 
+	@Override
 	public List<RestrictionFragment> getCriteria() {
 		return this.criteria;
 	}
 
+	@Override
 	public List<RestrictionFragment> getHaving() {
 		return this.having;
 	}
 
+	@Override
 	public List<String> getOrderBy() {
 		return this.orderBy;
 	}
-	
-	
 }

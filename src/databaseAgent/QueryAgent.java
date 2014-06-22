@@ -1,4 +1,4 @@
-package queryAgent;
+package databaseAgent;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

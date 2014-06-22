@@ -1,12 +1,12 @@
-package queryAgent.queryBuilder;
+package databaseAgent.queryBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import queryAgent.queryComponents.RestrictionFragment;
-import queryAgent.queryComponents.TableFragment;
+import databaseAgent.queryComponents.RestrictionFragment;
+import databaseAgent.queryComponents.TableFragment;
 
 public class PlainBuilder extends QueryBuilder {
 	

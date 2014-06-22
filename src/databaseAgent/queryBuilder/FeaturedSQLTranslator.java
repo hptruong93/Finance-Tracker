@@ -1,4 +1,4 @@
-package queryAgent.queryBuilder;
+package databaseAgent.queryBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import utilities.functional.Function;
 public class FeaturedSQLTranslator extends SQLTranslator {
 	
 	private static final Map<String,Function<Void, Object[]>> FEATURED_VALUES;
-	
+	private static final String FEATURE_TYPE = "#FEATURED:";
 	
 	static {
 		HashMap<String, Function<Void, Object[]>> temp = new HashMap<String, Function<Void, Object[]>>();
@@ -46,18 +46,21 @@ public class FeaturedSQLTranslator extends SQLTranslator {
 		
 	}
 	
-	public static void main(String[] args) {
-		FeaturedSQLTranslator tr = new FeaturedSQLTranslator();
-		QueryBuilder b = new QueryBuilder(tr);
-		System.out.println(b.buildConstraint("type", "EQUAL", "#FOOD"));
-	}
-	
 	@Override
 	public Object[] valueTranslate(String field, String value) {
 		if (FEATURED_VALUES.containsKey(value)) {
 			return FEATURED_VALUES.get(value).function(null);
 		} else {
 			return super.valueTranslate(field, value);
+		}
+	}
+	
+	@Override
+	public Object[] valueParse(String value, String type) {
+		if (type.startsWith(FEATURE_TYPE)) {
+			return FEATURED_VALUES.get("#" + type.substring(FEATURE_TYPE.length())).function(null);
+		} else {
+			return super.valueParse(value, type);
 		}
 	}
 }

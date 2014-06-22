@@ -1,4 +1,4 @@
-package queryAgent.queryComponents;
+package databaseAgent.queryComponents;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,16 +9,15 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import queryAgent.queryBuilder.QueryBuilder;
-import queryAgent.queryBuilder.SQLTranslator;
-import queryAgent.queryBuilder.TranslatorFactory;
-import queryAgent.queryComponents.RestrictionTree.RestrictionNode;
-import utilities.GeneralUtility;
 import utilities.IJsonable;
 import utilities.functional.Mapper;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonRootNode;
+import databaseAgent.queryBuilder.QueryBuilder;
+import databaseAgent.queryBuilder.SQLTranslator;
+import databaseAgent.queryBuilder.TranslatorFactory;
+import databaseAgent.queryComponents.RestrictionTree.RestrictionNode;
 
 public class RestrictionFragment implements IJsonable {
 	
@@ -35,13 +34,13 @@ public class RestrictionFragment implements IJsonable {
 		restriction = new RestrictionNode(node.getNode("condition")).toString();
 		HashMap<Integer, Object> varTemp = new HashMap<Integer, Object>();
 		
+		SQLTranslator translator = TranslatorFactory.getTranslator(TranslatorFactory.FEATURED_TRANSLATOR);
 		List<JsonNode> values = node.getArrayNode("values");
 		for (JsonNode sub : values) {
 			Integer id = Integer.parseInt(sub.getNumberValue("id"));
 				
-			SQLTranslator translator = TranslatorFactory.getTranslator(TranslatorFactory.FEATURED_TRANSLATOR);
-			Object val = translator.valueParse(sub.getStringValue("value"), sub.getStringValue("type"));
-			varTemp.put(id, val);
+			Object[] val = translator.valueParse(sub.getStringValue("value"), sub.getStringValue("type"));
+			varTemp.put(id, val[0]);
 		}
 		variables = Collections.unmodifiableMap(varTemp);
 	}
@@ -61,15 +60,6 @@ public class RestrictionFragment implements IJsonable {
 	
 	public void xor(RestrictionFragment other) {
 		join(other, "XOR");
-	}
-	
-	public static void main(String[] args) {
-		Map<Integer, Object> a = new HashMap<Integer, Object>();
-		a.put(1, 7.0f);
-		a.put(2, 8.0f);
-		RestrictionFragment x = new RestrictionFragment("(cost > :var1) AND (cost < :var2)", a);
-		RestrictionFragment y = new RestrictionFragment(x.jsonize());
-		System.out.println(GeneralUtility.jsonToString(y.jsonize()));
 	}
 	
 	public RestrictionFragment not() {

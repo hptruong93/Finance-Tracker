@@ -21,10 +21,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import queryAgent.QueryManager;
-import queryAgent.dataAnalysis.Feature;
-import queryAgent.queryBuilder.TranslatorFactory;
-import queryAgent.queryComponents.TableFragment;
 import userInterface.StageMaster;
 import userInterface.controller.visualizer.IDataVisualizer;
 import userInterface.controller.visualizer.LabelVisualizer;
@@ -32,6 +28,12 @@ import userInterface.controller.visualizer.LineChartVisualizer;
 import userInterface.controller.visualizer.TableVisualizer;
 import utilities.StringUtility;
 import utilities.functional.Mapper;
+import databaseAgent.QueryManager;
+import databaseAgent.dataAnalysis.Feature;
+import databaseAgent.dataAnalysis.FeatureManager;
+import databaseAgent.dataAnalysis.ServerFeatureManager;
+import databaseAgent.queryBuilder.TranslatorFactory;
+import databaseAgent.queryComponents.TableFragment;
 
 public class QueryController implements Initializable {
 
@@ -66,7 +68,7 @@ public class QueryController implements Initializable {
 	private int cursor;
 	private List<QueryResult> results;
 	protected List<Integer> constraintID;
-	protected List<Feature> features;
+	protected FeatureManager featureManager;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -79,12 +81,12 @@ public class QueryController implements Initializable {
 		constraintID = new ArrayList<Integer>();
 		
 		cbbFeature.getItems().add("");
-		features = new ArrayList<Feature>();
-		features.add(null);
+		featureManager = new ServerFeatureManager();
+		featureManager.add(null);
 		
 		for (Feature f : Feature.DEFAULT_FEATURES) {
 			cbbFeature.getItems().add(f.getName());
-			features.add(f);
+			featureManager.add(f);
 		}
 		
 		results = new ArrayList<QueryResult>();
@@ -250,8 +252,8 @@ public class QueryController implements Initializable {
 		tfFrom.clear();
 		
 		int selected = cbbFeature.getSelectionModel().getSelectedIndex();
-		if (selected != 0) {
-			Feature selectedFeature = features.get(selected);
+		if (selected > 0) {
+			Feature selectedFeature = featureManager.get(selected);
 			StageMaster.getPrimaryController().cmiAdvancedQuery.setSelected(selectedFeature.isAdvanced());
 			
 			constraintID = selectedFeature.apply(DataController.getInstance().queryManager);
@@ -277,7 +279,7 @@ public class QueryController implements Initializable {
 	
 	/***********************************************************************************/
 	protected void addFeature(Feature newComer) {
-		features.add(newComer);
+		featureManager.add(newComer);
 		cbbFeature.getItems().add(newComer.getName());
 	}
 	

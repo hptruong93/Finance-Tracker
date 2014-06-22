@@ -21,7 +21,7 @@ public class ImportVerifier {
 	}
 	
 	public ImportVerifier(String startDate) {
-		this.startDate = DateUtility.parseDate(startDate);
+		this.startDate = DateUtility.parseSQLDate(startDate);
 		if (this.startDate == null) {
 			throw new IllegalArgumentException("Invalid input date");
 		}
@@ -90,7 +90,7 @@ public class ImportVerifier {
 	}
 
 	public boolean verifyDate(String date) {
-		Date adding = DateUtility.parseDate(date);
+		Date adding = DateUtility.parseSQLDate(date);
 		return DateUtils.truncatedCompareTo(adding, startDate, Calendar.MONTH) >= 0;
 	}
 

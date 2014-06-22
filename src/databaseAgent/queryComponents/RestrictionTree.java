@@ -1,4 +1,4 @@
-package queryAgent.queryComponents;
+package databaseAgent.queryComponents;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,13 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import queryAgent.queryBuilder.QueryBuilder;
 import utilities.IJsonable;
 import utilities.functional.Filter;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonRootNode;
+import databaseAgent.queryBuilder.QueryBuilder;
 
 public class RestrictionTree {
 
@@ -25,21 +27,27 @@ public class RestrictionTree {
 	static {
 		HashSet<String> temp = new HashSet<String>();
 		temp.add("NOT");
-		temp.addAll(QueryBuilder.SUPPORTED_FUNCTIONS);
 		RESTRICTION_FUNCTIONS = Collections.unmodifiableSet(temp);
 	}
 	
 	public static void main(String[] args) {
-		String a = "(a > 2) AND NOT(c > 3) AND c < 7";
+		String a = "( type = :var11 )   OR   (    (  type = :var10  )   OR   (    (  type = :var9  )   OR   (    (  type = :var8  )   OR   (    (  type = :var7  )   OR   (    (  type = :var6  )   OR   (    (  type = :var5  )   OR   (    (  type = :var4  )   OR   (    (  type = :var3  )   OR   (  type = :var2 )  )  )  )  )  )  )  )  ) ";
 		RestrictionNode n = parse(a);
 		System.out.println(n.preOrder());
-		JsonRootNode t = n.jsonize();
-		System.out.println(n.toString());
-		System.out.println(new RestrictionNode(t).preOrder());
 	}
 
 	public static RestrictionNode parse(String restriction) {
 		restriction = restriction.replaceAll("\\(", " ( ").replaceAll("\\)", " ) ");
+		//Remove mistakes caused by function in the condition itself, not the logical functions NOT, AND, XOR, OR
+		for (String function : QueryBuilder.SUPPORTED_FUNCTIONS) {
+			Matcher m = Pattern.compile(function + " \\(.+? \\) ").matcher(restriction);
+			while (m.find()) {
+				String found = restriction.substring(m.start(), m.end());
+				restriction = restriction.replace(found, found.replaceAll(" ", ""));
+			}
+		}
+		System.out.println(restriction);
+		
 		List<String> expression = Arrays.asList(restriction.split(" "));
 		Collections.reverse(expression);
 		Stack<String> temp = new Stack<String>();
@@ -94,7 +102,7 @@ public class RestrictionTree {
 				}
 			} else if (JOINER.contains(element)) {
 				if (!stack.isEmpty()) {
-					String next = stack.pop();
+					String next = stack.peek();
 					while (JOINER.contains(next)) {
 						output.push(next);
 						if (!stack.isEmpty()) {
@@ -111,7 +119,16 @@ public class RestrictionTree {
 				String val = element;
 				while (!expression.isEmpty()) {
 					String next = expression.peek();
-					if (!next.equals("(") && !next.equals(")") && 
+					if (next.equals("IN")) {
+						while (true) {
+							if (next.equals(")")) {
+								break;
+							}
+							next = expression.pop();
+							val += " " + next;
+						}
+						break;
+					} else if (!next.equals("(") && !next.equals(")") && 
 							!RESTRICTION_FUNCTIONS.contains(next) && !JOINER.contains(next)) {
 						val += " " + next;
 						expression.pop();

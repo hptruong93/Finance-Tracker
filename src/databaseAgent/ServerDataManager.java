@@ -1,19 +1,21 @@
-package purchases;
+package databaseAgent;
 
 import java.util.HashSet;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
-import queryAgent.QueryAgent;
+import purchases.Purchase;
+import purchases.PurchaseSet;
 
-public class DataManager {
+public class ServerDataManager extends DataManager {
 	/**
 	 * Add a purchase into database. The purchase must already belongs to a purchaseSet. Otherwise
 	 * exception will be thrown.
 	 * @param purchase the purchase that will be added
 	 * @return id of the purchase in the database
 	 */
+	@Override
 	public int addPurchase(final Purchase purchase) {
 		if (purchase.getPurchaseSet() == null) {
 			throw new IllegalArgumentException("Purchase must be in purchaseSet to be added.");
@@ -34,6 +36,7 @@ public class DataManager {
 	 * @param updated
 	 *            the instance that will be updated in the database
 	 */
+	@Override
 	public void updatePurchase(final Purchase updated) {
 		QueryAgent<Boolean> update = new QueryAgent<Boolean>() {
 			@Override
@@ -52,6 +55,7 @@ public class DataManager {
 	 *            id of the purchase instance
 	 * @return the purchase instance of given id
 	 */
+	@Override
 	public Purchase getPurchase(final int id) {
 		QueryAgent<Purchase> query = new QueryAgent<Purchase>() {
 			@Override
@@ -70,6 +74,7 @@ public class DataManager {
 	 *            id of the purchase that will be removed.
 	 * @return if deletion succeeded
 	 */
+	@Override
 	public boolean deletePurchase(final int id) {
 		QueryAgent<Boolean> delete = new QueryAgent<Boolean>() {
 			@Override
@@ -89,6 +94,7 @@ public class DataManager {
 	 *            purchase instance that will be removed from database
 	 * @return if deletion succeeded
 	 */
+	@Override
 	public boolean deletePurchase(final Purchase toDelete) {
 		QueryAgent<Boolean> delete = new QueryAgent<Boolean>() {
 			@Override
@@ -107,6 +113,7 @@ public class DataManager {
 	 *            a purchaseSet instance
 	 * @return integer indicating the id of the instance in the database
 	 */
+	@Override
 	public int addPurchaseSet(final PurchaseSet set) {
 		QueryAgent<Integer> save = new QueryAgent<Integer>() {
 			@Override
@@ -131,6 +138,7 @@ public class DataManager {
 	 * @param updated
 	 *            the purchaseSet that will be updated in the database
 	 */
+	@Override
 	public void updatePurchaseSet(final PurchaseSet updated) {
 		QueryAgent<Boolean> update = new QueryAgent<Boolean>() {
 			@Override
@@ -149,7 +157,8 @@ public class DataManager {
 	 *            id of the purchaseSet instance
 	 * @return the purchaseSet instance of given id
 	 */
-	private PurchaseSet getPurchaseSet(final int id) {
+	@Override
+	public PurchaseSet getPurchaseSet(final int id) {
 		QueryAgent<PurchaseSet> query = new QueryAgent<PurchaseSet>() {
 			@Override
 			public PurchaseSet queryActivity(Session session) {
@@ -168,6 +177,7 @@ public class DataManager {
 	 *            id of the purchase set that will be removed.
 	 * @return if deletion succeeded
 	 */
+	@Override
 	public boolean deletePurchaseSet(final int id) {
 		QueryAgent<Boolean> delete = new QueryAgent<Boolean>() {
 			@Override
@@ -188,6 +198,7 @@ public class DataManager {
 	 *            instance that will be removed from database
 	 * @return if deletion succeeded
 	 */
+	@Override
 	public boolean deletePurchaseSet(final PurchaseSet toDelete) {
 		QueryAgent<Boolean> delete = new QueryAgent<Boolean>() {
 			

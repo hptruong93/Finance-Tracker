@@ -1,11 +1,11 @@
 package userInterface;
 
+import databaseAgent.QueryAgent;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import queryAgent.QueryAgent;
 import userInterface.controller.AddFieldController;
 import userInterface.controller.CompositeConstraintController;
 import userInterface.controller.CompositeTableController;

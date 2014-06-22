@@ -1,27 +1,24 @@
-package queryAgent.dataAnalysis;
+package databaseAgent.dataAnalysis;
 
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import queryAgent.QueryManager;
-import queryAgent.queryBuilder.PlainBuilder;
-import queryAgent.queryBuilder.QueryBuilder;
-import queryAgent.queryBuilder.SQLTranslator;
-import queryAgent.queryBuilder.TranslatorFactory;
-import queryAgent.queryComponents.RestrictionFragment;
-import queryAgent.queryComponents.TableFragment;
-import utilities.FileUtility;
-import utilities.GeneralUtility;
 import utilities.IJsonable;
+import utilities.JSONUtility;
 import utilities.functional.Mapper;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonRootNode;
 import argo.jdom.JsonStringNode;
+import databaseAgent.QueryManager;
+import databaseAgent.queryBuilder.PlainBuilder;
+import databaseAgent.queryBuilder.QueryBuilder;
+import databaseAgent.queryBuilder.SQLTranslator;
+import databaseAgent.queryBuilder.TranslatorFactory;
+import databaseAgent.queryComponents.RestrictionFragment;
+import databaseAgent.queryComponents.TableFragment;
 
 public class Feature implements IJsonable {
 
@@ -52,12 +49,12 @@ public class Feature implements IJsonable {
 
 	static {
 		List<Feature> tempStorage = new ArrayList<Feature>();
-		JsonNode t = FileUtility.readJSON(new File(FileUtility.joinPath("data", "featured.json")));
-		for (JsonNode sub : t.getArrayNode("content")) {
-			Feature feature = new Feature();
-			feature.loadConfig(sub);
-			tempStorage.add(feature);
-		}
+//		JsonNode t = FileUtility.readJSON(new File(FileUtility.joinPath("data", "featured.json")));
+//		for (JsonNode sub : t.getArrayNode("features")) {
+//			Feature feature = new Feature();
+//			feature.loadConfig(sub);
+//			tempStorage.add(feature);
+//		}
 
 		DEFAULT_FEATURES = Collections.unmodifiableList(tempStorage);
 	}
@@ -77,15 +74,22 @@ public class Feature implements IJsonable {
 			}
 			
 			for (JsonNode sub : node.getArrayNode("from")) {
-				String select = sub.getStringValue("select");
+				List<String> select = new Mapper<JsonNode, String>() {
+					@Override
+					public String map(JsonNode input) {
+						return input.getText();
+					}
+				}.map(sub.getArrayNode("select"));
+				
 				String table = sub.getStringValue("table");
 				String alias = sub.getStringValue("alias");
-				from.add(new TableFragment(Arrays.asList(select.split(", ")), table, alias));
+				from.add(new TableFragment(select, table, alias));
 			}
 			
 			for (JsonNode sub : node.getArrayNode("criteria")) {
-				String condition = sub.getStringValue("condition");
-				RestrictionFragment rf = builder.buildConstraint(null, condition, null);
+//				String condition = sub.getStringValue("condition");
+//				RestrictionFragment rf = builder.buildConstraint(null, condition, null);
+				RestrictionFragment rf = new RestrictionFragment(sub);
 				criteria.add(rf);
 			}
 
@@ -95,7 +99,8 @@ public class Feature implements IJsonable {
 
 			for (JsonNode sub : node.getArrayNode("having")) {
 				String condition = sub.getStringValue("condition");
-				RestrictionFragment rf = builder.buildConstraint(null, condition, null);
+//				RestrictionFragment rf = builder.buildConstraint(null, condition, null);
+				RestrictionFragment rf = new RestrictionFragment(sub);
 				having.add(rf);
 			}
 
@@ -110,10 +115,11 @@ public class Feature implements IJsonable {
 			}
 			
 			for (JsonNode sub : node.getArrayNode("criteria")) {
-				String field = sub.getStringValue("field");
-				String condition = sub.getStringValue("condition");
-				String value = sub.getStringValue("value");
-				RestrictionFragment rf = builder.buildConstraint(field, condition, value);
+//				String field = sub.getStringValue("field");
+//				String condition = sub.getStringValue("condition");
+//				String value = sub.getStringValue("value");
+//				RestrictionFragment rf = builder.buildConstraint(field, condition, value);
+				RestrictionFragment rf = new RestrictionFragment(sub);
 				criteria.add(rf);
 			}
 
@@ -122,10 +128,11 @@ public class Feature implements IJsonable {
 			}
 
 			for (JsonNode sub : node.getArrayNode("having")) {
-				String field = sub.getStringValue("field");
-				String condition = sub.getStringValue("condition");
-				String value = sub.getStringValue("value");
-				RestrictionFragment rf = builder.buildConstraint(field, condition, value);
+//				String field = sub.getStringValue("field");
+//				String condition = sub.getStringValue("condition");
+//				String value = sub.getStringValue("value");
+//				RestrictionFragment rf = builder.buildConstraint(field, condition, value);
+				RestrictionFragment rf = new RestrictionFragment(sub);
 				having.add(rf);
 			}
 
@@ -266,10 +273,10 @@ public class Feature implements IJsonable {
 	}
 	
 	public static void main(String[] args) {
-		for (Feature t : DEFAULT_FEATURES) {
-			String n = GeneralUtility.jsonToString(t.jsonize());
+		Feature t = DEFAULT_FEATURES.get(DEFAULT_FEATURES.size() - 1);
+		System.out.println(t.criteria.get(0).toString());
+			String n = JSONUtility.jsonToString(t.jsonize());
 			System.out.println(n);
-		}
 	}
 	
 	@Override
