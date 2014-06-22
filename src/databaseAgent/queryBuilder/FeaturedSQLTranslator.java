@@ -43,7 +43,6 @@ public class FeaturedSQLTranslator extends SQLTranslator {
 	}
 	
 	protected FeaturedSQLTranslator() {
-		
 	}
 	
 	@Override

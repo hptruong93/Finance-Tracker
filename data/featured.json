@@ -1,6 +1,10 @@
 {
-	"user_id": "1",
-	"date": "2014-06-19",
+	"user_info": {
+		"name": "HP",
+		"id": "8db1fe59-bf9e-4b17-81d6-879b8f8dc7c3",
+		"last_activity": "2014 - 06 - 22",
+		"query_made": 0
+	},
 	"features": [
 		{
 			"name": "Month Sum",
@@ -10,16 +14,35 @@
 				"MONTH(date)",
 				"SUM(cost)"
 			],
+			"from": [],
 			"criteria": [
 				{
-					"field": "MONTH(date)",
-					"condition": "EQUAL",
-					"value": "#THIS_MONTH"
+					"condition": {
+						"field": "MONTH(purchase_set.date)",
+						"condition": "=",
+						"value": ":var1"
+					},
+					"values": [
+						{
+							"id": "1",
+							"value": "6",
+							"type": "java.lang.Integer"
+						}
+					]
 				},
 				{
-					"field": "YEAR(date)",
-					"condition": "EQUAL",
-					"value": "#THIS_YEAR"
+					"condition": {
+						"field": "YEAR(purchase_set.date)",
+						"condition": "=",
+						"value": ":var2"
+					},
+					"values": [
+						{
+							"id": "2",
+							"value": "2014",
+							"type": "java.lang.Integer"
+						}
+					]
 				}
 			],
 			"group_by": [],
@@ -34,9 +57,10 @@
 				"MONTH(date)",
 				"SUM(cost)"
 			],
+			"from": [],
 			"criteria": [],
 			"group_by": [
-				"MONTH(date)"
+				"MONTH(purchase_set.date)"
 			],
 			"having": [],
 			"order_by": []
@@ -49,11 +73,21 @@
 				"YEAR(date)",
 				"SUM(cost)"
 			],
+			"from": [],
 			"criteria": [
 				{
-					"field": "YEAR(date)",
-					"condition": "EQUAL",
-					"value": "#THIS_YEAR"
+					"condition": {
+						"field": "YEAR(purchase_set.date)",
+						"condition": "=",
+						"value": ":var1"
+					},
+					"values": [
+						{
+							"id": "1",
+							"value": "2014",
+							"type": "java.lang.Integer"
+						}
+					]
 				}
 			],
 			"group_by": [],
@@ -68,9 +102,10 @@
 				"YEAR(date)",
 				"SUM(cost)"
 			],
+			"from": [],
 			"criteria": [],
 			"group_by": [
-				"YEAR(date)"
+				"YEAR(purchase_set.date)"
 			],
 			"having": [],
 			"order_by": []
@@ -83,20 +118,156 @@
 				"MONTH(date)",
 				"SUM(cost)"
 			],
+			"from": [],
 			"criteria": [
 				{
-					"field": "YEAR(date)",
-					"condition": "EQUAL",
-					"value": "#THIS_YEAR"
+					"condition": {
+						"field": "YEAR(purchase_set.date)",
+						"condition": "=",
+						"value": ":var1"
+					},
+					"values": [
+						{
+							"id": "1",
+							"value": "2014",
+							"type": "java.lang.Integer"
+						}
+					]
 				},
 				{
-					"field": "type",
-					"condition": "EQUAL",
-					"value": "#FOOD"
+					"condition": {
+						"function": "OR",
+						"left": {
+							"field": "type",
+							"condition": "=",
+							"value": ":var11"
+						},
+						"right": {
+							"function": "OR",
+							"left": {
+								"field": "type",
+								"condition": "=",
+								"value": ":var10"
+							},
+							"right": {
+								"function": "OR",
+								"left": {
+									"field": "type",
+									"condition": "=",
+									"value": ":var9"
+								},
+								"right": {
+									"function": "OR",
+									"left": {
+										"field": "type",
+										"condition": "=",
+										"value": ":var8"
+									},
+									"right": {
+										"function": "OR",
+										"left": {
+											"field": "type",
+											"condition": "=",
+											"value": ":var7"
+										},
+										"right": {
+											"function": "OR",
+											"left": {
+												"field": "type",
+												"condition": "=",
+												"value": ":var6"
+											},
+											"right": {
+												"function": "OR",
+												"left": {
+													"field": "type",
+													"condition": "=",
+													"value": ":var5"
+												},
+												"right": {
+													"function": "OR",
+													"left": {
+														"field": "type",
+														"condition": "=",
+														"value": ":var4"
+													},
+													"right": {
+														"function": "OR",
+														"left": {
+															"field": "type",
+															"condition": "=",
+															"value": ":var3"
+														},
+														"right": {
+															"field": "type",
+															"condition": "=",
+															"value": ":var2"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"values": [
+						{
+							"id": "3",
+							"value": "fish",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "2",
+							"value": "chicken",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "10",
+							"value": "fruit",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "7",
+							"value": "rice",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "6",
+							"value": "bread",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "5",
+							"value": "pork",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "4",
+							"value": "beef",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "9",
+							"value": "vegetable",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "8",
+							"value": "milk",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "11",
+							"value": "other food",
+							"type": "java.lang.String"
+						}
+					]
 				}
 			],
 			"group_by": [
-				"MONTH(date)"
+				"MONTH(purchase_set.date)"
 			],
 			"having": [],
 			"order_by": []
@@ -109,20 +280,156 @@
 				"MONTH(date)",
 				"SUM(cost)"
 			],
+			"from": [],
 			"criteria": [
 				{
-					"field": "YEAR(date)",
-					"condition": "EQUAL",
-					"value": "#THIS_YEAR"
+					"condition": {
+						"field": "YEAR(purchase_set.date)",
+						"condition": "=",
+						"value": ":var1"
+					},
+					"values": [
+						{
+							"id": "1",
+							"value": "2014",
+							"type": "java.lang.Integer"
+						}
+					]
 				},
 				{
-					"field": "type",
-					"condition": "NOT_EQUAL",
-					"value": "#FOOD"
+					"condition": {
+						"function": "AND",
+						"left": {
+							"field": "type",
+							"condition": "<>",
+							"value": ":var11"
+						},
+						"right": {
+							"function": "AND",
+							"left": {
+								"field": "type",
+								"condition": "<>",
+								"value": ":var10"
+							},
+							"right": {
+								"function": "AND",
+								"left": {
+									"field": "type",
+									"condition": "<>",
+									"value": ":var9"
+								},
+								"right": {
+									"function": "AND",
+									"left": {
+										"field": "type",
+										"condition": "<>",
+										"value": ":var8"
+									},
+									"right": {
+										"function": "AND",
+										"left": {
+											"field": "type",
+											"condition": "<>",
+											"value": ":var7"
+										},
+										"right": {
+											"function": "AND",
+											"left": {
+												"field": "type",
+												"condition": "<>",
+												"value": ":var6"
+											},
+											"right": {
+												"function": "AND",
+												"left": {
+													"field": "type",
+													"condition": "<>",
+													"value": ":var5"
+												},
+												"right": {
+													"function": "AND",
+													"left": {
+														"field": "type",
+														"condition": "<>",
+														"value": ":var4"
+													},
+													"right": {
+														"function": "AND",
+														"left": {
+															"field": "type",
+															"condition": "<>",
+															"value": ":var3"
+														},
+														"right": {
+															"field": "type",
+															"condition": "<>",
+															"value": ":var2"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"values": [
+						{
+							"id": "3",
+							"value": "fish",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "2",
+							"value": "chicken",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "10",
+							"value": "fruit",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "7",
+							"value": "rice",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "6",
+							"value": "bread",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "5",
+							"value": "pork",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "4",
+							"value": "beef",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "9",
+							"value": "vegetable",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "8",
+							"value": "milk",
+							"type": "java.lang.String"
+						},
+						{
+							"id": "11",
+							"value": "other food",
+							"type": "java.lang.String"
+						}
+					]
 				}
 			],
 			"group_by": [
-				"MONTH(date)"
+				"MONTH(purchase_set.date)"
 			],
 			"having": [],
 			"order_by": []
@@ -132,33 +439,31 @@
 			"description": "Sum of month average since beginning of record",
 			"mode": "advanced",
 			"fields": [
-				"MONTH(a.date)", 
+				"MONTH(a.date)",
 				"AVG(b.cost)"
 			],
 			"from": [
 				{
-					"select": "",
-					"table": "(
-								SELECT SUM(cost) as cost, ps.date 
-								FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
-								GROUP BY MONTH(ps.date)
-							  ) a
-							  INNER JOIN
-							  (
-								SELECT SUM(cost) as cost, ps.date 
-								FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)
-								GROUP BY MONTH(ps.date)
-							  ) b
-							  ON MONTH(a.date) >= MONTH(b.date)",
+					"select": [
+						""
+					],
+					"table": "(\n\t\t\t\t\t\t\t\tSELECT SUM(cost) as cost, ps.date \n\t\t\t\t\t\t\t\tFROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)\n\t\t\t\t\t\t\t\tGROUP BY MONTH(ps.date)\n\t\t\t\t\t\t\t  ) a\n\t\t\t\t\t\t\t  INNER JOIN\n\t\t\t\t\t\t\t  (\n\t\t\t\t\t\t\t\tSELECT SUM(cost) as cost, ps.date \n\t\t\t\t\t\t\t\tFROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)\n\t\t\t\t\t\t\t\tGROUP BY MONTH(ps.date)\n\t\t\t\t\t\t\t  ) b\n\t\t\t\t\t\t\t  ON MONTH(a.date) >= MONTH(b.date)",
 					"alias": ""
 				}
 			],
 			"criteria": [
 				{
-					"condition": "YEAR(a.date) = 2014"
+					"condition": {
+						"field": "YEAR(a.date)",
+						"condition": "=",
+						"value": "2014"
+					},
+					"values": []
 				}
 			],
-			"group_by": ["MONTH(a.date)"],
+			"group_by": [
+				"MONTH(a.date)"
+			],
 			"having": [],
 			"order_by": []
 		}

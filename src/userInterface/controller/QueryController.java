@@ -21,6 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import userInterface.ConnectionManager;
 import userInterface.StageMaster;
 import userInterface.controller.visualizer.IDataVisualizer;
 import userInterface.controller.visualizer.LabelVisualizer;
@@ -84,7 +85,7 @@ public class QueryController implements Initializable {
 		featureManager = new ServerFeatureManager();
 		featureManager.add(null);
 		
-		for (Feature f : Feature.DEFAULT_FEATURES) {
+		for (Feature f : Feature.getDefaultFeatures()) {
 			cbbFeature.getItems().add(f.getName());
 			featureManager.add(f);
 		}
@@ -95,6 +96,10 @@ public class QueryController implements Initializable {
 
 	@FXML
 	private void query(ActionEvent e) {
+		if (!DataController.getInstance().connectionManager.isConnected(ConnectionManager.DATABASE)) {
+			Dialogs.showErrorDialog(StageMaster.primaryStage(), "Database connection has not been established.");
+		}
+		
 		int maxResult = -1;
 		try {
 			maxResult = Integer.parseInt(tfMaxResult.getText());

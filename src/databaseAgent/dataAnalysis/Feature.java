@@ -1,12 +1,13 @@
 package databaseAgent.dataAnalysis;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import utilities.FileUtility;
 import utilities.IJsonable;
-import utilities.JSONUtility;
 import utilities.functional.Mapper;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
@@ -22,7 +23,8 @@ import databaseAgent.queryComponents.TableFragment;
 
 public class Feature implements IJsonable {
 
-	public static final List<Feature> DEFAULT_FEATURES;
+	private static final String FEATURED_FILE = "featured.json";
+	private static List<Feature> DEFAULT_FEATURES;
 
 	protected boolean isAdvanced;
 	protected List<TableFragment> from;
@@ -47,18 +49,27 @@ public class Feature implements IJsonable {
 		this.translator = TranslatorFactory.getTranslator(TranslatorFactory.FEATURED_TRANSLATOR);
 	}
 
-	static {
-		List<Feature> tempStorage = new ArrayList<Feature>();
-//		JsonNode t = FileUtility.readJSON(new File(FileUtility.joinPath("data", "featured.json")));
-//		for (JsonNode sub : t.getArrayNode("features")) {
-//			Feature feature = new Feature();
-//			feature.loadConfig(sub);
-//			tempStorage.add(feature);
-//		}
+	public synchronized static boolean loadFeatures() {
+		if (DEFAULT_FEATURES == null) {
+			try {
+				List<Feature> tempStorage = new ArrayList<Feature>();
+				JsonNode t = FileUtility.readJSON(new File(FileUtility.joinPath("data", FEATURED_FILE)));
+				for (JsonNode sub : t.getArrayNode("features")) {
+					Feature feature = new Feature();
+					feature.loadConfig(sub);
+					tempStorage.add(feature);
+				}
 
-		DEFAULT_FEATURES = Collections.unmodifiableList(tempStorage);
+				DEFAULT_FEATURES = Collections.unmodifiableList(tempStorage);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
-
+	
 	public void loadConfig(JsonNode node) {
 		clearConfig();
 
@@ -201,6 +212,10 @@ public class Feature implements IJsonable {
 		return constraintID;
 	}
 
+	public static List<Feature> getDefaultFeatures() {
+		return DEFAULT_FEATURES;
+	}
+	
 	public String getName() {
 		return this.name;
 	}
@@ -258,13 +273,6 @@ public class Feature implements IJsonable {
 		}
 
 		return out.toString();
-	}
-	
-	public static void main(String[] args) {
-		Feature t = DEFAULT_FEATURES.get(DEFAULT_FEATURES.size() - 1);
-		System.out.println(t.criteria.get(0).toString());
-			String n = JSONUtility.jsonToString(t.jsonize());
-			System.out.println(n);
 	}
 	
 	@Override

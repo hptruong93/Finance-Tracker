@@ -12,8 +12,14 @@
    <children>
       <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="System">
             <items>
+                  <Menu mnemonicParsing="false" text="Connections...">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Connect to database" />
+                      <MenuItem mnemonicParsing="false" text="Connect to server" />
+                    </items>
+                  </Menu>
               <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="X" control="UP" meta="UP" shift="UP" shortcut="UP" />
@@ -31,10 +37,22 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Features">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#saveFeature" text="Save current query as..." />
-                        <MenuItem mnemonicParsing="false" onAction="#deleteCurrentFeature" text="Delete currently selected feature" />
-                        <MenuItem mnemonicParsing="false" onAction="#importFeatures" text="Add features from files..." />
-                        <MenuItem mnemonicParsing="false" onAction="#exportFeatures" text="Export current list to file..." />
+                      <MenuItem mnemonicParsing="false" onAction="#saveFeature" text="Save current query as...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#deleteCurrentFeature" text="Delete currently selected feature">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#importFeatures" text="Add features from files...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#exportFeatures" text="Export current list to file...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                     </items>
                   </Menu>
               </items>

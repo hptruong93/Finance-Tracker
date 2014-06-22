@@ -1,6 +1,5 @@
 package userInterface;
 
-import databaseAgent.QueryAgent;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +9,7 @@ import userInterface.controller.AddFieldController;
 import userInterface.controller.CompositeConstraintController;
 import userInterface.controller.CompositeTableController;
 import userInterface.controller.ConstraintAddController;
+import userInterface.controller.DataController;
 import userInterface.controller.ImportController;
 import userInterface.controller.PrimaryController;
 import userInterface.controller.QueryController;
@@ -30,17 +30,18 @@ public class StageMaster extends Application {
 	private static CompositeConstraintController compositeConstraintController;
 	private static TableBuilderController tableBuilderController;
 	private static CompositeTableController compositeTableController;
-	
+
 	public static void main(String[] args) {
 		try {
 			launch(args);
 		} finally {
-			QueryAgent.closeFactory();
+			DataController.getInstance().getConnectionManager().closeConnections();
 		}
 	}
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		/***********************************************************************************/
 		StageMaster.primaryStage = primaryStage;
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/userInterface/xml/Main.fxml"));
 		Parent parent = (Parent)loader.load();

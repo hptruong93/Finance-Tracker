@@ -12,17 +12,22 @@ import utilities.Log;
 
 public abstract class QueryAgent<T> {
 	
-	private static final SessionFactory factory;
+	private static SessionFactory factory;
 	
-	static {
-		try {
-			Configuration configuration = new Configuration();
-			configuration.configure();
-			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-			factory = configuration.buildSessionFactory(serviceRegistry);
-		} catch (Throwable ex) {
-			Log.exception(ex);
-			throw new ExceptionInInitializerError(ex);
+	public synchronized static boolean openFactory() {
+		if (factory == null) {
+			try {
+				Configuration configuration = new Configuration();
+				configuration.configure();
+				ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+				factory = configuration.buildSessionFactory(serviceRegistry);
+				return true;
+			} catch (Throwable ex) {
+				Log.exception(ex);
+				return false;
+			}
+		} else {
+			return true;
 		}
 	}
 	
@@ -30,13 +35,17 @@ public abstract class QueryAgent<T> {
 	 * Close the factory facilitating all managers. This must be done before the
 	 * system terminates.
 	 */
-	public static void closeFactory() {
+	public synchronized static void closeFactory() {
 		if (factory != null) {
 			factory.close();
 		}
 	}
 	
 	public T query() {
+		if (factory == null) {
+			throw new IllegalStateException("Factory is not opened.");
+		}
+		
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
