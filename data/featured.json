@@ -1,7 +1,7 @@
 {
 	"user_id": "1",
 	"date": "2014-06-19",
-	"content": [
+	"features": [
 		{
 			"name": "Month Sum",
 			"description": "Total cost of this month",

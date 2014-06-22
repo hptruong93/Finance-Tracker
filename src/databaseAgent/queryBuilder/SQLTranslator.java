@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+import org.apache.commons.collections4.bidimap.UnmodifiableBidiMap;
 import org.apache.commons.lang3.StringUtils;
 
 import utilities.DateUtility;
@@ -15,15 +18,15 @@ import utilities.functional.Function;
 import databaseAgent.queryComponents.TableFragment;
 
 public class SQLTranslator {
-	private HashMap<String, String> varMapper;
+	private Map<String, String> varMapper;
 
 	//Refer to QueryBuilder.FIELD_LIST
-	private static final HashMap<String, String> TYPES;
+	private static final Map<String, String> TYPES;
 	private static final Map<String, Function<String, Object>> PARSEABLE_TYPES;
 	private static final String SAME_TYPE = "#SAME";
 	
 	//Refer to QueryBuider.SUPPORTED_CONDITIONS
-	protected static final Map<String, String> TRANSLATED_CONDITION;
+	protected static final BidiMap<String, String> TRANSLATED_CONDITION;
 	
 	static {
 		TYPES = new HashMap<String, String>();
@@ -81,7 +84,7 @@ public class SQLTranslator {
 			}});
 		
 		PARSEABLE_TYPES = Collections.unmodifiableMap(temp1);
-		Map<String, String> translated = new HashMap<String, String>();
+		BidiMap<String, String> translated = new DualHashBidiMap<String, String>();
 		translated.put("BETWEEN", "BETWEEN"); //Can't really translate
 		translated.put("EQUAL", "=");
 		translated.put("NOT_EQUAL", "<>");
@@ -95,7 +98,7 @@ public class SQLTranslator {
 		translated.put("IS_NULL", "IS NULL");
 		translated.put("IS_NOT_NULL", "IS NOT NULL");
 		
-		TRANSLATED_CONDITION = Collections.unmodifiableMap(translated);
+		TRANSLATED_CONDITION = UnmodifiableBidiMap.unmodifiableBidiMap(translated);
 	}
 	
 	protected SQLTranslator() {

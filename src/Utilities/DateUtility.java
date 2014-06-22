@@ -9,6 +9,8 @@ import java.util.Locale;
 
 public class DateUtility {
 
+	private static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy - MM - dd", Locale.ENGLISH);
+	
 	/**
 	 * Attempt to parse a string to a date. Support the following format
 	 * 
@@ -24,7 +26,7 @@ public class DateUtility {
 	 * @param input input string to parse
 	 * @return parsed Date. null if cannot parse
 	 */
-	public static java.sql.Date parseDate(String input) {
+	public static java.sql.Date parseSQLDate(String input) {
 		String[] joiner = new String[]{"-", "/", "."};
 		String[] date = new String[] {"dd"};
 		String[] month = new String[] {"MM", "MMM", "MMMM"};
@@ -55,6 +57,22 @@ public class DateUtility {
 		return null;
 	}
 
+	public static java.util.Date parseDate(String date) {
+		return new java.util.Date(parseSQLDate(date).getTime());
+	}
+	
+	public static String dateToString(java.util.Date date) {
+		return DEFAULT_DATE_FORMAT.format(date);
+	}
+	
+	public static Date getTodaySQL() {
+		return new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+	}
+	
+	public static java.util.Date getToday() {
+		return new java.util.Date(Calendar.getInstance().getTimeInMillis());
+	}
+	
 	public static int getTodayDate() {
 		Calendar temp = Calendar.getInstance();
 		return temp.get(Calendar.DAY_OF_MONTH);

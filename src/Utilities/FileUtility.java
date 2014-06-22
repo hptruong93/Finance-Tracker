@@ -113,7 +113,7 @@ public class FileUtility {
 	 * @param file the file to write to. File content will be overriden. (i.e. no appending)
 	 */
 	public static void writeJson(JsonRootNode node, File file) {
-		writeToFile(new StringBuffer(GeneralUtility.jsonToString(node)), file, false);
+		writeToFile(new StringBuffer(JSONUtility.jsonToString(node)), file, false);
 	}
 	
 	/**
