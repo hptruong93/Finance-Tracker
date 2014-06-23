@@ -8,6 +8,7 @@ import java.util.List;
 
 import utilities.FileUtility;
 import utilities.IJsonable;
+import utilities.Log;
 import utilities.functional.Mapper;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
@@ -63,6 +64,7 @@ public class Feature implements IJsonable {
 				DEFAULT_FEATURES = Collections.unmodifiableList(tempStorage);
 				return true;
 			} catch (Exception e) {
+				Log.exception(e);
 				return false;
 			}
 		} else {

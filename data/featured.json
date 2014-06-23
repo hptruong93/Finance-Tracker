@@ -136,132 +136,15 @@
 				},
 				{
 					"condition": {
-						"function": "OR",
-						"left": {
-							"field": "type",
-							"condition": "=",
-							"value": ":var11"
-						},
-						"right": {
-							"function": "OR",
-							"left": {
-								"field": "type",
-								"condition": "=",
-								"value": ":var10"
-							},
-							"right": {
-								"function": "OR",
-								"left": {
-									"field": "type",
-									"condition": "=",
-									"value": ":var9"
-								},
-								"right": {
-									"function": "OR",
-									"left": {
-										"field": "type",
-										"condition": "=",
-										"value": ":var8"
-									},
-									"right": {
-										"function": "OR",
-										"left": {
-											"field": "type",
-											"condition": "=",
-											"value": ":var7"
-										},
-										"right": {
-											"function": "OR",
-											"left": {
-												"field": "type",
-												"condition": "=",
-												"value": ":var6"
-											},
-											"right": {
-												"function": "OR",
-												"left": {
-													"field": "type",
-													"condition": "=",
-													"value": ":var5"
-												},
-												"right": {
-													"function": "OR",
-													"left": {
-														"field": "type",
-														"condition": "=",
-														"value": ":var4"
-													},
-													"right": {
-														"function": "OR",
-														"left": {
-															"field": "type",
-															"condition": "=",
-															"value": ":var3"
-														},
-														"right": {
-															"field": "type",
-															"condition": "=",
-															"value": ":var2"
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
+						"field": "type",
+						"condition": "=",
+						"value": ":var2"
 					},
 					"values": [
 						{
-							"id": "3",
-							"value": "fish",
-							"type": "java.lang.String"
-						},
-						{
 							"id": "2",
-							"value": "chicken",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "10",
-							"value": "fruit",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "7",
-							"value": "rice",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "6",
-							"value": "bread",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "5",
-							"value": "pork",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "4",
-							"value": "beef",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "9",
-							"value": "vegetable",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "8",
-							"value": "milk",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "11",
-							"value": "other food",
-							"type": "java.lang.String"
+							"value": "#FOOD",
+							"type": "#FEATURED"
 						}
 					]
 				}
@@ -298,132 +181,15 @@
 				},
 				{
 					"condition": {
-						"function": "AND",
-						"left": {
-							"field": "type",
-							"condition": "<>",
-							"value": ":var11"
-						},
-						"right": {
-							"function": "AND",
-							"left": {
-								"field": "type",
-								"condition": "<>",
-								"value": ":var10"
-							},
-							"right": {
-								"function": "AND",
-								"left": {
-									"field": "type",
-									"condition": "<>",
-									"value": ":var9"
-								},
-								"right": {
-									"function": "AND",
-									"left": {
-										"field": "type",
-										"condition": "<>",
-										"value": ":var8"
-									},
-									"right": {
-										"function": "AND",
-										"left": {
-											"field": "type",
-											"condition": "<>",
-											"value": ":var7"
-										},
-										"right": {
-											"function": "AND",
-											"left": {
-												"field": "type",
-												"condition": "<>",
-												"value": ":var6"
-											},
-											"right": {
-												"function": "AND",
-												"left": {
-													"field": "type",
-													"condition": "<>",
-													"value": ":var5"
-												},
-												"right": {
-													"function": "AND",
-													"left": {
-														"field": "type",
-														"condition": "<>",
-														"value": ":var4"
-													},
-													"right": {
-														"function": "AND",
-														"left": {
-															"field": "type",
-															"condition": "<>",
-															"value": ":var3"
-														},
-														"right": {
-															"field": "type",
-															"condition": "<>",
-															"value": ":var2"
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
+						"field": "type",
+						"condition": "<>",
+						"value": ":var2"
 					},
 					"values": [
 						{
-							"id": "3",
-							"value": "fish",
-							"type": "java.lang.String"
-						},
-						{
 							"id": "2",
-							"value": "chicken",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "10",
-							"value": "fruit",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "7",
-							"value": "rice",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "6",
-							"value": "bread",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "5",
-							"value": "pork",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "4",
-							"value": "beef",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "9",
-							"value": "vegetable",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "8",
-							"value": "milk",
-							"type": "java.lang.String"
-						},
-						{
-							"id": "11",
-							"value": "other food",
-							"type": "java.lang.String"
+							"value": "#FOOD",
+							"type": "#FEATURED"
 						}
 					]
 				}

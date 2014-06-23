@@ -11,7 +11,7 @@ import utilities.functional.Function;
 public class FeaturedSQLTranslator extends SQLTranslator {
 	
 	private static final Map<String,Function<Void, Object[]>> FEATURED_VALUES;
-	private static final String FEATURE_TYPE = "#FEATURED:";
+	private static final String FEATURE_TYPE = "#FEATURED";
 	
 	static {
 		HashMap<String, Function<Void, Object[]>> temp = new HashMap<String, Function<Void, Object[]>>();
@@ -57,7 +57,7 @@ public class FeaturedSQLTranslator extends SQLTranslator {
 	@Override
 	public Object[] valueParse(String value, String type) {
 		if (type.startsWith(FEATURE_TYPE)) {
-			return FEATURED_VALUES.get("#" + type.substring(FEATURE_TYPE.length())).function(null);
+			return FEATURED_VALUES.get(value).function(null);
 		} else {
 			return super.valueParse(value, type);
 		}

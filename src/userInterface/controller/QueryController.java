@@ -85,9 +85,11 @@ public class QueryController implements Initializable {
 		featureManager = new ServerFeatureManager();
 		featureManager.add(null);
 		
-		for (Feature f : Feature.getDefaultFeatures()) {
-			cbbFeature.getItems().add(f.getName());
-			featureManager.add(f);
+		if (Feature.getDefaultFeatures() != null) {
+			for (Feature f : Feature.getDefaultFeatures()) {
+				cbbFeature.getItems().add(f.getName());
+				featureManager.add(f);
+			}
 		}
 		
 		results = new ArrayList<QueryResult>();

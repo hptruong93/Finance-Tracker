@@ -33,6 +33,7 @@ public class StageMaster extends Application {
 
 	public static void main(String[] args) {
 		try {
+			DataController.getInstance().getConnectionManager().startConnections();
 			launch(args);
 		} finally {
 			DataController.getInstance().getConnectionManager().closeConnections();

@@ -1,5 +1,6 @@
 package userInterface;
 
+import utilities.Log;
 import utilities.functional.Verifier;
 import databaseAgent.QueryAgent;
 import databaseAgent.dataAnalysis.Feature;
@@ -20,8 +21,10 @@ public class ConnectionManager {
 		try {
 			connections[DATABASE] = QueryAgent.openFactory();
 			connections[SERVER] = true;
+			connections[FEATURE] = Feature.loadFeatures();
 			return isConnected();
 		} catch (Exception e) {
+			Log.exception(e);
 			return false;
 		}
 	}
@@ -39,6 +42,7 @@ public class ConnectionManager {
 			}
 			return connections[component];
 		} catch (Exception e) {
+			Log.exception(e);
 			return false;
 		}
 	}
