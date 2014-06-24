@@ -5,16 +5,15 @@ Track finance life to understand your money
 
 Aim
 ==============
+* Provide platform to organize financial data by tracking spendings and income
 
-  * Provide platform to organize financial data by tracking spendings and income
-
-  * Provide statistics and highly customizeable analysis based on data
+* Provide statistics and highly customizeable analysis based on data
 
 Extensiblity
 ==============
-  * Host server so that client can access data from the internet
+* Host server so that client can access data from the internet
 
-  * Provide customizable data set for client
+* Provide customizable data set for client
 
 Dependencies
 ==============
@@ -27,3 +26,5 @@ Dependencies
 [JavaFX](http://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html)
 
 [JavaFX UI Sandbox](http://github.com/marcojakob/javafx-ui-sandbox)
+
+[ExtFX](https://bitbucket.org/sco0ter/extfx)
