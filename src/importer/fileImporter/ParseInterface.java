@@ -1,5 +1,6 @@
 package importer.fileImporter;
 
+import java.io.File;
 import java.util.Iterator;
 
 import Almonds.Parse;
@@ -21,7 +22,7 @@ public class ParseInterface {
 	
 	public static void main(String[] args) {
 		ParseInterface parse = new ParseInterface();
-		Importer importer = new Importer("D:\\test.xlsx");
+		Importer importer = new Importer(new File("D:\\test.xlsx"));
 		Iterator<DataSet> iterator = importer.getIterator();
 		while (iterator.hasNext()) {
 			DataSet next = iterator.next();

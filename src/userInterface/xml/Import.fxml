@@ -6,11 +6,10 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0" type="javafx.scene.layout.AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="userInterface.controller.ImportController">
+<fx:root minHeight="0.0" minWidth="0.0" prefHeight="775.0" prefWidth="1273.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userInterface.controller.ImportController">
    <children>
       <Button fx:id="bImport" layoutX="34.0" layoutY="28.0" mnemonicParsing="false" onAction="#importPressed" prefHeight="38.0" prefWidth="122.0" text="Import" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0" />
-      <Button fx:id="bSelectFile" layoutX="204.0" layoutY="50.0" mnemonicParsing="false" onAction="#selectFile" prefHeight="31.0" prefWidth="85.0" text="Select file" AnchorPane.leftAnchor="204.0" AnchorPane.topAnchor="50.0" />
-      <Label fx:id="lFile" alignment="CENTER" layoutX="325.0" layoutY="49.0" prefHeight="31.0" prefWidth="926.0" AnchorPane.leftAnchor="325.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="49.0" />
+      <Button fx:id="bSelectFile" layoutX="150.0" layoutY="49.0" mnemonicParsing="false" onAction="#selectFile" prefHeight="31.0" prefWidth="119.0" text="Import from file" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="49.0" />
       <TextField fx:id="tfLocation" layoutX="113.0" layoutY="131.0" prefHeight="22.0" prefWidth="158.0" AnchorPane.leftAnchor="113.0" />
       <Label layoutX="22.0" layoutY="135.0" prefHeight="14.0" prefWidth="76.0" text="Location" />
       <Label layoutX="22.0" layoutY="173.0" prefHeight="14.0" prefWidth="76.0" text="Date" />
@@ -139,7 +138,8 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="tfDate" layoutX="113.0" layoutY="169.0" prefHeight="22.0" prefWidth="159.0" AnchorPane.leftAnchor="113.0" />
-      <Label fx:id="lStatus" layoutX="204.0" layoutY="20.0" prefHeight="24.0" prefWidth="782.0" AnchorPane.leftAnchor="204.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="20.0" />
+      <Label fx:id="lStatus" layoutX="325.0" layoutY="53.0" prefHeight="24.0" prefWidth="935.0" AnchorPane.leftAnchor="325.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="53.0" />
+      <AnchorPane fx:id="datePane" layoutX="113.0" layoutY="166.0" prefHeight="24.0" prefWidth="158.0" />
+      <ProgressBar fx:id="progressBar" layoutX="22.0" layoutY="203.0" prefHeight="17.0" prefWidth="273.0" progress="0.0" visible="false" />
    </children>
 </fx:root>

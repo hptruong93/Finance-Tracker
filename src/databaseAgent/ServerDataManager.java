@@ -1,6 +1,7 @@
 package databaseAgent;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -9,6 +10,9 @@ import purchases.Purchase;
 import purchases.PurchaseSet;
 
 public class ServerDataManager extends DataManager {
+	
+	private static final int BATCH_SIZE = 25;
+	
 	/**
 	 * Add a purchase into database. The purchase must already belongs to a purchaseSet. Otherwise
 	 * exception will be thrown.
@@ -25,6 +29,37 @@ public class ServerDataManager extends DataManager {
 			@Override
 			public Integer queryActivity(Session session) {
 				return (Integer) session.save(purchase);
+			}
+		};
+		return save.query();
+	}
+	
+	/**
+	 * Add a list of purchases into database. The purchases must already belongs to purchaseSet(s). Otherwise
+	 * exception will be thrown.
+	 * @param purchases the list of purchases that will be added
+	 * @return id Integer array with ids of the purchase in the database
+	 */
+	public Integer[] addPurchases(final List<Purchase> purchases) {
+		for (Purchase purchase : purchases) {
+			if (purchase.getPurchaseSet() == null) {
+				throw new IllegalArgumentException("Purchase must be in purchaseSet to be added.");
+			}
+		}
+		
+		QueryAgent<Integer[]> save = new QueryAgent<Integer[]>() {
+			@Override
+			public Integer[] queryActivity(Session session) {
+				Integer[] output = new Integer[purchases.size()];
+				for (int i = 0; i < purchases.size(); i++) {
+					output[i] = (Integer) session.save(purchases.get(i));
+					if (i % BATCH_SIZE == 0) {
+						session.flush();
+						session.clear();
+					}
+				}
+				
+				return output;
 			}
 		};
 		return save.query();
@@ -132,6 +167,51 @@ public class ServerDataManager extends DataManager {
 		return save.query();
 	}
 
+	/**
+	 * Add a list of purchaseSets into database
+	 * 
+	 * @param purchaseSets
+	 *            a list of purchaseSet instances
+	 * @return integer indicating the id of the instance in the database
+	 */
+	public Integer[] addPurchaseSets(final List<PurchaseSet> purchaseSets) {
+		QueryAgent<Integer[]> save = new QueryAgent<Integer[]>() {
+			@Override
+			public Integer[] queryActivity(Session session) {
+				Integer[] output = new Integer[purchaseSets.size()];
+				int count = 0;
+				for (int i = 0; i < purchaseSets.size(); i++) {
+					PurchaseSet purchaseSet = purchaseSets.get(i);
+					PurchaseSet temp = new PurchaseSet(purchaseSet.getLocation(), purchaseSet.getDate(), new HashSet<Purchase>());
+					Integer returning = (Integer) session.save(temp);
+					count++;
+					output[i] = returning;
+					if (count >= BATCH_SIZE) {
+						session.flush();
+						session.clear();
+						count = 0;
+					}
+					
+					for (Purchase p : purchaseSet.getPurchases()) {
+						count++;
+						p.setPurchaseSet(temp);
+						temp.getPurchases().add(p);
+						session.save(p);
+						
+						if (count >= BATCH_SIZE) {
+							session.flush();
+							session.clear();
+							count = 0;
+						}
+					}
+				}
+				
+				return output;
+			}
+		};
+		return save.query();
+	}
+	
 	/**
 	 * Update a change for a purchaseSet into the database
 	 * 

@@ -1,25 +1,43 @@
 package userInterface.controller;
 
 import importer.ImportVerifier;
+import importer.fileImporter.DatabaseImportAdapter;
 
+import java.io.File;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import databaseAgent.ServerDataManager;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import purchases.Purchase;
 import purchases.PurchaseSet;
 import purchases.Type;
+import userInterface.ConnectionManager;
+import userInterface.StageMaster;
 import utilities.DateUtility;
+import utilities.Log;
+import utilities.functional.Filter;
+import databaseAgent.ServerDataManager;
+import extfx.scene.control.DatePicker;
 
 public class ImportController implements Initializable {
 
@@ -29,7 +47,8 @@ public class ImportController implements Initializable {
 	@FXML private Button bSelectFile;
 	
 	@FXML private TextField tfLocation;
-	@FXML private TextField tfDate;
+	@FXML private AnchorPane datePane;
+	private DatePicker datePicker;
 	
 	@FXML private TextField tfDesc0;
 	@FXML private TextField tfDesc1;
@@ -85,6 +104,8 @@ public class ImportController implements Initializable {
 	@FXML private ComboBox<String> cbbType7;
 	@FXML private ComboBox<String> cbbType8;
 	@FXML private ComboBox<String> cbbType9;
+
+	@FXML private ProgressBar progressBar;
 	
 	private ArrayList<ComboBox<String>> types;
 	private ArrayList<TextField> descriptions;
@@ -94,12 +115,16 @@ public class ImportController implements Initializable {
 	
 	private ServerDataManager manager;
 	private ImportVerifier verifier;
-
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		manager = new ServerDataManager();
 		verifier = new ImportVerifier();
+		
+		datePicker = new DatePicker();
+		datePicker.setDateFormat(DateUtility.DEFAULT_ENTER_FORMAT);
+		datePane.getChildren().add(datePicker);
+		
 		types = new ArrayList<ComboBox<String>>(Arrays.asList(
 				cbbType0, cbbType1, cbbType2, cbbType3, cbbType4, cbbType5, cbbType6, cbbType7, cbbType8, cbbType9));
 		descriptions = new ArrayList<TextField>(Arrays.asList(
@@ -120,11 +145,10 @@ public class ImportController implements Initializable {
 	private void importPressed(ActionEvent e) {
 		lStatus.setText("");
 		
+		Date pickedDate = new Date(datePicker.getCalendar().getTimeInMillis());
+		
 		if (!verifier.verifyLocation(tfLocation.getText())) {
 			lStatus.setText("Invalid Location!");
-			return;
-		} else if (!verifier.verifyDate(tfDate.getText())) {
-			lStatus.setText("Invalid date!");
 			return;
 		}
 
@@ -143,10 +167,12 @@ public class ImportController implements Initializable {
 				adding.add(new Purchase(description, type, qtt, unit, cst));
 			} else {
 				lStatus.setText("Item number " + (i + 1) +" is invalid!!!");
+				return;
 			}
 		}
+		
 		if (adding.size() > 0) {
-			PurchaseSet toAdd = new PurchaseSet(tfLocation.getText(), DateUtility.parseSQLDate(tfDate.getText()), adding);
+			PurchaseSet toAdd = new PurchaseSet(tfLocation.getText(), pickedDate, adding);
 			manager.addPurchaseSet(toAdd);
 		} else if (lStatus.getText().length() == 0) {
 			lStatus.setText("Nothing to add");
@@ -155,6 +181,65 @@ public class ImportController implements Initializable {
 	
 	@FXML
 	private void selectFile(ActionEvent e) {
+		if (!DataController.getInstance().connectionManager.isConnected(ConnectionManager.DATABASE)) {
+			Dialogs.showErrorDialog(StageMaster.primaryStage(), "Connections have not been established.");
+			return;
+		}
 		
+		final File file = new FileChooser().showOpenDialog(StageMaster.primaryStage());
+		if (file != null) {
+			progressBar.setVisible(true);
+			
+			Task<Void> task = new Task<Void>() {
+				@Override
+				public Void call() {
+					final MutableInt count = new MutableInt(0);
+					final MutableInt error = new MutableInt(0);
+					
+					List<PurchaseSet> toImport = null;
+					try {
+						toImport = DatabaseImportAdapter.load(file);
+						updateProgress(50, 100);
+						if (toImport == null) {
+							throw new IllegalStateException("Unable to load");
+						}
+					} catch (Exception e) {
+						Log.exception(e);
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								progressBar.setVisible(false);
+								Dialogs.showErrorDialog(StageMaster.primaryStage(), "Error encountered. See log for more detail");
+							}
+						});
+						return null;
+					}
+					
+					count.setValue(new Filter<Integer>() {
+						@Override
+						public boolean filter(Integer item) {
+							return item != null;
+						}}.filter(manager.addPurchaseSets(toImport)).size());
+					
+					error.setValue(toImport.size() - count.getValue());
+					
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							progressBar.setVisible(false);
+							Dialogs.showInformationDialog(StageMaster.primaryStage(), "Operation completed.\n" + count + "purchase set(s) added.\n" + error
+									+ " error(s) encountered.");
+						}
+					});
+					return null;
+				}
+			};
+	
+			progressBar.progressProperty().bind(task.progressProperty());
+
+			Thread th = new Thread(task);
+			th.setDaemon(true);
+			th.start();
+		}
 	}
 }

@@ -21,6 +21,11 @@
 		<property name="hibernate.connection.password">
 			supersecret
 		</property>
+		
+		<property name="hibernate.jdbc.batch_size">
+      		25
+   		</property>
+		
 		<!-- List of XML mapping files -->
 		<mapping resource="Purchase.hbm.xml"/>
 		<mapping resource="PurchaseSet.hbm.xml"/>

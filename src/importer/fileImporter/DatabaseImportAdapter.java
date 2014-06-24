@@ -1,5 +1,6 @@
 package importer.fileImporter;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,7 +11,8 @@ import purchases.Purchase;
 import purchases.PurchaseSet;
 import utilities.functional.Mapper;
 
-public class DatabaseAdapter {
+public class DatabaseImportAdapter {
+	
 	private static PurchaseSet convert(DataSet dataSet) {
 		Date date = null;
 
@@ -30,8 +32,8 @@ public class DatabaseAdapter {
 		return new PurchaseSet("N/R", date, purchaseSet);
 	}
 	
-	public static List<PurchaseSet> load(String filePath) {
-		Importer importer = new Importer(filePath);
+	public static List<PurchaseSet> load(File file) {
+		Importer importer = new Importer(file);
 		Iterator<DataSet> iterator = importer.getIterator();
 		
 		List<PurchaseSet> output = (new Mapper<DataSet, PurchaseSet>() {

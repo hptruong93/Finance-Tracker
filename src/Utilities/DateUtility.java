@@ -9,7 +9,8 @@ import java.util.Locale;
 
 public class DateUtility {
 
-	private static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy - MM - dd", Locale.ENGLISH);
+	public static final DateFormat DEFAULT_DISPLAY_FORMAT = new SimpleDateFormat("yyyy - MM - dd", Locale.ENGLISH);
+	public static final DateFormat DEFAULT_ENTER_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 	
 	/**
 	 * Attempt to parse a string to a date. Support the following format
@@ -62,7 +63,7 @@ public class DateUtility {
 	}
 	
 	public static String dateToString(java.util.Date date) {
-		return DEFAULT_DATE_FORMAT.format(date);
+		return DEFAULT_DISPLAY_FORMAT.format(date);
 	}
 	
 	public static Date getTodaySQL() {

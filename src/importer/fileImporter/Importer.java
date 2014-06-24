@@ -34,9 +34,9 @@ public class Importer {
 
 	private ArrayList<DataSet> purchases;
 
-	public Importer(String filePath) {
+	public Importer(File file) {
 		this.purchases = new ArrayList<DataSet>();
-		this.purchases = readFile(filePath);
+		this.purchases = readFile(file);
 		if (this.purchases == null) {
 			Log.exception(new NullPointerException());
 			System.exit(1);
@@ -47,14 +47,14 @@ public class Importer {
 		return purchases.iterator();
 	}
 	
-	private static ArrayList<DataSet> readFile(String filePath) {
+	private static ArrayList<DataSet> readFile(File file) {
 		ArrayList<DataSet> output = new ArrayList<DataSet>();
 
 		try {
-			FileInputStream file = new FileInputStream(new File(filePath));
+			FileInputStream fileInputStream = new FileInputStream(file);
 
 			// Get the workbook instance for XLS file
-			XSSFWorkbook workbook = new XSSFWorkbook(file);
+			XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
 
 			// Process all sheets
 			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
@@ -62,7 +62,7 @@ public class Importer {
 				output.addAll(readSheet(workbook.getSheetAt(i)));
 			}
 
-			file.close();
+			fileInputStream.close();
 		} catch (FileNotFoundException e) {
 			Log.exception(e);
 		} catch (IOException e) {
@@ -107,7 +107,7 @@ public class Importer {
 		DataSet currentDataSet = null;
 
 		while (rowIterator.hasNext()) {
-			//System.out.println("We are at line " + rowCount);
+//			System.out.println("We are at line " + rowCount);
 			Row row = rowIterator.next();
 
 			if (mergedRegion.containsKey(rowCount)) {// Start merge
@@ -147,8 +147,8 @@ public class Importer {
 						}
 						unitDate = currentDate;
 					} else if (cellCount == COL_DESCRIPTION) {
-						// System.out.println(cell.getStringCellValue() +
-						// " is the description");
+//						 System.out.println(cell.getStringCellValue() +
+//						 " is the description");
 						unitDescription = cell.getStringCellValue();
 					} else if (cellCount == COL_TYPE) {
 						// System.out.println(cell.getStringCellValue() +
