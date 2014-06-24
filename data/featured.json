@@ -205,7 +205,7 @@
 			"description": "Sum of month average since beginning of record",
 			"mode": "advanced",
 			"fields": [
-				"MONTH(a.date)",
+				"a.date",
 				"AVG(b.cost)"
 			],
 			"from": [
@@ -213,22 +213,27 @@
 					"select": [
 						""
 					],
-					"table": "(\n\t\t\t\t\t\t\t\tSELECT SUM(cost) as cost, ps.date \n\t\t\t\t\t\t\t\tFROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)\n\t\t\t\t\t\t\t\tGROUP BY MONTH(ps.date)\n\t\t\t\t\t\t\t  ) a\n\t\t\t\t\t\t\t  INNER JOIN\n\t\t\t\t\t\t\t  (\n\t\t\t\t\t\t\t\tSELECT SUM(cost) as cost, ps.date \n\t\t\t\t\t\t\t\tFROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id)\n\t\t\t\t\t\t\t\tGROUP BY MONTH(ps.date)\n\t\t\t\t\t\t\t  ) b\n\t\t\t\t\t\t\t  ON MONTH(a.date) >= MONTH(b.date)",
+					"table":   "(
+									(
+										SELECT date 
+										FROM purchase_set 
+										GROUP BY MONTH(date), YEAR(date)
+									) a 
+									INNER JOIN 
+									(
+										SELECT SUM(cost) as cost, ps.date 
+										FROM (purchase p LEFT JOIN purchase_set ps ON p.purchase_set = ps.id) 
+										GROUP BY MONTH(ps.date), YEAR(ps.date)
+									) b 
+									ON ((YEAR(a.date) = YEAR(b.date)) AND (MONTH(a.date) >= MONTH(b.date))) OR (YEAR(a.date) > YEAR(b.date))
+								)",
 					"alias": ""
 				}
 			],
-			"criteria": [
-				{
-					"condition": {
-						"field": "YEAR(a.date)",
-						"condition": "=",
-						"value": "2014"
-					},
-					"values": []
-				}
-			],
+			"criteria": [],
 			"group_by": [
-				"MONTH(a.date)"
+				"MONTH(a.date)",
+				"YEAR(a.date)"
 			],
 			"having": [],
 			"order_by": []
