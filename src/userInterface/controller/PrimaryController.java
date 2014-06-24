@@ -14,6 +14,7 @@ import javafx.scene.control.Dialogs.DialogResponse;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import userInterface.ConnectionManager;
 import userInterface.StageMaster;
 import userProfile.UserProfile;
 import utilities.FileUtility;
@@ -52,6 +53,22 @@ public class PrimaryController implements Initializable {
 		userProfile = new UserProfile("HP");
 	}
 
+	@FXML
+	private void exit(ActionEvent e) {
+		Platform.exit();
+	}
+	
+	@FXML
+	private void connectToDatabase(ActionEvent e) {
+		DataController.getInstance().connectionManager.startConnections(ConnectionManager.DATABASE);
+	}
+	
+	@FXML
+	private void connectToServer(ActionEvent e) {
+		DataController.getInstance().connectionManager.startConnections(ConnectionManager.SERVER);
+	}
+	
+	/*********************************************************************************/
 	@FXML
 	private void query(ActionEvent e) {
 		
@@ -143,11 +160,6 @@ public class PrimaryController implements Initializable {
 		} else {
 			DataController.getInstance().queryBuilder = new QueryBuilder();
 		}
-	}
-	/*********************************************************************************/
-	@FXML
-	private void exit(ActionEvent e) {
-		Platform.exit();
 	}
 	/*********************************************************************************/
 	public QueryController getQueryController() {

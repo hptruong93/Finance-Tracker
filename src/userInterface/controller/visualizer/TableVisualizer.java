@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -19,8 +20,8 @@ public class TableVisualizer implements IDataVisualizer {
 	private TableView<String> tool;
 	private RecursivePrinter printer;
 	
-	public TableVisualizer(TableView<String> tool) {
-		this.tool = tool;
+	public TableVisualizer() {
+		tool = new TableView<String>();
 		printer = new RecursivePrinter(true);
 	}
 	
@@ -101,5 +102,10 @@ public class TableVisualizer implements IDataVisualizer {
 
         //FINALLY ADDED TO TableView
         tool.setItems(rowData);
+	}
+
+	@Override
+	public Node getTool() {
+		return tool;
 	}	
 }

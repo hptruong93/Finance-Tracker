@@ -8,19 +8,18 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import userInterface.ConnectionManager;
 import userInterface.StageMaster;
 import userInterface.controller.visualizer.IDataVisualizer;
@@ -58,10 +57,8 @@ public class QueryController implements Initializable {
 	@FXML protected Label lStatus;
 	
 	@FXML protected CheckBox cbAddComposite;
-	@FXML protected TableView<String> tbResult;
-	@FXML protected Label lResult;
-	@FXML protected LineChart lcResult;
 	
+	@FXML protected StackPane visualizerPane;
 	private LabelVisualizer labelVisualizer;
 	private TableVisualizer tableVisualizer;
 	private LineChartVisualizer lineChartVisualizer;
@@ -73,12 +70,11 @@ public class QueryController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		tbResult.getColumns().clear();
-		
 		dataQuery = DataController.getInstance().queryManager;
-		labelVisualizer = new LabelVisualizer(lResult);
-		lineChartVisualizer = new LineChartVisualizer(lcResult);
-		tableVisualizer = new TableVisualizer(tbResult);
+		
+		labelVisualizer = new LabelVisualizer();
+		lineChartVisualizer = new LineChartVisualizer();
+		tableVisualizer = new TableVisualizer();
 		constraintID = new ArrayList<Integer>();
 		
 		cbbFeature.getItems().add("");
@@ -156,7 +152,7 @@ public class QueryController implements Initializable {
 			results.add(new QueryResult(currentFields, result));
 		}
 		
-		this.getDataVisualizer().visualize(results.get(results.size() - 1));
+		visualize(results.get(results.size() - 1));
 		if (results.size() > MAX_QUERY_HISTORY) {
 			results.remove(0);
 		}
@@ -204,7 +200,7 @@ public class QueryController implements Initializable {
 	private void bPreviousPressed(ActionEvent e) {
 		bNext.setDisable(false);
 		cursor--;
-		getDataVisualizer().visualize(results.get(cursor));
+		visualize(results.get(cursor));
 		
 		if (cursor <= 1) {
 			bPrevious.setDisable(true);
@@ -215,7 +211,7 @@ public class QueryController implements Initializable {
 	private void bNextPressed(ActionEvent e) {
 		bPrevious.setDisable(false);
 		cursor++;
-		getDataVisualizer().visualize(results.get(cursor));
+		visualize(results.get(cursor));
 		if (cursor >= results.size() - 1) {
 			bNext.setDisable(true);
 		}
@@ -305,26 +301,24 @@ public class QueryController implements Initializable {
 		}
 	}
 	
+	/***********************************************************************************/
 	private IDataVisualizer getDataVisualizer() {
-		lcResult.setVisible(false);
-		tbResult.setVisible(false);
-		lResult.setVisible(false);
-		
 		if (StageMaster.getPrimaryController().rmiLabelVisualizer.isSelected()) {
-			lResult.setVisible(true);
-			lResult.toFront();
 			return labelVisualizer;
 		} else if (StageMaster.getPrimaryController().rmiTableVisualizer.isSelected()) {
-			tbResult.setVisible(true);
-			tbResult.toFront();
 			return tableVisualizer;
 		} else if (StageMaster.getPrimaryController().rmiLineChartVisualizer.isSelected()) {
-			lcResult.setVisible(true);
-			lcResult.toFront();
 			return lineChartVisualizer;
 		} else {
 			return null;
 		}
+	}
+	
+	private void visualize(QueryResult result) {
+		IDataVisualizer visualizer = getDataVisualizer();
+		visualizer.visualize(result);
+		visualizerPane.getChildren().clear();
+		visualizerPane.getChildren().add(visualizer.getTool());
 	}
 	
 	/***********************************************************************************/

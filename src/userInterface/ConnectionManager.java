@@ -18,15 +18,11 @@ public class ConnectionManager {
 	}
 
 	public boolean startConnections() {
-		try {
-			connections[DATABASE] = QueryAgent.openFactory();
-			connections[SERVER] = true;
-			connections[FEATURE] = Feature.loadFeatures();
-			return isConnected();
-		} catch (Exception e) {
-			Log.exception(e);
-			return false;
+		for (int i = 0; i < connections.length; i++) {
+			startConnections(i);
 		}
+		
+		return isConnected();
 	}
 	
 	public boolean startConnections(int component) {

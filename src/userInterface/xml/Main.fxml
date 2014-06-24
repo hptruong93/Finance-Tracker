@@ -16,8 +16,8 @@
             <items>
                   <Menu mnemonicParsing="false" text="Connections...">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Connect to database" />
-                      <MenuItem mnemonicParsing="false" text="Connect to server" />
+                        <MenuItem mnemonicParsing="false" onAction="#connectToDatabase" text="Connect to database" />
+                      <MenuItem mnemonicParsing="false" onAction="#connectToServer" text="Connect to server" />
                     </items>
                   </Menu>
               <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
@@ -28,7 +28,10 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Tool">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#query" text="Query" />
+                <MenuItem mnemonicParsing="false" onAction="#query" text="Query">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#addField" text="Add Field" />
