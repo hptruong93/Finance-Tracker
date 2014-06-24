@@ -93,7 +93,7 @@ public class QueryController implements Initializable {
 	}
 
 	@FXML
-	private void query(ActionEvent e) {
+	protected void query(ActionEvent e) {
 		if (!DataController.getInstance().connectionManager.isConnected(ConnectionManager.DATABASE)) {
 			Dialogs.showErrorDialog(StageMaster.primaryStage(), "Database connection has not been established.");
 		}
@@ -166,14 +166,14 @@ public class QueryController implements Initializable {
 	
 	/***********************************************************************************/
 	@FXML
-	private void addField(ActionEvent e) {
+	protected void addField(ActionEvent e) {
 		StageMaster.getAddFieldController().tfField.clear();
 		StageMaster.addField().show();
 		StageMaster.addField().toFront();
 	}
 	
 	@FXML
-	private void selectAllPressed(ActionEvent e) {
+	protected void selectAllPressed(ActionEvent e) {
 		dataQuery.clearFields();
 		lvFields.getItems().clear();
 		lvFields.getItems().addAll(StageMaster.getAddFieldController().cbbField.getItems());
@@ -182,7 +182,7 @@ public class QueryController implements Initializable {
 	
 	/***********************************************************************************/
 	@FXML
-	private void addConstraint(ActionEvent e) {
+	protected void addConstraint(ActionEvent e) {
 		cbAddComposite.setDisable(true);
 		
 		if (cbAddComposite.isSelected()) {
@@ -272,14 +272,17 @@ public class QueryController implements Initializable {
 	private void tfFromClicked(MouseEvent e) {
 		if (StageMaster.getPrimaryController().cmiAdvancedQuery.isSelected()) {
 			if (e.getClickCount() >= 2) {
-				StageMaster.compositeTable().show();
-				StageMaster.compositeTable().toFront();
+				changeFrom();
 			}
 		} else {
 			Dialogs.showErrorDialog(StageMaster.primaryStage(),"Has to be in advanced query mode to change table...");
 		}
 	}
 	
+	protected void changeFrom() {
+		StageMaster.compositeTable().show();
+		StageMaster.compositeTable().toFront();
+	}
 	/***********************************************************************************/
 	protected void addFeature(Feature newComer) {
 		featureManager.add(newComer);

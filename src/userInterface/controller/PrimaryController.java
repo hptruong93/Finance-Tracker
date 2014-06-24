@@ -61,17 +61,23 @@ public class PrimaryController implements Initializable {
 	@FXML
 	private void connectToDatabase(ActionEvent e) {
 		DataController.getInstance().connectionManager.startConnections(ConnectionManager.DATABASE);
+		if (DataController.getInstance().connectionManager.isConnected(ConnectionManager.DATABASE)) {
+			Dialogs.showErrorDialog(StageMaster.primaryStage(), "Unable to connect to database. See log for problem encountered.");
+		}
 	}
 	
 	@FXML
 	private void connectToServer(ActionEvent e) {
 		DataController.getInstance().connectionManager.startConnections(ConnectionManager.SERVER);
+		if (DataController.getInstance().connectionManager.isConnected(ConnectionManager.SERVER)) {
+			Dialogs.showErrorDialog(StageMaster.primaryStage(), "Unable to connect to server. See log for problem encountered.");
+		}
 	}
 	
 	/*********************************************************************************/
 	@FXML
 	private void query(ActionEvent e) {
-		
+		StageMaster.getQueryController().query(null);
 	}
 	
 	@FXML
@@ -81,17 +87,17 @@ public class PrimaryController implements Initializable {
 	
 	@FXML
 	private void addField(ActionEvent e) {
-		
+		StageMaster.getQueryController().addField(null);
 	}
 	
 	@FXML
 	private void addConstraint(ActionEvent e) {
-		
+		StageMaster.getQueryController().addConstraint(null);
 	}
 	
 	@FXML
 	private void modifyFrom(ActionEvent e) {
-		
+		StageMaster.getQueryController().changeFrom();
 	}
 	
 	/*********************************************************************************/
